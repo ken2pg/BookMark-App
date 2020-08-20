@@ -6,9 +6,24 @@ import {
 } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 
-const rootReducer = combineReducers({});
+import { sideBarSlice } from './slices/sideBarSlice';
+import { sideBarState } from './slices/sideBarSlice';
 
-export const cerateStore = (): EnhancedStore => {
+const rootReducer = combineReducers({
+  sideBar: sideBarSlice.reducer,
+});
+
+// const preloadedState = () => {
+//   return { sideBar: sideBarState };
+// };
+
+// export type RootState = {
+//   sideBar: sideBarState;
+// };
+
+export type RootState = ReturnType<typeof rootReducer>;
+
+export const createStore = (): EnhancedStore => {
   const middlewares = [...getDefaultMiddleware(), logger];
 
   return configureStore({
