@@ -4,6 +4,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
 // export default () => <div>Hello World</div>;
 import NavigationBar from '../components/navigationBar';
+import SideBar from '../components/sideBar';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,6 +21,7 @@ const Index = () => {
   return (
     <>
       <NavigationBar />
+      <SideBar />
     </>
   );
 };
