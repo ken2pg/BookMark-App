@@ -14,8 +14,8 @@ export const initialState: sideBarState = {
   folder: {
     userId: 0,
     folderId: 0,
-    folderName: '',
-    folderColor: '',
+    folderName: 'sample1',
+    folderColor: 'Red',
     isEdit: false,
   },
 };
