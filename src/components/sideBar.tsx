@@ -22,31 +22,67 @@ import { sideBarSlice } from '../slices/sideBarSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
+import FolderItem from './folderItem';
+
+import FolderIcon from '@material-ui/icons/Folder';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '20%',
-      margin: '200px 0',
+      // width: '30%',
+      // margin: '25px 0',
+      // display: 'flex',
+    },
+    title: {
+      // textAlign: 'center',
+      margin: '15px 30px',
+      fontSize: '20px',
+    },
+    drawer: {},
+
+    drawerPaper: {
+      width: 240,
+      zIndex: -100,
     },
   })
 );
 
-const sideBar = () => {
+const SideBar = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state);
 
   //   console.log(state.sideBar.folder);
   return (
     <div className={classes.root}>
-      <Divider />
-      <List>
-        <ListItem>
-          <p>{state.sideBar.folder.userId}</p>
-        </ListItem>
-      </List>
+      <Drawer
+        className={classes.drawer}
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        <Toolbar />
+        <Typography color={'textSecondary'} className={classes.title}>
+          Folder List
+        </Typography>
+        <Divider />
+        <List>
+          <ListItem button key={'sample1'}>
+            <ListItemIcon>
+              <FolderIcon></FolderIcon>
+            </ListItemIcon>
+            <FolderItem />
+          </ListItem>
+          <ListItem button key={'sample1'}>
+            <ListItemIcon>
+              <FolderIcon></FolderIcon>
+            </ListItemIcon>
+            <FolderItem />
+          </ListItem>
+        </List>
+      </Drawer>
     </div>
   );
 };
-export default sideBar;
+export default SideBar;
