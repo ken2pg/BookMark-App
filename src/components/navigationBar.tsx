@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
+      // zIndex: theme.zIndex.drawer,
     },
     title: {
       fontSize: '20px',
@@ -17,12 +18,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const navigationBar = () => {
+const NavigationBar = () => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           <Typography className={classes.title}>BookMark-App</Typography>
         </Toolbar>
@@ -30,4 +31,4 @@ const navigationBar = () => {
     </div>
   );
 };
-export default navigationBar;
+export default NavigationBar;
