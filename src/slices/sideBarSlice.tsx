@@ -1,13 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { folder } from '#/types/folder';
 
 export type sideBarState = {
-  folder: {
-    userId: number;
-    folderId: number;
-    folderName: string;
-    folderColor: string;
-    isEdit: boolean;
-  };
+  folder: folder;
+  saveFolder: folder[];
 };
 
 export const initialState: sideBarState = {
@@ -18,16 +14,25 @@ export const initialState: sideBarState = {
     folderColor: 'Red',
     isEdit: false,
   },
+  saveFolder: new Array<folder>(),
 };
 
 export const sideBarSlice = createSlice({
   name: 'sidebar',
   initialState,
   reducers: {
-    addFolder: (state, action: PayloadAction<sideBarState>) => ({
-      ...state,
-      ...action.payload,
-    }),
+    newFolder(state) {
+      // state.folder=
+    },
+    inputName(state, action: PayloadAction<string>) {
+      state.folder.folderName = action.payload;
+    },
+    addFolder(state, action: PayloadAction<folder>) {
+      // const newFolder: folder = action.payload;
+      state.folder.folderId++;
+      // console.log(state.folder.folderId);
+      state.saveFolder = [action.payload, ...state.saveFolder];
+    },
     startEditFolder: (state) => ({
       ...state,
       folder: { ...state.folder, isEdit: true },
