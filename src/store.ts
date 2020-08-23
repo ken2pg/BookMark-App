@@ -24,7 +24,8 @@ const rootReducer = combineReducers({
 export type RootState = ReturnType<typeof rootReducer>;
 
 export const createStore = (): EnhancedStore => {
-  const middlewares = [...getDefaultMiddleware(), logger];
+  const middlewares = [...getDefaultMiddleware()];
+  //const middlewares = [...getDefaultMiddleware(), logger];
 
   return configureStore({
     reducer: rootReducer,
