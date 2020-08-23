@@ -10,11 +10,17 @@ export const initialState: sideBarState = {
   folder: {
     userId: 0,
     folderId: 0,
-    folderName: 'sample1',
+    folderName: '',
     folderColor: 'Red',
     isEdit: false,
   },
-  saveFolder: new Array<folder>(),
+  saveFolder: new Array<folder>({
+    userId: 0,
+    folderId: 0,
+    folderName: 'sample1',
+    folderColor: 'Red',
+    isEdit: false,
+  }),
 };
 
 export const sideBarSlice = createSlice({
@@ -27,11 +33,12 @@ export const sideBarSlice = createSlice({
     inputName(state, action: PayloadAction<string>) {
       state.folder.folderName = action.payload;
     },
-    addFolder(state, action: PayloadAction<folder>) {
+    addFolder(state) {
       // const newFolder: folder = action.payload;
       state.folder.folderId++;
       // console.log(state.folder.folderId);
-      state.saveFolder = [action.payload, ...state.saveFolder];
+      state.saveFolder = [state.folder, ...state.saveFolder];
+      state.folder = initialState.folder;
     },
     startEditFolder: (state) => ({
       ...state,
