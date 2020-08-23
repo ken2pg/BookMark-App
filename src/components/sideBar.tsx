@@ -23,6 +23,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
 
 import { sideBarSlice } from '../slices/sideBarSlice';
 import { useDispatch } from 'react-redux';
@@ -53,6 +54,10 @@ const useStyles = makeStyles((theme: Theme) =>
       zIndex: -100,
     },
     button: {},
+    textfield: {
+      width: '92%',
+      margin: '0 auto',
+    },
   })
 );
 
@@ -63,17 +68,31 @@ const SideBar = () => {
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
 
+  //編集開始・修了、フォルダーの追加処理
   const startEdit = () => {
     dispatch(sideBarSlice.actions.startEditFolder());
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(sideBarSlice.actions.inputName(e.target.value));
+  };
   const cancelEdit = () => {
     dispatch(sideBarSlice.actions.endEditFolder());
   };
-  const addFolder = (folder: folder) => {
-    dispatch(sideBarSlice.actions.addFolder(folder));
+  const addFolder = () => {
+    dispatch(sideBarSlice.actions.addFolder());
+    dispatch(sideBarSlice.actions.endEditFolder());
   };
 
+  const EnterKeyPress = () => {
+    dispatch(sideBarSlice.actions.addFolder());
+    dispatch(sideBarSlice.actions.endEditFolder());
+  };
+
+  //Validation
+  const isNameNull = !state.sideBar.folder.folderName;
+
+  // 編集画面
   const EditMenu = (
     <div>
       <Dialog
@@ -85,12 +104,31 @@ const SideBar = () => {
       >
         <DialogTitle id="max-width-dialog-title"> Create New Folder</DialogTitle>
         <DialogContent>
-          <DialogContentText>test</DialogContentText>
+          <DialogContentText>Plese input new folder's name!</DialogContentText>
         </DialogContent>
+        <TextField
+          onChange={handleInputChange}
+          className={classes.textfield}
+          id="folderName"
+          label="Folder Name"
+          // onKeyDown={(e) => {
+          //   if (e.keyCode === 13) {
+          //     e.target.addEventListener('blur', pause);
+          //   }
+          // }}
+        />
+        <DialogActions>
+          <Button autoFocus onClick={cancelEdit} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={addFolder} disabled={isNameNull} color="primary">
+            OK
+          </Button>
+        </DialogActions>
       </Dialog>
     </div>
   );
-  console.log(state.sideBar.saveFolder);
+
   return (
     <div className={classes.root}>
       <Drawer
@@ -110,12 +148,14 @@ const SideBar = () => {
         </Button>
         <List>
           {state.sideBar.saveFolder.map((folder, _i) => {
-            <ListItem button key={'sample1'}>
-              <ListItemIcon>
-                <FolderIcon></FolderIcon>
-              </ListItemIcon>
-              <FolderItem folder={state.sideBar.folder} />
-            </ListItem>;
+            return (
+              <ListItem button key={_i}>
+                <ListItemIcon>
+                  <FolderIcon></FolderIcon>
+                </ListItemIcon>
+                <FolderItem key={_i} folder={folder} />
+              </ListItem>
+            );
           })}
         </List>
       </Drawer>
