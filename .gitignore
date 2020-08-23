@@ -3,3 +3,5 @@ node_modules
 .prettierrc
 .circleci
 .next
+greet.test.ts
+greet.ts
