@@ -4,6 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
@@ -57,6 +58,16 @@ const useStyles = makeStyles((theme: Theme) =>
     textfield: {
       width: '92%',
       margin: '0 auto',
+    },
+    createButton: {
+      margin: '0 auto',
+
+      // display: 'inline-block',
+      // margin: '0 12%',
+      marginTop: '18px',
+      marginBottom: '10px',
+      width: '75%',
+      // padding: '-20%',
     },
   })
 );
@@ -119,7 +130,7 @@ const SideBar = () => {
         />
         <DialogActions>
           <Button autoFocus onClick={cancelEdit} color="primary">
-            Cancel
+            <Box className={classes.button}>Cancel</Box>
           </Button>
           <Button onClick={addFolder} disabled={isNameNull} color="primary">
             OK
@@ -143,7 +154,12 @@ const SideBar = () => {
           Folder List
         </Typography>
         <Divider />
-        <Button className={classes.button} variant="outlined" color="primary" onClick={startEdit}>
+        <Button
+          className={classes.createButton}
+          variant="outlined"
+          color="primary"
+          onClick={startEdit}
+        >
           Create New Folder
         </Button>
         <List>
