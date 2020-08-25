@@ -165,10 +165,7 @@ const SideBar = () => {
         <List>
           {state.sideBar.saveFolder.map((folder, _i) => {
             return (
-              <ListItem button key={_i}>
-                <ListItemIcon>
-                  <FolderIcon></FolderIcon>
-                </ListItemIcon>
+              <ListItem button key={_i} onClick={() => {}}>
                 <FolderItem key={_i} folder={folder} />
               </ListItem>
             );
