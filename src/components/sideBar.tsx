@@ -76,41 +76,42 @@ const SideBar = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state);
+
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
 
   //編集開始・修了、フォルダーの追加処理
-  const startEdit = () => {
-    dispatch(sideBarSlice.actions.startEditFolder());
+  const CreateNewFolder = () => {
+    dispatch(sideBarSlice.actions.startCreateFolder());
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(sideBarSlice.actions.inputName(e.target.value));
   };
-  const cancelEdit = () => {
-    dispatch(sideBarSlice.actions.endEditFolder());
+  const cancelNewCreate = () => {
+    dispatch(sideBarSlice.actions.endCreateFolder());
   };
   const addFolder = () => {
     dispatch(sideBarSlice.actions.addFolder());
-    dispatch(sideBarSlice.actions.endEditFolder());
+    dispatch(sideBarSlice.actions.endCreateFolder());
   };
 
   const EnterKeyPress = () => {
     dispatch(sideBarSlice.actions.addFolder());
-    dispatch(sideBarSlice.actions.endEditFolder());
+    dispatch(sideBarSlice.actions.endCreateFolder());
   };
 
   //Validation
   const isNameNull = !state.sideBar.folder.folderName;
 
-  // 編集画面
-  const EditMenu = (
+  // 新規作成画面
+  const CreateFolderDialog = (
     <div>
       <Dialog
         fullWidth={fullWidth}
         maxWidth={maxWidth}
         open={state.sideBar.folder.isEdit}
-        onClose={cancelEdit}
+        onClose={cancelNewCreate}
         aria-labelledby="max-width-dialog-title"
       >
         <DialogTitle id="max-width-dialog-title"> Create New Folder</DialogTitle>
@@ -129,7 +130,7 @@ const SideBar = () => {
           // }}
         />
         <DialogActions>
-          <Button autoFocus onClick={cancelEdit} color="primary">
+          <Button autoFocus onClick={cancelNewCreate} color="primary">
             <Box className={classes.button}>Cancel</Box>
           </Button>
           <Button onClick={addFolder} disabled={isNameNull} color="primary">
@@ -158,7 +159,7 @@ const SideBar = () => {
           className={classes.createButton}
           variant="outlined"
           color="primary"
-          onClick={startEdit}
+          onClick={CreateNewFolder}
         >
           Create New Folder
         </Button>
@@ -173,7 +174,7 @@ const SideBar = () => {
         </List>
       </Drawer>
       {/*新規フォルダー作成画面*/}
-      {EditMenu}
+      {CreateFolderDialog}
     </div>
   );
 };
