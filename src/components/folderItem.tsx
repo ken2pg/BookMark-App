@@ -10,6 +10,11 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import { Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 
+import { sideBarSlice } from '../slices/sideBarSlice';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -38,9 +43,12 @@ interface Props {
 
 const FolderItem: React.FC<Props> = ({ folder }) => {
   const classes = useStyles();
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const dispatch = useDispatch();
+  const state = useSelector((state: RootState) => state);
+
   const open = Boolean(anchorEl);
+  const ITEM_HEIGHT = 48;
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -49,7 +57,21 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const ITEM_HEIGHT = 48;
+
+  // const startEdit = () => {
+  //   dispatch(sideBarSlice.actions.startEditFolder());
+  // };
+
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   dispatch(sideBarSlice.actions.inputName(e.target.value));
+  // };
+  // const cancelEdit = () => {
+  //   dispatch(sideBarSlice.actions.endEditFolder());
+  // };
+
+  const handleDelete = (Id: number) => {
+    dispatch(sideBarSlice.actions.deleteFolder(Id));
+  };
 
   const options = ['Edit', 'Delete', 'Cancel'];
   return (
@@ -77,7 +99,21 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
         }}
       >
         {options.map((option) => (
-          <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
+          <MenuItem
+            key={option}
+            selected={option === 'Pyxis'}
+            onClick={() => {
+              if (option === 'Edit') {
+                handleClose();
+                // startEdit();
+              } else if (option === 'Delete') {
+                handleClose();
+                handleDelete(folder.folderId);
+              } else {
+                handleClose();
+              }
+            }}
+          >
             {option}
           </MenuItem>
         ))}
