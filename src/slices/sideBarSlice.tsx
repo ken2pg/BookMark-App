@@ -34,17 +34,17 @@ export const sideBarSlice = createSlice({
       state.folder.folderName = action.payload;
     },
     addFolder(state) {
-      // const newFolder: folder = action.payload;
       state.folder.folderId++;
-      // console.log(state.folder.folderId);
       state.saveFolder = [state.folder, ...state.saveFolder];
-      state.folder = initialState.folder;
+      // state.folder.folderColor = initialState.folder.folderColor;
+      // state.folder.folderName = initialState.folder.folderName;
+      // state.folder.isEdit = initialState.folder.isEdit;
     },
-    startEditFolder: (state) => ({
+    startCreateFolder: (state) => ({
       ...state,
       folder: { ...state.folder, isEdit: true },
     }),
-    endEditFolder: (state) => ({
+    endCreateFolder: (state) => ({
       ...state,
       folder: { ...state.folder, isEdit: false },
     }),
@@ -52,5 +52,10 @@ export const sideBarSlice = createSlice({
       ...state,
       folder: { ...state.folder, folderName: action.payload },
     }),
+    deleteFolder: (state, action: PayloadAction<number>) => {
+      state.saveFolder = [
+        ...state.saveFolder.filter((folder) => folder.folderId !== action.payload),
+      ];
+    },
   },
 });
