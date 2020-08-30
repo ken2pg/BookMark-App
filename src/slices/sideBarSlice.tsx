@@ -3,7 +3,9 @@ import { folder } from '#/types/folder';
 
 export type sideBarState = {
   folder: folder;
+  editFolderName: string;
   saveFolder: folder[];
+  isCreate: boolean;
 };
 
 export const initialState: sideBarState = {
@@ -14,6 +16,7 @@ export const initialState: sideBarState = {
     folderColor: 'Red',
     isEdit: false,
   },
+  editFolderName: '',
   saveFolder: new Array<folder>({
     userId: 0,
     folderId: 0,
@@ -21,6 +24,7 @@ export const initialState: sideBarState = {
     folderColor: 'Red',
     isEdit: false,
   }),
+  isCreate: false,
 };
 
 export const sideBarSlice = createSlice({
@@ -42,11 +46,11 @@ export const sideBarSlice = createSlice({
     },
     startCreateFolder: (state) => ({
       ...state,
-      folder: { ...state.folder, isEdit: true },
+      isCreate: true,
     }),
     endCreateFolder: (state) => ({
       ...state,
-      folder: { ...state.folder, isEdit: false },
+      isCreate: false,
     }),
     editFolder: (state, action: PayloadAction<string>) => ({
       ...state,
@@ -56,6 +60,39 @@ export const sideBarSlice = createSlice({
       state.saveFolder = [
         ...state.saveFolder.filter((folder) => folder.folderId !== action.payload),
       ];
+    },
+    startEditFolder: (state, action: PayloadAction<number>) => {
+      state.saveFolder = [
+        ...state.saveFolder.map((savefolder) =>
+          savefolder.folderId === action.payload
+            ? { ...savefolder, isEdit: true }
+            : { ...savefolder, isEdit: false }
+        ),
+      ];
+      const editSaveFolder = state.saveFolder.find((folder) => folder.folderId === action.payload);
+      state.editFolderName = editSaveFolder.folderName;
+    },
+    endEditFolder: (state) => {
+      state.saveFolder = [
+        ...state.saveFolder.map((savefolder) =>
+          savefolder.isEdit
+            ? {
+                ...savefolder,
+                isEdit: false,
+              }
+            : { ...savefolder, isEdit: false }
+        ),
+      ];
+    },
+    changeFolderName: (state, action: PayloadAction<string>) => {
+      state.saveFolder = [
+        ...state.saveFolder.map((savefolder) =>
+          savefolder.isEdit ? { ...savefolder, folderName: action.payload } : { ...savefolder }
+        ),
+      ];
+    },
+    inputEditName: (state, action: PayloadAction<string>) => {
+      state.editFolderName = action.payload;
     },
   },
 });
