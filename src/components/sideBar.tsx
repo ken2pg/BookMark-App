@@ -101,8 +101,22 @@ const SideBar = () => {
     dispatch(sideBarSlice.actions.endCreateFolder());
   };
 
+  const cancelEdit = () => {
+    dispatch(sideBarSlice.actions.endEditFolder());
+  };
+
+  const endEditFolder = (folderName: string) => {
+    dispatch(sideBarSlice.actions.changeFolderName(folderName));
+    dispatch(sideBarSlice.actions.endEditFolder());
+  };
+
+  const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(sideBarSlice.actions.inputEditName(e.target.value));
+  };
   //Validation
   const isNameNull = !state.sideBar.folder.folderName;
+
+  const isEditNameNull = !state.sideBar.editFolderName;
 
   // 新規作成画面
   const CreateFolderDialog = (
@@ -110,7 +124,7 @@ const SideBar = () => {
       <Dialog
         fullWidth={fullWidth}
         maxWidth={maxWidth}
-        open={state.sideBar.folder.isEdit}
+        open={state.sideBar.isCreate}
         onClose={cancelNewCreate}
         aria-labelledby="max-width-dialog-title"
       >
@@ -134,6 +148,51 @@ const SideBar = () => {
             <Box className={classes.button}>Cancel</Box>
           </Button>
           <Button onClick={addFolder} disabled={isNameNull} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+
+  // フォルダー編集画面
+  const EditFolderDialog = (
+    <div>
+      <Dialog
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+        //1つでもisEditがtrueなものがあったらフォルダー編集画面を開く
+        open={state.sideBar.saveFolder.some((t) => t.isEdit === true)}
+        onClose={cancelEdit}
+        aria-labelledby="max-width-dialog-title"
+      >
+        <DialogTitle id="max-width-dialog-title"> Edit Folder</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Plese input edit folder's name!</DialogContentText>
+        </DialogContent>
+        <TextField
+          onChange={handleEditInputChange}
+          className={classes.textfield}
+          id="folderName"
+          label="Folder Name"
+          value={state.sideBar.editFolderName}
+          // onKeyDown={(e) => {
+          //   if (e.keyCode === 13) {
+          //     e.target.addEventListener('blur', pause);
+          //   }
+          // }}
+        />
+        <DialogActions>
+          <Button autoFocus onClick={cancelEdit} color="primary">
+            <Box className={classes.button}>Cancel</Box>
+          </Button>
+          <Button
+            onClick={() => {
+              endEditFolder(state.sideBar.editFolderName);
+            }}
+            disabled={isEditNameNull}
+            color="primary"
+          >
             OK
           </Button>
         </DialogActions>
@@ -175,6 +234,7 @@ const SideBar = () => {
       </Drawer>
       {/*新規フォルダー作成画面*/}
       {CreateFolderDialog}
+      {EditFolderDialog}
     </div>
   );
 };
