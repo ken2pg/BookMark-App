@@ -73,6 +73,9 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
     dispatch(sideBarSlice.actions.deleteFolder(Id));
   };
 
+  const startEdit = (folderID: number) => {
+    dispatch(sideBarSlice.actions.startEditFolder(folderID));
+  };
   const options = ['Edit', 'Delete', 'Cancel'];
   return (
     <>
@@ -105,6 +108,7 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
             onClick={() => {
               if (option === 'Edit') {
                 handleClose();
+                startEdit(folder.folderId);
                 // startEdit();
               } else if (option === 'Delete') {
                 handleClose();
