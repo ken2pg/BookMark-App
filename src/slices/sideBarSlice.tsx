@@ -44,10 +44,14 @@ export const sideBarSlice = createSlice({
       // state.folder.folderName = initialState.folder.folderName;
       // state.folder.isEdit = initialState.folder.isEdit;
     },
-    startCreateFolder: (state) => ({
-      ...state,
-      isCreate: true,
-    }),
+    // startCreateFolder: (state) => ({
+    //   ...state,
+    //   isCreate: true,
+    // }),
+    startCreateFolder: (state) => {
+      state.folder['folderName'] = initialState.folder.folderName;
+      state.isCreate = true;
+    },
     endCreateFolder: (state) => ({
       ...state,
       isCreate: false,
