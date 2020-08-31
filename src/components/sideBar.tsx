@@ -25,6 +25,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import AddIcon from '@material-ui/icons/Add';
 
 import { sideBarSlice } from '../slices/sideBarSlice';
 import { useDispatch } from 'react-redux';
@@ -66,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
       // margin: '0 12%',
       marginTop: '18px',
       marginBottom: '10px',
-      width: '75%',
+      width: '85%',
       // padding: '-20%',
     },
   })
@@ -220,7 +221,7 @@ const SideBar = () => {
           color="primary"
           onClick={CreateNewFolder}
         >
-          Create New Folder
+          <AddIcon></AddIcon>Create New Folder
         </Button>
         <List>
           {state.sideBar.saveFolder.map((folder, _i) => {
