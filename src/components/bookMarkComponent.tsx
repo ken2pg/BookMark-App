@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import SideBar from '../components/sideBar';
+import SideBar from './sideBar';
+import BookMark from './bookMark';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -14,6 +15,7 @@ const BookMarkComponent = () => {
   return (
     <>
       <SideBar />
+      <BookMark />
     </>
   );
 };
