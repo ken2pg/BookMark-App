@@ -5,6 +5,8 @@ export type bookMarkState = {
   newBookMark: bookMark;
   bookMarks: bookMark[];
   isCreate: boolean;
+  editSiteName: string;
+  editSiteUrl: string;
 };
 
 export const initialState: bookMarkState = {
@@ -17,27 +19,18 @@ export const initialState: bookMarkState = {
     date: '',
     isEdit: false,
   },
-  bookMarks: new Array<bookMark>(
-    {
-      userId: 0,
-      folderId: 0,
-      bookMarkId: 0,
-      siteName: 'github',
-      siteURL: ' https://github.com',
-      date: '2020/08/31',
-      isEdit: false,
-    },
-    {
-      userId: 0,
-      folderId: 0,
-      bookMarkId: 0,
-      siteName: 'github',
-      siteURL: ' https://github.com',
-      date: '2020/08/31',
-      isEdit: false,
-    }
-  ),
+  bookMarks: new Array<bookMark>({
+    userId: 0,
+    folderId: 0,
+    bookMarkId: 0,
+    siteName: 'github',
+    siteURL: ' https://github.com',
+    date: '2020/08/31',
+    isEdit: false,
+  }),
   isCreate: false,
+  editSiteName: '',
+  editSiteUrl: '',
 };
 
 export const bookMarkSlice = createSlice({
@@ -46,6 +39,9 @@ export const bookMarkSlice = createSlice({
   reducers: {
     inputName(state, action: PayloadAction<string>) {
       state.newBookMark.siteName = action.payload;
+    },
+    inputURL(state, action: PayloadAction<string>) {
+      state.newBookMark.siteURL = action.payload;
     },
     addBookMark(state) {
       state.newBookMark.bookMarkId++;
@@ -57,6 +53,46 @@ export const bookMarkSlice = createSlice({
     },
     endCreateBookMark(state) {
       state.isCreate = false;
+    },
+    startEditBookMark(state, action: PayloadAction<number>) {
+      state.bookMarks = [
+        ...state.bookMarks.map((bookMark) =>
+          bookMark.folderId === action.payload
+            ? { ...bookMark, isEdit: true }
+            : { ...bookMark, isEdit: false }
+        ),
+      ];
+      const editSaveFolder = state.bookMarks.find(
+        (bookMark) => bookMark.bookMarkId === action.payload
+      );
+      state.editSiteName = editSaveFolder.siteName;
+    },
+    endEditFolder: (state) => {
+      state.bookMarks = [
+        ...state.bookMarks.map((bookMark) =>
+          bookMark.isEdit
+            ? {
+                ...bookMark,
+                isEdit: false,
+              }
+            : { ...bookMark, isEdit: false }
+        ),
+      ];
+    },
+    changeBookMark: (state, action: PayloadAction<bookMark>) => {
+      state.bookMarks = [
+        ...state.bookMarks.map((bookMark) =>
+          bookMark.isEdit
+            ? { ...bookMark, siteName: action.payload.siteName, siteURL: action.payload.siteURL }
+            : { ...bookMark }
+        ),
+      ];
+    },
+    inputEditName: (state, action: PayloadAction<string>) => {
+      state.editSiteName = action.payload;
+    },
+    inputEditURL: (state, action: PayloadAction<string>) => {
+      state.editSiteUrl = action.payload;
     },
   },
 });
