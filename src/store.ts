@@ -7,10 +7,11 @@ import {
 import logger from 'redux-logger';
 
 import { sideBarSlice } from './slices/sideBarSlice';
-import { sideBarState } from './slices/sideBarSlice';
+import { bookMarkSlice } from './slices/bookMarkSlice';
 
 const rootReducer = combineReducers({
   sideBar: sideBarSlice.reducer,
+  bookMark: bookMarkSlice.reducer,
 });
 
 // const preloadedState = () => {
