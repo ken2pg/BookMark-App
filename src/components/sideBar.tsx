@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
       // width: '30%',
       // margin: '25px 0',
       // display: 'flex',
+      zIndex: 100,
     },
     title: {
       // textAlign: 'center',
@@ -53,7 +54,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
     drawerPaper: {
       width: 240,
-      zIndex: -100,
+      // zIndex: theme.zIndex.speedDial,
+      zIndex: 1000,
     },
     button: {},
     textfield: {
@@ -67,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) =>
       // margin: '0 12%',
       marginTop: '18px',
       marginBottom: '10px',
-      width: '85%',
+      width: '91%',
       // padding: '-20%',
     },
   })
@@ -121,7 +123,7 @@ const SideBar = () => {
 
   // 新規作成画面
   const CreateFolderDialog = (
-    <div>
+    <div className={classes.root}>
       <Dialog
         fullWidth={fullWidth}
         maxWidth={maxWidth}
