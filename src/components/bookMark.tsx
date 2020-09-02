@@ -21,6 +21,7 @@ import TextField from '@material-ui/core/TextField';
 
 import BookmarkItem from './bookMarkItem';
 import { bookMarkSlice } from '#/slices/bookMarkSlice';
+import { bookMark } from '#/types/bookMark';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -192,6 +193,58 @@ const BookMark = () => {
       </Dialog>
     </div>
   );
+
+  //memoボタンが押されるたびにbookMarkItemに対象のbookmarkが変数に入れられる。
+  let bookMarkItem = state.bookMark.newBookMark;
+  state.bookMark.bookMarks.map((bookMark) => {
+    if (bookMark.isMemoOpen) {
+      bookMarkItem = bookMark;
+    }
+  });
+  // const Index = state.bookMark.bookMarks.findIndex((t) => t.isMemoOpen === true);
+  //memo画面
+  const memoDialog = (
+    <div>
+      <Dialog
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+        open={state.bookMark.bookMarks.some((t) => t.isMemoOpen === true)}
+        onClose={() => {
+          dispatch(bookMarkSlice.actions.closeMemoDialog());
+        }}
+        aria-labelledby="max-width-dialog-title"
+      >
+        <DialogTitle id="max-width-dialog-title">Memo</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{bookMarkItem.siteName}</DialogContentText>
+          <DialogContentText>{bookMarkItem.memo}</DialogContentText>
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            autoFocus
+            onClick={() => {
+              dispatch(bookMarkSlice.actions.closeMemoDialog());
+            }}
+            color="primary"
+          >
+            <Box className={classes.button}>Close</Box>
+          </Button>
+          <Button
+            // onClick={() => {
+            //   dispatch(bookMarkSlice.actions.changeBookMark());
+            //   dispatch(bookMarkSlice.actions.endEditBookMark());
+            // }}
+            disabled={isEditNameNull}
+            color="primary"
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+
   return (
     <div className={classes.root}>
       <div className={classes.header}>
@@ -227,6 +280,7 @@ const BookMark = () => {
       </Grid>
       {CreateBookmarkDialog}
       {EditBookmarkDialog}
+      {memoDialog}
     </div>
   );
 };
