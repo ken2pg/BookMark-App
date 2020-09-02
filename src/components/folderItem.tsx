@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       // width: '30%',
-      margin: '25px 0',
+      // margin: '25px 0',
     },
     title: {
       textAlign: 'center',
@@ -28,6 +28,11 @@ const useStyles = makeStyles((theme: Theme) =>
     iconButton: {
       marginLeft: '40px',
     },
+    btn: {
+      //  zIndex: 3000,
+      //  backgroundColor: 'white'
+    },
+    item: { width: '100px', wordWrap: 'break-word' },
   })
 );
 
@@ -82,46 +87,48 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
       <ListItemIcon>
         <FolderIcon></FolderIcon>
       </ListItemIcon>
-      <Typography>
+      <Typography className={classes.item}>
         <Box>{folder.folderName}</Box>
       </Typography>
-      <IconButton className={classes.iconButton} onClick={handleClick}>
-        <MoreVertIcon />
-      </IconButton>
-      <Menu
-        id="long-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          style: {
-            maxHeight: ITEM_HEIGHT * 4.5,
-            width: '20ch',
-          },
-        }}
-      >
-        {options.map((option) => (
-          <MenuItem
-            key={option}
-            selected={option === 'Pyxis'}
-            onClick={() => {
-              if (option === 'Edit') {
-                handleClose();
-                startEdit(folder.folderId);
-                // startEdit();
-              } else if (option === 'Delete') {
-                handleClose();
-                handleDelete(folder.folderId);
-              } else {
-                handleClose();
-              }
-            }}
-          >
-            {option}
-          </MenuItem>
-        ))}
-      </Menu>
+      <Typography className={classes.btn}>
+        <IconButton className={classes.iconButton} onClick={handleClick}>
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          id="long-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={open}
+          onClose={handleClose}
+          PaperProps={{
+            style: {
+              maxHeight: ITEM_HEIGHT * 4.5,
+              width: '20ch',
+            },
+          }}
+        >
+          {options.map((option) => (
+            <MenuItem
+              key={option}
+              selected={option === 'Pyxis'}
+              onClick={() => {
+                if (option === 'Edit') {
+                  handleClose();
+                  startEdit(folder.folderId);
+                  // startEdit();
+                } else if (option === 'Delete') {
+                  handleClose();
+                  handleDelete(folder.folderId);
+                } else {
+                  handleClose();
+                }
+              }}
+            >
+              {option}
+            </MenuItem>
+          ))}
+        </Menu>
+      </Typography>
     </>
   );
 };
