@@ -57,7 +57,7 @@ export const bookMarkSlice = createSlice({
     startEditBookMark(state, action: PayloadAction<number>) {
       state.bookMarks = [
         ...state.bookMarks.map((bookMark) =>
-          bookMark.folderId === action.payload
+          bookMark.bookMarkId === action.payload
             ? { ...bookMark, isEdit: true }
             : { ...bookMark, isEdit: false }
         ),
@@ -66,8 +66,9 @@ export const bookMarkSlice = createSlice({
         (bookMark) => bookMark.bookMarkId === action.payload
       );
       state.editSiteName = editSaveFolder.siteName;
+      state.editSiteUrl = editSaveFolder.siteURL;
     },
-    endEditFolder: (state) => {
+    endEditBookMark: (state) => {
       state.bookMarks = [
         ...state.bookMarks.map((bookMark) =>
           bookMark.isEdit
@@ -79,11 +80,11 @@ export const bookMarkSlice = createSlice({
         ),
       ];
     },
-    changeBookMark: (state, action: PayloadAction<bookMark>) => {
+    changeBookMark: (state) => {
       state.bookMarks = [
         ...state.bookMarks.map((bookMark) =>
           bookMark.isEdit
-            ? { ...bookMark, siteName: action.payload.siteName, siteURL: action.payload.siteURL }
+            ? { ...bookMark, siteName: state.editSiteName, siteURL: state.editSiteUrl }
             : { ...bookMark }
         ),
       ];
