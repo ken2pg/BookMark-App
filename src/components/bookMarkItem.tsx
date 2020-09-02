@@ -47,6 +47,8 @@ interface Props {
     siteURL: string;
     date: string;
     isEdit: boolean;
+    memo: string;
+    isMemoOpen: boolean;
   };
 }
 const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
@@ -75,7 +77,13 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
           </Typography>
         </CardContent>
         {/* </CardActionArea> */}
-        <Button color="primary" className={classes.btn}>
+        <Button
+          color="primary"
+          className={classes.btn}
+          onClick={() => {
+            dispatch(bookMarkSlice.actions.openMemoDialog(bookMarkContents));
+          }}
+        >
           Memo
         </Button>
         <Button
@@ -87,7 +95,13 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
         >
           Edit
         </Button>
-        <Button color="primary" className={classes.btn}>
+        <Button
+          color="primary"
+          className={classes.btn}
+          onClick={() => {
+            dispatch(bookMarkSlice.actions.deleteBookMark(bookMarkContents.bookMarkId));
+          }}
+        >
           Delete
         </Button>
       </Card>
