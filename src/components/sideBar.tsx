@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
     drawer: {},
 
     drawerPaper: {
-      width: 240,
+      width: 280,
       // zIndex: theme.zIndex.speedDial,
       zIndex: 1000,
     },
@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) =>
       // margin: '0 12%',
       marginTop: '18px',
       marginBottom: '10px',
-      width: '91%',
+      width: '80%',
       // padding: '-20%',
     },
   })
