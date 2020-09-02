@@ -78,7 +78,13 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
         <Button color="primary" className={classes.btn}>
           Memo
         </Button>
-        <Button color="primary" className={classes.btn}>
+        <Button
+          color="primary"
+          className={classes.btn}
+          onClick={() => {
+            dispatch(bookMarkSlice.actions.startEditBookMark(bookMarkContents.bookMarkId));
+          }}
+        >
           Edit
         </Button>
         <Button color="primary" className={classes.btn}>
