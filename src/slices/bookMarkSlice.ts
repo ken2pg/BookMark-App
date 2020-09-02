@@ -7,6 +7,7 @@ export type bookMarkState = {
   isCreate: boolean;
   editSiteName: string;
   editSiteUrl: string;
+  editMemo: string;
 };
 
 export const initialState: bookMarkState = {
@@ -18,6 +19,8 @@ export const initialState: bookMarkState = {
     siteURL: '',
     date: '',
     isEdit: false,
+    isMemoOpen: false,
+    memo: '',
   },
   bookMarks: new Array<bookMark>({
     userId: 0,
@@ -27,10 +30,13 @@ export const initialState: bookMarkState = {
     siteURL: ' https://github.com',
     date: '2020/08/31',
     isEdit: false,
+    isMemoOpen: false,
+    memo: 'This is Github site!',
   }),
   isCreate: false,
   editSiteName: '',
   editSiteUrl: '',
+  editMemo: '',
 };
 
 export const bookMarkSlice = createSlice({
@@ -94,6 +100,27 @@ export const bookMarkSlice = createSlice({
     },
     inputEditURL: (state, action: PayloadAction<string>) => {
       state.editSiteUrl = action.payload;
+    },
+    deleteBookMark: (state, action: PayloadAction<number>) => {
+      state.bookMarks = [
+        ...state.bookMarks.filter((bookMark) => bookMark.bookMarkId !== action.payload),
+      ];
+    },
+    openMemoDialog: (state, action: PayloadAction<bookMark>) => {
+      state.bookMarks = [
+        ...state.bookMarks.map((bookMark) =>
+          bookMark.bookMarkId === action.payload.bookMarkId
+            ? { ...bookMark, isMemoOpen: true }
+            : { ...bookMark, isMemoOpen: false }
+        ),
+      ];
+    },
+    closeMemoDialog: (state) => {
+      state.bookMarks = [
+        ...state.bookMarks.map((bookMark) =>
+          bookMark.isMemoOpen ? { ...bookMark, isMemoOpen: false } : { ...bookMark, isEdit: false }
+        ),
+      ];
     },
   },
 });
