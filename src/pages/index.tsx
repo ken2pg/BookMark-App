@@ -15,7 +15,7 @@ const useStyle = makeStyles((theme: Theme) =>
 );
 
 const Index = () => {
-  // const classes = useStyle();
+  const classes = useStyle();
 
   return (
     <>
