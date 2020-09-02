@@ -6,4 +6,6 @@ export type bookMark = {
   siteURL: string;
   date: string;
   isEdit: boolean;
+  memo: string;
+  isMemoOpen: boolean;
 };
