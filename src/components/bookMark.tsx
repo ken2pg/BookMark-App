@@ -25,10 +25,10 @@ import { bookMarkSlice } from '#/slices/bookMarkSlice';
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '83%',
+      width: '80.5%',
       //   margin: '0 auto',
       marginTop: '74px',
-      marginLeft: '250px',
+      marginLeft: '290px',
       //   border: '1px solid red',
     },
     paper: {
@@ -78,6 +78,7 @@ const BookMark = () => {
   };
   //Validation
   const isNameNull = !state.bookMark.newBookMark.siteName;
+  const isEditNameNull = !state.bookMark.editSiteName;
 
   //新規作成画面
   const CreateBookmarkDialog = (
@@ -124,6 +125,73 @@ const BookMark = () => {
       </Dialog>
     </div>
   );
+
+  //編集画面
+  const EditBookmarkDialog = (
+    <div>
+      <Dialog
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+        open={state.bookMark.bookMarks.some((t) => t.isEdit === true)}
+        onClose={() => {
+          dispatch(bookMarkSlice.actions.endEditBookMark());
+        }}
+        aria-labelledby="max-width-dialog-title"
+      >
+        <DialogTitle id="max-width-dialog-title">Edit Site Name and URL</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Plese input site name and url!</DialogContentText>
+        </DialogContent>
+        <TextField
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            dispatch(bookMarkSlice.actions.inputEditName(e.target.value));
+          }}
+          className={classes.textfield}
+          id="Site Name"
+          label="Site Name"
+          value={state.bookMark.editSiteName}
+          // onKeyDown={(e) => {
+          //   if (e.keyCode === 13) {
+          //     e.target.addEventListener('blur', pause);
+          //   }
+          // }}
+        />
+        {/* <DialogContent>
+          <DialogContentText>Plese input site url!</DialogContentText>
+        </DialogContent> */}
+        <TextField
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            dispatch(bookMarkSlice.actions.inputEditURL(e.target.value));
+          }}
+          className={classes.textfield}
+          id="Site URL"
+          label="Site URL"
+          value={state.bookMark.editSiteUrl}
+        />
+        <DialogActions>
+          <Button
+            autoFocus
+            onClick={() => {
+              dispatch(bookMarkSlice.actions.endEditBookMark());
+            }}
+            color="primary"
+          >
+            <Box className={classes.button}>Cancel</Box>
+          </Button>
+          <Button
+            onClick={() => {
+              dispatch(bookMarkSlice.actions.changeBookMark());
+              dispatch(bookMarkSlice.actions.endEditBookMark());
+            }}
+            disabled={isEditNameNull}
+            color="primary"
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
   return (
     <div className={classes.root}>
       <div className={classes.header}>
@@ -158,6 +226,7 @@ const BookMark = () => {
         </MediaQuery>
       </Grid>
       {CreateBookmarkDialog}
+      {EditBookmarkDialog}
     </div>
   );
 };
