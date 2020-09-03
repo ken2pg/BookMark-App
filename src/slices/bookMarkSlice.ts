@@ -3,15 +3,29 @@ import { bookMark } from '#/types/bookMark';
 
 export type bookMarkState = {
   newBookMark: bookMark;
+  memoDialog: bookMark;
   bookMarks: bookMark[];
+  searchBookMarks: bookMark[];
   isCreate: boolean;
   editSiteName: string;
   editSiteUrl: string;
   editMemo: string;
+  searchText: string;
 };
 
 export const initialState: bookMarkState = {
   newBookMark: {
+    userId: 0,
+    folderId: 0,
+    bookMarkId: 0,
+    siteName: '',
+    siteURL: '',
+    date: '',
+    isEdit: false,
+    isMemoOpen: false,
+    memo: '',
+  },
+  memoDialog: {
     userId: 0,
     folderId: 0,
     bookMarkId: 0,
@@ -33,10 +47,12 @@ export const initialState: bookMarkState = {
     isMemoOpen: false,
     memo: 'This is Github site!',
   }),
+  searchBookMarks: new Array<bookMark>(),
   isCreate: false,
   editSiteName: '',
   editSiteUrl: '',
   editMemo: '',
+  searchText: '',
 };
 
 export const bookMarkSlice = createSlice({
@@ -49,12 +65,17 @@ export const bookMarkSlice = createSlice({
     inputURL(state, action: PayloadAction<string>) {
       state.newBookMark.siteURL = action.payload;
     },
+    inputMemo(state, action: PayloadAction<string>) {
+      state.newBookMark.memo = action.payload;
+    },
     addBookMark(state) {
       state.newBookMark.bookMarkId++;
       state.bookMarks = [state.newBookMark, ...state.bookMarks];
     },
     startCreateBookMark(state) {
       state.newBookMark['siteName'] = initialState.newBookMark.siteName;
+      state.newBookMark['siteURL'] = initialState.newBookMark.siteURL;
+      state.newBookMark['memo'] = initialState.newBookMark.memo;
       state.isCreate = true;
     },
     endCreateBookMark(state) {
@@ -73,6 +94,7 @@ export const bookMarkSlice = createSlice({
       );
       state.editSiteName = editSaveFolder.siteName;
       state.editSiteUrl = editSaveFolder.siteURL;
+      state.editMemo = editSaveFolder.memo;
     },
     endEditBookMark: (state) => {
       state.bookMarks = [
@@ -90,7 +112,12 @@ export const bookMarkSlice = createSlice({
       state.bookMarks = [
         ...state.bookMarks.map((bookMark) =>
           bookMark.isEdit
-            ? { ...bookMark, siteName: state.editSiteName, siteURL: state.editSiteUrl }
+            ? {
+                ...bookMark,
+                siteName: state.editSiteName,
+                siteURL: state.editSiteUrl,
+                memo: state.editMemo,
+              }
             : { ...bookMark }
         ),
       ];
@@ -100,6 +127,9 @@ export const bookMarkSlice = createSlice({
     },
     inputEditURL: (state, action: PayloadAction<string>) => {
       state.editSiteUrl = action.payload;
+    },
+    inputEditMemo: (state, action: PayloadAction<string>) => {
+      state.editMemo = action.payload;
     },
     deleteBookMark: (state, action: PayloadAction<number>) => {
       state.bookMarks = [
@@ -114,13 +144,33 @@ export const bookMarkSlice = createSlice({
             : { ...bookMark, isMemoOpen: false }
         ),
       ];
+      state.bookMarks.map((BookMark) => {
+        if (BookMark.isMemoOpen) {
+          state.memoDialog = BookMark;
+        }
+      });
     },
     closeMemoDialog: (state) => {
       state.bookMarks = [
         ...state.bookMarks.map((bookMark) =>
-          bookMark.isMemoOpen ? { ...bookMark, isMemoOpen: false } : { ...bookMark, isEdit: false }
+          bookMark.isMemoOpen
+            ? { ...bookMark, isMemoOpen: false }
+            : { ...bookMark, isMemoOpen: false }
         ),
       ];
+    },
+    inputSearchText: (state, action: PayloadAction<string>) => {
+      state.searchText = action.payload;
+    },
+    // searchOutput: (state) => {
+    //   state.searchBookMarks = state.bookMarks.filter(
+    //     (bookMark) => bookMark.siteName === state.searchText
+    //   );
+    // },
+    searchOutput: (state) => {
+      state.searchBookMarks = state.bookMarks.filter(
+        (bookMark) => bookMark.siteName.indexOf(state.searchText) !== -1
+      );
     },
   },
 });
