@@ -18,6 +18,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
+import SearchIcon from '@material-ui/icons/Search';
+import InputBase from '@material-ui/core/InputBase';
 
 import BookmarkItem from './bookMarkItem';
 import { bookMarkSlice } from '#/slices/bookMarkSlice';
@@ -32,6 +34,12 @@ const useStyle = makeStyles((theme: Theme) =>
       marginLeft: '290px',
       //   border: '1px solid red',
     },
+    headerSearch: {
+      marginLeft: '10px',
+      width: '500px',
+      display: 'flex',
+      alignItems: 'center',
+    },
     paper: {
       padding: theme.spacing(2),
       textAlign: 'center',
@@ -39,6 +47,10 @@ const useStyle = makeStyles((theme: Theme) =>
     },
     header: {
       marginBottom: '10px',
+      padding: '2px 4px',
+      display: 'flex',
+      alignItems: 'center',
+      // width: 400,
     },
     textfield: {
       width: '92%',
@@ -46,6 +58,17 @@ const useStyle = makeStyles((theme: Theme) =>
       marginBottom: '30px',
     },
     button: {},
+    iconButton: {
+      padding: 10,
+    },
+    input: {
+      marginLeft: theme.spacing(1),
+      flex: 1,
+    },
+    // divider: {
+    //   height: 28,
+    //   margin: 4,
+    // },
   })
 );
 
@@ -91,35 +114,42 @@ const BookMark = () => {
         onClose={cancelNewCreate}
         aria-labelledby="max-width-dialog-title"
       >
-        <DialogTitle id="max-width-dialog-title">Add Site Name and URL</DialogTitle>
+        <DialogTitle id="max-width-dialog-title">Add Site Name, URL and Memo</DialogTitle>
         <DialogContent>
-          <DialogContentText>Plese input site name and url!</DialogContentText>
+          <DialogContentText>Plese input site name, url and memo!</DialogContentText>
         </DialogContent>
         <TextField
           onChange={handleInputChange}
           className={classes.textfield}
           id="Site Name"
           label="Site Name"
-          // onKeyDown={(e) => {
-          //   if (e.keyCode === 13) {
-          //     e.target.addEventListener('blur', pause);
-          //   }
-          // }}
         />
-        {/* <DialogContent>
-          <DialogContentText>Plese input site url!</DialogContentText>
-        </DialogContent> */}
         <TextField
           onChange={handleInputURLChange}
           className={classes.textfield}
           id="Site URL"
           label="Site URL"
         />
+        <TextField
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            dispatch(bookMarkSlice.actions.inputMemo(e.target.value));
+          }}
+          className={classes.textfield}
+          id="Site Memo"
+          label="Site Memo"
+        />
         <DialogActions>
           <Button autoFocus onClick={cancelNewCreate} color="primary">
             <Box className={classes.button}>Cancel</Box>
           </Button>
-          <Button onClick={addNewBookMark} disabled={isNameNull} color="primary">
+          <Button
+            onClick={() => {
+              addNewBookMark();
+              dispatch(bookMarkSlice.actions.searchOutput());
+            }}
+            disabled={isNameNull}
+            color="primary"
+          >
             OK
           </Button>
         </DialogActions>
@@ -139,9 +169,9 @@ const BookMark = () => {
         }}
         aria-labelledby="max-width-dialog-title"
       >
-        <DialogTitle id="max-width-dialog-title">Edit Site Name and URL</DialogTitle>
+        <DialogTitle id="max-width-dialog-title">Edit Site Name, URL and Memo</DialogTitle>
         <DialogContent>
-          <DialogContentText>Plese input site name and url!</DialogContentText>
+          <DialogContentText>Plese input site name, url, memo!</DialogContentText>
         </DialogContent>
         <TextField
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -151,15 +181,7 @@ const BookMark = () => {
           id="Site Name"
           label="Site Name"
           value={state.bookMark.editSiteName}
-          // onKeyDown={(e) => {
-          //   if (e.keyCode === 13) {
-          //     e.target.addEventListener('blur', pause);
-          //   }
-          // }}
         />
-        {/* <DialogContent>
-          <DialogContentText>Plese input site url!</DialogContentText>
-        </DialogContent> */}
         <TextField
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             dispatch(bookMarkSlice.actions.inputEditURL(e.target.value));
@@ -168,6 +190,15 @@ const BookMark = () => {
           id="Site URL"
           label="Site URL"
           value={state.bookMark.editSiteUrl}
+        />
+        <TextField
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            dispatch(bookMarkSlice.actions.inputEditMemo(e.target.value));
+          }}
+          className={classes.textfield}
+          id="Site Memo"
+          label="Site Memo"
+          value={state.bookMark.editMemo}
         />
         <DialogActions>
           <Button
@@ -183,6 +214,7 @@ const BookMark = () => {
             onClick={() => {
               dispatch(bookMarkSlice.actions.changeBookMark());
               dispatch(bookMarkSlice.actions.endEditBookMark());
+              dispatch(bookMarkSlice.actions.searchOutput());
             }}
             disabled={isEditNameNull}
             color="primary"
@@ -194,14 +226,6 @@ const BookMark = () => {
     </div>
   );
 
-  //memoボタンが押されるたびにbookMarkItemに対象のbookmarkが変数に入れられる。
-  let bookMarkItem = state.bookMark.newBookMark;
-  state.bookMark.bookMarks.map((bookMark) => {
-    if (bookMark.isMemoOpen) {
-      bookMarkItem = bookMark;
-    }
-  });
-  // const Index = state.bookMark.bookMarks.findIndex((t) => t.isMemoOpen === true);
   //memo画面
   const memoDialog = (
     <div>
@@ -216,8 +240,10 @@ const BookMark = () => {
       >
         <DialogTitle id="max-width-dialog-title">Memo</DialogTitle>
         <DialogContent>
-          <DialogContentText>{bookMarkItem.siteName}</DialogContentText>
-          <DialogContentText>{bookMarkItem.memo}</DialogContentText>
+          {/* <DialogContentText>{bookMarkItem.siteName}</DialogContentText>
+          <DialogContentText>{bookMarkItem.memo}</DialogContentText> */}
+          {/* <DialogContentText>{state.bookMark.memoDialog.siteName}</DialogContentText> */}
+          <DialogContentText>{state.bookMark.memoDialog.memo}</DialogContentText>
         </DialogContent>
 
         <DialogActions>
@@ -230,7 +256,7 @@ const BookMark = () => {
           >
             <Box className={classes.button}>Close</Box>
           </Button>
-          <Button
+          {/* <Button
             // onClick={() => {
             //   dispatch(bookMarkSlice.actions.changeBookMark());
             //   dispatch(bookMarkSlice.actions.endEditBookMark());
@@ -239,7 +265,7 @@ const BookMark = () => {
             color="primary"
           >
             OK
-          </Button>
+          </Button> */}
         </DialogActions>
       </Dialog>
     </div>
@@ -247,6 +273,7 @@ const BookMark = () => {
 
   return (
     <div className={classes.root}>
+      {/* header */}
       <div className={classes.header}>
         <IconButton
           color="primary"
@@ -257,25 +284,66 @@ const BookMark = () => {
         >
           <AddIcon />
         </IconButton>
+        <Paper className={classes.headerSearch} elevation={0} variant="outlined">
+          <InputBase
+            className={classes.input}
+            placeholder="Search BookMark"
+            inputProps={{ 'aria-label': 'search book mark' }}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              dispatch(bookMarkSlice.actions.inputSearchText(e.target.value));
+              dispatch(bookMarkSlice.actions.searchOutput());
+            }}
+          />
+          <IconButton
+            className={classes.iconButton}
+            aria-label="search"
+            onClick={() => {
+              dispatch(bookMarkSlice.actions.searchOutput());
+            }}
+          >
+            {/* type="submit"  */}
+            <SearchIcon />
+          </IconButton>
+        </Paper>
       </div>
+
       <Grid container spacing={3}>
         <MediaQuery query="(min-width: 1024px)">
-          {state.bookMark.bookMarks.map((bookMark) => {
-            return (
-              <Grid item xs={3} key={bookMark.bookMarkId}>
-                <BookmarkItem bookMarkContents={bookMark} key={bookMark.bookMarkId} />
-              </Grid>
-            );
-          })}
+          {/* {(!state.bookMark.searchText || state.bookMark.searchText === ' ') && */}
+          {!state.bookMark.searchText &&
+            state.bookMark.bookMarks.map((bookMark) => {
+              return (
+                <Grid item xs={3} key={bookMark.bookMarkId}>
+                  <BookmarkItem bookMarkContents={bookMark} key={bookMark.bookMarkId} />
+                </Grid>
+              );
+            })}
+          {state.bookMark.searchText &&
+            state.bookMark.searchBookMarks.map((bookMark) => {
+              return (
+                <Grid item xs={3} key={bookMark.bookMarkId}>
+                  <BookmarkItem bookMarkContents={bookMark} key={bookMark.bookMarkId} />
+                </Grid>
+              );
+            })}
         </MediaQuery>
         <MediaQuery query="(max-width: 1023px)">
-          {state.bookMark.bookMarks.map((bookMark) => {
-            return (
-              <Grid item xs={6} key={bookMark.bookMarkId}>
-                <BookmarkItem bookMarkContents={bookMark} key={bookMark.bookMarkId} />
-              </Grid>
-            );
-          })}
+          {!state.bookMark.searchText &&
+            state.bookMark.bookMarks.map((bookMark) => {
+              return (
+                <Grid item xs={6} key={bookMark.bookMarkId}>
+                  <BookmarkItem bookMarkContents={bookMark} key={bookMark.bookMarkId} />
+                </Grid>
+              );
+            })}
+          {state.bookMark.searchText &&
+            state.bookMark.searchBookMarks.map((bookMark) => {
+              return (
+                <Grid item xs={6} key={bookMark.bookMarkId}>
+                  <BookmarkItem bookMarkContents={bookMark} key={bookMark.bookMarkId} />
+                </Grid>
+              );
+            })}
         </MediaQuery>
       </Grid>
       {CreateBookmarkDialog}
