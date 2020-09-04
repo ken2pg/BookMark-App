@@ -81,6 +81,9 @@ export const bookMarkSlice = createSlice({
     endCreateBookMark(state) {
       state.isCreate = false;
     },
+    selectId(state, action: PayloadAction<number>) {
+      state.newBookMark['folderId'] = action.payload;
+    },
     startEditBookMark(state, action: PayloadAction<number>) {
       state.bookMarks = [
         ...state.bookMarks.map((bookMark) =>
