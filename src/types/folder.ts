@@ -4,4 +4,5 @@ export type folder = {
   folderName: string;
   folderColor: string;
   isEdit: boolean;
+  isSelect: boolean;
 };
