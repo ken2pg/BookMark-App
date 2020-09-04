@@ -228,7 +228,13 @@ const SideBar = () => {
         <List>
           {state.sideBar.saveFolder.map((folder, _i) => {
             return (
-              <ListItem button key={_i} onClick={() => {}}>
+              <ListItem
+                button
+                key={_i}
+                onClick={() => {
+                  dispatch(sideBarSlice.actions.selectFolder(folder.folderId));
+                }}
+              >
                 <FolderItem key={_i} folder={folder} />
               </ListItem>
             );
