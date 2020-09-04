@@ -6,6 +6,7 @@ export type sideBarState = {
   editFolderName: string;
   saveFolder: folder[];
   isCreate: boolean;
+  selectId: number;
 };
 
 export const initialState: sideBarState = {
@@ -15,6 +16,7 @@ export const initialState: sideBarState = {
     folderName: '',
     folderColor: 'Red',
     isEdit: false,
+    isSelect: false,
   },
   editFolderName: '',
   saveFolder: new Array<folder>({
@@ -23,8 +25,10 @@ export const initialState: sideBarState = {
     folderName: 'sample1',
     folderColor: 'Red',
     isEdit: false,
+    isSelect: true,
   }),
   isCreate: false,
+  selectId: 0,
 };
 
 export const sideBarSlice = createSlice({
@@ -97,6 +101,18 @@ export const sideBarSlice = createSlice({
     },
     inputEditName: (state, action: PayloadAction<string>) => {
       state.editFolderName = action.payload;
+    },
+    selectFolder: (state, action: PayloadAction<number>) => {
+      state.saveFolder.map((savefolder) => {
+        if (savefolder.folderId === action.payload) {
+          savefolder.isSelect = true;
+          state.selectId = savefolder.folderId;
+        } else {
+          savefolder.isSelect = false;
+        }
+      });
+      // ? { ...savefolder, isSelect: true }
+      // : { ...savefolder, isSelect: false }
     },
   },
 });
