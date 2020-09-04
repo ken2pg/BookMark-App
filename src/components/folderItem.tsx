@@ -14,6 +14,7 @@ import { sideBarSlice } from '../slices/sideBarSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
+import { blue } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,6 +34,14 @@ const useStyles = makeStyles((theme: Theme) =>
       //  backgroundColor: 'white'
     },
     item: { width: '100px', wordWrap: 'break-word' },
+    selectFolder: {
+      color: '#556cd6',
+    },
+    selectItem: {
+      color: '#556cd6',
+      width: '100px',
+      wordWrap: 'break-word',
+    },
   })
 );
 
@@ -43,6 +52,7 @@ interface Props {
     folderName: string;
     folderColor: string;
     isEdit: boolean;
+    isSelect: boolean;
   };
 }
 
@@ -82,7 +92,18 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
     dispatch(sideBarSlice.actions.startEditFolder(folderID));
   };
   const options = ['Edit', 'Delete', 'Cancel'];
-  return (
+
+  const selectFolderChangeNameColor = (
+    <>
+      <ListItemIcon className={classes.selectFolder}>
+        <FolderIcon></FolderIcon>
+      </ListItemIcon>
+      <Typography className={classes.selectItem}>
+        <Box>{folder.folderName}</Box>
+      </Typography>
+    </>
+  );
+  const notselectFolderChangeNameColor = (
     <>
       <ListItemIcon>
         <FolderIcon></FolderIcon>
@@ -90,6 +111,13 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
       <Typography className={classes.item}>
         <Box>{folder.folderName}</Box>
       </Typography>
+    </>
+  );
+
+  return (
+    <>
+      {folder.isSelect && selectFolderChangeNameColor}
+      {!folder.isSelect && notselectFolderChangeNameColor}
       <Typography className={classes.btn}>
         <IconButton className={classes.iconButton} onClick={handleClick}>
           <MoreVertIcon />
