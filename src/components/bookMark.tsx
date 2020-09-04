@@ -280,6 +280,7 @@ const BookMark = () => {
           component="span"
           onClick={() => {
             createNewBookMark();
+            dispatch(bookMarkSlice.actions.selectId(state.sideBar.selectId));
           }}
         >
           <AddIcon />
@@ -312,37 +313,46 @@ const BookMark = () => {
           {/* {(!state.bookMark.searchText || state.bookMark.searchText === ' ') && */}
           {!state.bookMark.searchText &&
             state.bookMark.bookMarks.map((bookMark) => {
-              return (
-                <Grid item xs={3} key={bookMark.bookMarkId}>
-                  <BookmarkItem bookMarkContents={bookMark} key={bookMark.bookMarkId} />
-                </Grid>
-              );
+              //isSelectがtrueのfolder内容のみ表示
+              if (bookMark.folderId === state.sideBar.selectId) {
+                return (
+                  <Grid item xs={3} key={bookMark.bookMarkId}>
+                    <BookmarkItem bookMarkContents={bookMark} key={bookMark.bookMarkId} />
+                  </Grid>
+                );
+              }
             })}
           {state.bookMark.searchText &&
             state.bookMark.searchBookMarks.map((bookMark) => {
-              return (
-                <Grid item xs={3} key={bookMark.bookMarkId}>
-                  <BookmarkItem bookMarkContents={bookMark} key={bookMark.bookMarkId} />
-                </Grid>
-              );
+              if (bookMark.folderId === state.sideBar.selectId) {
+                return (
+                  <Grid item xs={3} key={bookMark.bookMarkId}>
+                    <BookmarkItem bookMarkContents={bookMark} key={bookMark.bookMarkId} />
+                  </Grid>
+                );
+              }
             })}
         </MediaQuery>
         <MediaQuery query="(max-width: 1023px)">
           {!state.bookMark.searchText &&
             state.bookMark.bookMarks.map((bookMark) => {
-              return (
-                <Grid item xs={6} key={bookMark.bookMarkId}>
-                  <BookmarkItem bookMarkContents={bookMark} key={bookMark.bookMarkId} />
-                </Grid>
-              );
+              if (bookMark.folderId === state.sideBar.selectId) {
+                return (
+                  <Grid item xs={6} key={bookMark.bookMarkId}>
+                    <BookmarkItem bookMarkContents={bookMark} key={bookMark.bookMarkId} />
+                  </Grid>
+                );
+              }
             })}
           {state.bookMark.searchText &&
             state.bookMark.searchBookMarks.map((bookMark) => {
-              return (
-                <Grid item xs={6} key={bookMark.bookMarkId}>
-                  <BookmarkItem bookMarkContents={bookMark} key={bookMark.bookMarkId} />
-                </Grid>
-              );
+              if (bookMark.folderId === state.sideBar.selectId) {
+                return (
+                  <Grid item xs={6} key={bookMark.bookMarkId}>
+                    <BookmarkItem bookMarkContents={bookMark} key={bookMark.bookMarkId} />
+                  </Grid>
+                );
+              }
             })}
         </MediaQuery>
       </Grid>
