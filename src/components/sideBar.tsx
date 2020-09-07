@@ -32,7 +32,8 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import FolderItem from './folderItem';
-
+import testSlice from '../async/test';
+import { fetchTest } from '../async/test';
 import FolderIcon from '@material-ui/icons/Folder';
 
 import { folder } from '#/types/folder';
@@ -240,6 +241,15 @@ const SideBar = () => {
             );
           })}
         </List>
+        {/* asynctest */}
+        <Button
+          onClick={async () => {
+            const result = await dispatch(fetchTest());
+            console.log(result);
+          }}
+        >
+          test
+        </Button>
       </Drawer>
       {/*新規フォルダー作成画面*/}
       {CreateFolderDialog}
