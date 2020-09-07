@@ -38,6 +38,8 @@
 
 - Firebase
 
+- vercel(hosting)
+
 ## ディレクトリー構成
 
 ## デモサイト
