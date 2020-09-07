@@ -242,14 +242,14 @@ const SideBar = () => {
           })}
         </List>
         {/* asynctest */}
-        <Button
+        {/* <Button
           onClick={async () => {
             const result = await dispatch(fetchTest());
             console.log(result);
           }}
         >
           test
-        </Button>
+        </Button> */}
       </Drawer>
       {/*新規フォルダー作成画面*/}
       {CreateFolderDialog}
