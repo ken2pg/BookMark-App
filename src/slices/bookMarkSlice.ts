@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { bookMark } from '#/types/bookMark';
+import BookMark from '#/components/bookMark';
 
 export type bookMarkState = {
   newBookMark: bookMark;
@@ -171,6 +172,8 @@ export const bookMarkSlice = createSlice({
     //   );
     // },
     searchOutput: (state) => {
+      //空白を削除
+      state.searchText = state.searchText.replace(/[ ,　]/g, '');
       state.searchBookMarks = state.bookMarks.filter(
         (bookMark) => bookMark.siteName.indexOf(state.searchText) !== -1
       );
