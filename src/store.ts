@@ -8,10 +8,12 @@ import logger from 'redux-logger';
 
 import { sideBarSlice } from './slices/sideBarSlice';
 import { bookMarkSlice } from './slices/bookMarkSlice';
+import testSlice from './async/test';
 
 const rootReducer = combineReducers({
   sideBar: sideBarSlice.reducer,
   bookMark: bookMarkSlice.reducer,
+  // test: testSlice.reducer,
 });
 
 // const preloadedState = () => {
