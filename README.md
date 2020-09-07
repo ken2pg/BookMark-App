@@ -44,4 +44,4 @@
 
 ## デモサイト
 
-https://book-mark-app-4orf10nyy.vercel.app/
+https://book-mark-app.vercel.app/
