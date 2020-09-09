@@ -10,9 +10,7 @@ export type bookMarkState = {
   bookMarks: bookMark[];
   searchBookMarks: bookMark[];
   isCreate: boolean;
-  editSiteName: string;
-  editSiteUrl: string;
-  editMemo: string;
+  editSaveFolder: bookMark;
   searchText: string;
   serialNumbers: number;
 };
@@ -54,9 +52,17 @@ export const initialState: bookMarkState = {
   // }
   searchBookMarks: new Array<bookMark>(),
   isCreate: false,
-  editSiteName: '',
-  editSiteUrl: '',
-  editMemo: '',
+  editSaveFolder: {
+    userId: 0,
+    folderId: 0,
+    bookMarkId: 0,
+    siteName: '',
+    siteURL: '',
+    date: '',
+    isEdit: false,
+    isMemoOpen: false,
+    memo: '',
+  },
   searchText: '',
   serialNumbers: 0,
 };
@@ -163,6 +169,55 @@ export const fetchAddBookMark = createAsyncThunk(
   }
 );
 
+export const fetchEditBookMark = createAsyncThunk(
+  'bookMark/fetchEditBookMark',
+  async (payload: bookMark, thunkAPI) => {
+    try {
+      await firebaseStore
+        .collection('bookMark')
+        .doc(payload.bookMarkId.toString())
+        .update({
+          // userId: payload.userId,
+          // folderId: payload.folderId,
+          // bookMarkId: payload.bookMarkId,
+          siteName: payload.siteName,
+          siteURL: payload.siteURL,
+          memo: payload.memo,
+        })
+        .catch((err) => {
+          throw new Error(err.message);
+        });
+      const success = { sucess: 'success' };
+      await console.log(success);
+    } catch (error) {
+      await console.log(error);
+    }
+  }
+);
+
+//Delete機能
+export const fetchDeleteBookMark = createAsyncThunk(
+  'bookMark/fetchDeleteBookMark',
+  async (payload: number, thunkAPI) => {
+    try {
+      await firebaseStore
+        .collection('bookMark')
+        .doc(payload.toString())
+        .delete()
+        .then(() => {
+          console.log('BookMark successfully deleted!');
+        })
+        .catch((err) => {
+          throw new Error(err.message);
+        });
+      const success = { sucess: 'success' };
+      await console.log(success);
+    } catch (error) {
+      await console.log(error);
+    }
+  }
+);
+
 export const bookMarkSlice = createSlice({
   name: 'bookMark',
   initialState,
@@ -212,12 +267,9 @@ export const bookMarkSlice = createSlice({
             : { ...bookMark, isEdit: false }
         ),
       ];
-      const editSaveFolder = state.bookMarks.find(
+      state.editSaveFolder = state.bookMarks.find(
         (bookMark) => bookMark.bookMarkId === action.payload
       );
-      state.editSiteName = editSaveFolder.siteName;
-      state.editSiteUrl = editSaveFolder.siteURL;
-      state.editMemo = editSaveFolder.memo;
     },
     endEditBookMark: (state) => {
       state.bookMarks = [
@@ -230,6 +282,7 @@ export const bookMarkSlice = createSlice({
             : { ...bookMark, isEdit: false }
         ),
       ];
+      state.editSaveFolder.isEdit = false;
     },
     changeBookMark: (state) => {
       state.bookMarks = [
@@ -237,22 +290,22 @@ export const bookMarkSlice = createSlice({
           bookMark.isEdit
             ? {
                 ...bookMark,
-                siteName: state.editSiteName,
-                siteURL: state.editSiteUrl,
-                memo: state.editMemo,
+                siteName: state.editSaveFolder.siteName,
+                siteURL: state.editSaveFolder.siteURL,
+                memo: state.editSaveFolder.memo,
               }
             : { ...bookMark }
         ),
       ];
     },
     inputEditName: (state, action: PayloadAction<string>) => {
-      state.editSiteName = action.payload;
+      state.editSaveFolder.siteName = action.payload;
     },
     inputEditURL: (state, action: PayloadAction<string>) => {
-      state.editSiteUrl = action.payload;
+      state.editSaveFolder.siteURL = action.payload;
     },
     inputEditMemo: (state, action: PayloadAction<string>) => {
-      state.editMemo = action.payload;
+      state.editSaveFolder.memo = action.payload;
     },
     deleteBookMark: (state, action: PayloadAction<number>) => {
       state.bookMarks = [
@@ -281,6 +334,7 @@ export const bookMarkSlice = createSlice({
             : { ...bookMark, isMemoOpen: false }
         ),
       ];
+      state.memoDialog.isMemoOpen = false;
     },
     inputSearchText: (state, action: PayloadAction<string>) => {
       state.searchText = action.payload;
@@ -333,5 +387,15 @@ export const bookMarkSlice = createSlice({
     builder.addCase(fetchAddBookMark.pending, () => {});
     builder.addCase(fetchAddBookMark.fulfilled, () => {});
     builder.addCase(fetchAddBookMark.rejected, () => {});
+
+    //fetchEditBookMark
+    builder.addCase(fetchEditBookMark.pending, () => {});
+    builder.addCase(fetchEditBookMark.fulfilled, () => {});
+    builder.addCase(fetchEditBookMark.rejected, () => {});
+
+    //fetchDeleteBookMark
+    builder.addCase(fetchDeleteBookMark.pending, () => {});
+    builder.addCase(fetchDeleteBookMark.fulfilled, () => {});
+    builder.addCase(fetchDeleteBookMark.rejected, () => {});
   },
 });
