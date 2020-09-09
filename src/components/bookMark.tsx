@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
@@ -20,10 +20,18 @@ import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 import BookmarkItem from './bookMarkItem';
-import { bookMarkSlice } from '#/slices/bookMarkSlice';
+import {
+  bookMarkSlice,
+  fetchInitialState,
+  fetchAddBookMark,
+  fetchSerialNumber,
+  fetchEditSerialNumber,
+} from '#/slices/bookMarkSlice';
 import { bookMark } from '#/types/bookMark';
+import { initialState } from '#/slices/sideBarSlice';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -80,12 +88,19 @@ const BookMark = () => {
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
 
+  const [count, setCount] = React.useState(0);
+  useEffect(() => {
+    dispatch(fetchInitialState());
+    dispatch(fetchSerialNumber());
+    // setCount(1);
+  }, [count]);
+
   const createNewBookMark = () => {
     dispatch(bookMarkSlice.actions.startCreateBookMark());
   };
 
   const cancelNewCreate = () => {
-    dispatch(bookMarkSlice.actions.endCreateBookMark());
+    dispatch(bookMarkSlice.actions.cancelCreateBookMark());
   };
 
   const addNewBookMark = () => {
@@ -146,6 +161,8 @@ const BookMark = () => {
             onClick={() => {
               addNewBookMark();
               dispatch(bookMarkSlice.actions.searchOutput());
+              dispatch(fetchAddBookMark(state.bookMark.newBookMark));
+              dispatch(fetchEditSerialNumber(state.bookMark.serialNumbers));
             }}
             disabled={isNameNull}
             color="primary"
@@ -294,16 +311,17 @@ const BookMark = () => {
               dispatch(bookMarkSlice.actions.inputSearchText(e.target.value));
               dispatch(bookMarkSlice.actions.searchOutput());
             }}
+            // value={state.bookMark.searchText}
           />
           <IconButton
             className={classes.iconButton}
             aria-label="search"
             onClick={() => {
-              dispatch(bookMarkSlice.actions.searchOutput());
+              dispatch(bookMarkSlice.actions.allSearchTextDelete());
             }}
           >
             {/* type="submit"  */}
-            <SearchIcon />
+            <HighlightOffIcon />
           </IconButton>
         </Paper>
       </div>
