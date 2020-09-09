@@ -13,6 +13,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { bookMarkSlice } from '#/slices/bookMarkSlice';
+import { fetchDeleteBookMark } from '#/slices/bookMarkSlice';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -101,6 +102,7 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
           onClick={() => {
             dispatch(bookMarkSlice.actions.deleteBookMark(bookMarkContents.bookMarkId));
             dispatch(bookMarkSlice.actions.searchOutput());
+            dispatch(fetchDeleteBookMark(bookMarkContents.bookMarkId));
           }}
         >
           Delete
