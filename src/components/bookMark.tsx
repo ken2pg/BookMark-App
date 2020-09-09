@@ -29,6 +29,7 @@ import {
   fetchAddBookMark,
   fetchSerialNumber,
   fetchEditSerialNumber,
+  fetchEditBookMark,
 } from '#/slices/bookMarkSlice';
 import { bookMark } from '#/types/bookMark';
 import { initialState } from '#/slices/sideBarSlice';
@@ -117,7 +118,7 @@ const BookMark = () => {
   };
   //Validation
   const isNameNull = !state.bookMark.newBookMark.siteName;
-  const isEditNameNull = !state.bookMark.editSiteName;
+  const isEditNameNull = !state.bookMark.editSaveFolder.siteName;
 
   //新規作成画面
   const CreateBookmarkDialog = (
@@ -197,7 +198,7 @@ const BookMark = () => {
           className={classes.textfield}
           id="Site Name"
           label="Site Name"
-          value={state.bookMark.editSiteName}
+          value={state.bookMark.editSaveFolder.siteName}
         />
         <TextField
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -206,7 +207,7 @@ const BookMark = () => {
           className={classes.textfield}
           id="Site URL"
           label="Site URL"
-          value={state.bookMark.editSiteUrl}
+          value={state.bookMark.editSaveFolder.siteURL}
         />
         <TextField
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -215,7 +216,7 @@ const BookMark = () => {
           className={classes.textfield}
           id="Site Memo"
           label="Site Memo"
-          value={state.bookMark.editMemo}
+          value={state.bookMark.editSaveFolder.memo}
         />
         <DialogActions>
           <Button
@@ -232,6 +233,8 @@ const BookMark = () => {
               dispatch(bookMarkSlice.actions.changeBookMark());
               dispatch(bookMarkSlice.actions.endEditBookMark());
               dispatch(bookMarkSlice.actions.searchOutput());
+              dispatch(fetchEditBookMark(state.bookMark.editSaveFolder));
+              // console.log(state.bookMark.editSaveFolder);
             }}
             disabled={isEditNameNull}
             color="primary"
