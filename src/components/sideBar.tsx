@@ -33,6 +33,7 @@ import {
   fetchSerialFolderNumber,
   fetchInitialFolderState,
   fetchAddBookFolderMark,
+  fetchEditBookMarkFolder,
 } from '../slices/sideBarSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
@@ -122,18 +123,13 @@ const SideBar = () => {
     // dispatch(sideBarSlice.actions.endEditFolder());
   };
 
-  const endEditFolder = (folderName: string) => {
-    dispatch(sideBarSlice.actions.changeFolderName(folderName));
-    dispatch(sideBarSlice.actions.endEditFolder());
-  };
-
   const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(sideBarSlice.actions.inputEditName(e.target.value));
   };
   //Validation
   const isNameNull = !state.sideBar.folder.folderName;
 
-  const isEditNameNull = !state.sideBar.editFolderName;
+  const isEditNameNull = !state.sideBar.editFolder.folderName;
 
   // 新規作成画面
   const CreateFolderDialog = (
@@ -200,7 +196,7 @@ const SideBar = () => {
           className={classes.textfield}
           id="folderName"
           label="Folder Name"
-          value={state.sideBar.editFolderName}
+          value={state.sideBar.editFolder.folderName}
           // onKeyDown={(e) => {
           //   if (e.keyCode === 13) {
           //     e.target.addEventListener('blur', pause);
@@ -208,12 +204,20 @@ const SideBar = () => {
           // }}
         />
         <DialogActions>
-          <Button autoFocus onClick={cancelEdit} color="primary">
+          <Button
+            autoFocus
+            onClick={() => {
+              dispatch(sideBarSlice.actions.endEditFolder());
+            }}
+            color="primary"
+          >
             <Box className={classes.button}>Cancel</Box>
           </Button>
           <Button
             onClick={() => {
-              endEditFolder(state.sideBar.editFolderName);
+              dispatch(sideBarSlice.actions.changeFolderName(state.sideBar.editFolder.folderName));
+              dispatch(sideBarSlice.actions.endEditFolder());
+              dispatch(fetchEditBookMarkFolder(state.sideBar.editFolder));
             }}
             disabled={isEditNameNull}
             color="primary"

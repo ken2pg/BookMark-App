@@ -10,7 +10,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import { Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 
-import { sideBarSlice } from '../slices/sideBarSlice';
+import { sideBarSlice, fetchDeleteBookMarkFolder } from '../slices/sideBarSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
@@ -86,6 +86,7 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
 
   const handleDelete = (Id: number) => {
     dispatch(sideBarSlice.actions.deleteFolder(Id));
+    dispatch(fetchDeleteBookMarkFolder(Id));
   };
 
   const startEdit = (folderID: number) => {

@@ -5,7 +5,8 @@ import { firebaseStore } from '../../config/fbConfig';
 
 export type sideBarState = {
   folder: folder;
-  editFolderName: string;
+  // editFolderName: string;
+  editFolder: folder;
   saveFolder: folder[];
   isCreate: boolean;
   selectId: number;
@@ -21,7 +22,15 @@ export const initialState: sideBarState = {
     isEdit: false,
     isSelect: false,
   },
-  editFolderName: '',
+  // editFolderName: '',
+  editFolder: {
+    userId: 0,
+    folderId: 0,
+    folderName: '',
+    folderColor: 'Red',
+    isEdit: false,
+    isSelect: false,
+  },
   saveFolder: new Array<folder>(),
   isCreate: false,
   selectId: 0,
@@ -30,7 +39,7 @@ export const initialState: sideBarState = {
 
 //bookmarkFolderの通し番号を取得するAPI
 export const fetchSerialFolderNumber = createAsyncThunk(
-  'bookMark/fetchSerialFolderNumber',
+  'sideBar/fetchSerialFolderNumber',
   async () => {
     let serialFolderNumber: number;
     await firebaseStore
@@ -52,7 +61,7 @@ export const fetchSerialFolderNumber = createAsyncThunk(
 
 //bookmarkFolderの通し番号をpushするAPI
 export const fetchEditSerialFolderNumber = createAsyncThunk(
-  'bookMark/fetchEditSerialFolderNumber',
+  'sideBar/fetchEditSerialFolderNumber',
   async (payload: number) => {
     await firebaseStore
       .collection('user')
@@ -66,7 +75,7 @@ export const fetchEditSerialFolderNumber = createAsyncThunk(
 
 //folderデータの取得
 export const fetchInitialFolderState = createAsyncThunk(
-  'bookMark/fetchInitialFolderState',
+  'sideBar/fetchInitialFolderState',
   async (thunkAPI) => {
     let bookMarkFolderList = new Array<folder>();
     await firebaseStore
@@ -94,7 +103,7 @@ export const fetchInitialFolderState = createAsyncThunk(
 );
 
 export const fetchAddBookFolderMark = createAsyncThunk(
-  'bookMark/fetchAddBookFolderMark',
+  'sideBar/fetchAddBookFolderMark',
   async (payload: folder, thunkAPI) => {
     try {
       await firebaseStore
@@ -116,6 +125,54 @@ export const fetchAddBookFolderMark = createAsyncThunk(
     }
   }
 );
+
+export const fetchEditBookMarkFolder = createAsyncThunk(
+  'sideBar/fetchEditBookMark',
+  async (payload: folder, thunkAPI) => {
+    try {
+      await firebaseStore
+        .collection('bookMarkFolder')
+        .doc(payload.folderId.toString())
+        .update({
+          userId: payload.userId,
+          folderId: payload.folderId,
+          folderName: payload.folderName,
+          folderColor: payload.folderColor,
+        })
+        .catch((err) => {
+          throw new Error(err.message);
+        });
+      const success = { sucess: 'success' };
+      await console.log(success);
+    } catch (error) {
+      await console.log(error);
+    }
+  }
+);
+
+//Delete機能
+export const fetchDeleteBookMarkFolder = createAsyncThunk(
+  'sideBar/fetchDeleteBookMarkFolder',
+  async (payload: number, thunkAPI) => {
+    try {
+      await firebaseStore
+        .collection('bookMarkFolder')
+        .doc(payload.toString())
+        .delete()
+        .then(() => {
+          console.log('Folder successfully deleted!');
+        })
+        .catch((err) => {
+          throw new Error(err.message);
+        });
+      const success = { sucess: 'success' };
+      await console.log(success);
+    } catch (error) {
+      await console.log(error);
+    }
+  }
+);
+
 export const sideBarSlice = createSlice({
   name: 'sidebar',
   initialState,
@@ -163,7 +220,7 @@ export const sideBarSlice = createSlice({
         ),
       ];
       const editSaveFolder = state.saveFolder.find((folder) => folder.folderId === action.payload);
-      state.editFolderName = editSaveFolder.folderName;
+      state.editFolder = editSaveFolder;
     },
     endEditFolder: (state) => {
       state.saveFolder = [
@@ -185,7 +242,7 @@ export const sideBarSlice = createSlice({
       ];
     },
     inputEditName: (state, action: PayloadAction<string>) => {
-      state.editFolderName = action.payload;
+      state.editFolder.folderName = action.payload;
     },
     selectFolder: (state, action: PayloadAction<number>) => {
       state.saveFolder.map((savefolder) => {
@@ -224,5 +281,15 @@ export const sideBarSlice = createSlice({
     builder.addCase(fetchAddBookFolderMark.pending, () => {});
     builder.addCase(fetchAddBookFolderMark.fulfilled, () => {});
     builder.addCase(fetchAddBookFolderMark.rejected, () => {});
+
+    //fetchEditBookMarkFolder
+    builder.addCase(fetchEditBookMarkFolder.pending, () => {});
+    builder.addCase(fetchEditBookMarkFolder.fulfilled, () => {});
+    builder.addCase(fetchEditBookMarkFolder.rejected, () => {});
+
+    //fetchDeleteBookMarkFolder
+    builder.addCase(fetchDeleteBookMarkFolder.pending, () => {});
+    builder.addCase(fetchDeleteBookMarkFolder.fulfilled, () => {});
+    builder.addCase(fetchDeleteBookMarkFolder.rejected, () => {});
   },
 });
