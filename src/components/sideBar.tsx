@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
@@ -27,7 +27,13 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
 
-import { sideBarSlice } from '../slices/sideBarSlice';
+import {
+  sideBarSlice,
+  fetchEditSerialFolderNumber,
+  fetchSerialFolderNumber,
+  fetchInitialFolderState,
+  fetchAddBookFolderMark,
+} from '../slices/sideBarSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
@@ -77,6 +83,12 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const SideBar = () => {
+  const [count, setCount] = React.useState(0);
+  useEffect(() => {
+    dispatch(fetchSerialFolderNumber());
+    dispatch(fetchInitialFolderState());
+  }, [count]);
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state);
@@ -93,7 +105,7 @@ const SideBar = () => {
     dispatch(sideBarSlice.actions.inputName(e.target.value));
   };
   const cancelNewCreate = () => {
-    dispatch(sideBarSlice.actions.endCreateFolder());
+    dispatch(sideBarSlice.actions.cancelCreateFolder());
   };
   const addFolder = () => {
     dispatch(sideBarSlice.actions.addFolder());
@@ -107,6 +119,7 @@ const SideBar = () => {
 
   const cancelEdit = () => {
     dispatch(sideBarSlice.actions.endEditFolder());
+    // dispatch(sideBarSlice.actions.endEditFolder());
   };
 
   const endEditFolder = (folderName: string) => {
@@ -151,7 +164,15 @@ const SideBar = () => {
           <Button autoFocus onClick={cancelNewCreate} color="primary">
             <Box className={classes.button}>Cancel</Box>
           </Button>
-          <Button onClick={addFolder} disabled={isNameNull} color="primary">
+          <Button
+            onClick={() => {
+              addFolder();
+              dispatch(fetchAddBookFolderMark(state.sideBar.folder));
+              dispatch(fetchEditSerialFolderNumber(state.sideBar.sirialFolderNumber));
+            }}
+            disabled={isNameNull}
+            color="primary"
+          >
             OK
           </Button>
         </DialogActions>
