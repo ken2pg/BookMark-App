@@ -24,6 +24,8 @@ export const fetchSingIn = createAsyncThunk(
     await auth()
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then(() => {
+        const set = (key: string, value: string) => localStorage.setItem(key, value);
+        set('isSignIn', 'true');
         Router.push({ pathname: './' });
       })
       .catch((err) => {
