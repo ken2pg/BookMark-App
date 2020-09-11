@@ -8,11 +8,13 @@ import logger from 'redux-logger';
 
 import { sideBarSlice } from './slices/sideBarSlice';
 import { bookMarkSlice } from './slices/bookMarkSlice';
+import { signInSlice } from './slices/signInPageSlice';
 import testSlice from './async/test';
 
 const rootReducer = combineReducers({
   sideBar: sideBarSlice.reducer,
   bookMark: bookMarkSlice.reducer,
+  signIn: signInSlice.reducer,
   // test: testSlice.reducer,
 });
 
