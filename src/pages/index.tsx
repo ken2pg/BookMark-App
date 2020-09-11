@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-
+import Router from 'next/router';
 import NavigationBar from '../components/navigationBar';
 import BookMarkComponent from '../components/bookMarkComponent';
 
@@ -16,7 +16,13 @@ const useStyle = makeStyles((theme: Theme) =>
 
 const Index = () => {
   const classes = useStyle();
+  useEffect(() => {
+    Router.push({ pathname: './signIn' });
+  });
 
+  //他のuseEffectはログイン状態がtrueだったら取得するように変更
+  //localstageにログイン状態を保存
+  //const にreturn内容を入れておいてtrueの場合だけ表示するようにする
   return (
     <>
       <NavigationBar />
