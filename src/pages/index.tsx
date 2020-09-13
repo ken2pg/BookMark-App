@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 import Router from 'next/router';
 import NavigationBar from '../components/navigationBar';
 import BookMarkComponent from '../components/bookMarkComponent';
@@ -8,37 +9,65 @@ import BookMarkComponent from '../components/bookMarkComponent';
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '60%',
-      margin: '50px auto',
+      width: '45%',
+      margin: '180px 8%',
+      textAlign: 'left',
+    },
+    title: {
+      // margin: '200px,auto',
+      fontSize: '44px',
+      fontWeight: theme.typography.fontWeightBold,
+      marginBottom: '50px',
+    },
+    description: {
+      fontSize: '20px',
+      marginBottom: '40px',
+      fontWeight: theme.typography.fontWeightMedium,
+    },
+    button: {
+      marginRight: '40px',
+      fontWeight: theme.typography.fontWeightBold,
     },
   })
 );
 
 const Index = () => {
   const classes = useStyle();
-  const [count, setCount] = React.useState(0);
-  let components: JSX.Element = <></>;
-  let isSignIn = false;
-  useEffect(() => {
-    if (localStorage.getItem('isSignIn') === 'true') {
-      isSignIn = true;
-    } else {
-      components = <></>;
-      Router.push({ pathname: './signIn' });
-    }
-  }, [count]);
-
-  //他のuseEffectはログイン状態がtrueだったら取得するように変更
-  //localstageにログイン状態を保存
-  //const にreturn内容を入れておいてtrueの場合だけ表示するようにする
   return (
     <>
-      {
-        <>
-          <NavigationBar />
-          <BookMarkComponent />
-        </>
-      }
+      <NavigationBar />
+      <div className={classes.root}>
+        <Typography color={'primary'} className={classes.title}>
+          {/* Online BookMark Application for PC, Tablet, and Mobile */}
+          PC, タブレット, モバイルで使えるオンラインブックマークアプリ
+        </Typography>
+        <Typography color={'primary'} className={classes.description}>
+          {/* You can save your favorite site's URL and it can be shared and used by your PC, tablet and
+          mobile */}
+          ・お気に入りのサイトURLを保存することができ、いつでもすぐにブックマークアプリからアクセスすることができます。
+        </Typography>
+        <Typography color={'primary'} className={classes.description}>
+          ・またPC, モバイル、タブレット間でブックマークを共有することができます。
+        </Typography>
+        <Typography color={'primary'} className={classes.description}>
+          ・メモ機能がついており、大事な部分をメモできます
+        </Typography>
+        <div>
+          <Button
+            className={classes.button}
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              Router.push({ pathname: './signIn' });
+            }}
+          >
+            サインイン
+          </Button>
+          {/* <Button className={classes.button} variant="contained" color="primary">
+            アカウント登録
+          </Button> */}
+        </div>
+      </div>
     </>
   );
 };
