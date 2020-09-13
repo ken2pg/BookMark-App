@@ -86,8 +86,10 @@ const useStyles = makeStyles((theme: Theme) =>
 const SideBar = () => {
   const [count, setCount] = React.useState(0);
   useEffect(() => {
-    dispatch(fetchSerialFolderNumber());
-    dispatch(fetchInitialFolderState());
+    if (localStorage.getItem('isSignIn') === 'true') {
+      dispatch(fetchSerialFolderNumber());
+      dispatch(fetchInitialFolderState());
+    }
   }, [count]);
 
   const classes = useStyles();

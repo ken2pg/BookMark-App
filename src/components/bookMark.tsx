@@ -91,8 +91,10 @@ const BookMark = () => {
 
   const [count, setCount] = React.useState(0);
   useEffect(() => {
-    dispatch(fetchInitialState());
-    dispatch(fetchSerialNumber());
+    if (localStorage.getItem('isSignIn') === 'true') {
+      dispatch(fetchInitialState());
+      dispatch(fetchSerialNumber());
+    }
     // setCount(1);
   }, [count]);
 
