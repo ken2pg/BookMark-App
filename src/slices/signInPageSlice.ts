@@ -11,28 +11,34 @@ export type signInPageState = {
   email: string;
   password: string;
   showPassword: boolean;
+  isLogin: boolean;
+  userEmail: string;
 };
 
 const initialState: signInPageState = {
   email: '',
   password: '',
   showPassword: false,
+  isLogin: false,
+  userEmail: '',
 };
 export const fetchSingIn = createAsyncThunk(
   'signIn/fetchSingIn',
   async (payload: signInPageState) => {
+    const data = { sucess: '', email: payload.email };
     await auth()
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then(() => {
         const set = (key: string, value: string) => localStorage.setItem(key, value);
         set('isSignIn', 'true');
-        Router.push({ pathname: './' });
+        // set('Email', payload.email);
+        data.sucess = 'success';
+        Router.push({ pathname: './application' });
       })
       .catch((err) => {
         alert(err);
       });
-    const success = { sucess: 'success' };
-    await console.log(success);
+    return await data;
   }
 );
 
@@ -52,7 +58,12 @@ export const signInSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSingIn.pending, () => {});
-    builder.addCase(fetchSingIn.fulfilled, () => {});
+    builder.addCase(fetchSingIn.fulfilled, (state, action) => {
+      // if (action.payload.sucess === 'success') {
+      //   state.userEmail = action.payload.email;
+      //   Router.push({ pathname: './application' });
+      // }
+    });
     builder.addCase(fetchSingIn.rejected, () => {});
   },
 });
