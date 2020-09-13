@@ -31,7 +31,7 @@ const useStyle = makeStyles((theme: Theme) =>
       flexDirection: 'column',
     },
     title: {
-      fontSize: '48px',
+      fontSize: '44px',
       fontWeight: 'bold',
       marginBottom: '30px',
     },
@@ -40,7 +40,10 @@ const useStyle = makeStyles((theme: Theme) =>
       margin: '0 auto',
       marginBottom: '50px',
     },
-    button: {},
+    button: {
+      margin: '0 20px',
+      fontWeight: theme.typography.fontWeightBold,
+    },
   })
 );
 
@@ -54,7 +57,8 @@ const SignIn = () => {
       <NavigationBar />
       <div className={classes.root}>
         <Typography color={'primary'} className={classes.title}>
-          Sign in
+          {/* Sign in */}
+          サインイン
         </Typography>
         <TextField
           className={classes.textfield}
@@ -97,10 +101,15 @@ const SignIn = () => {
             onClick={() => {
               dispatch(fetchSingIn(state.signIn));
             }}
+            variant="outlined"
+            color="primary"
+            className={classes.button}
           >
-            Sign In
+            サインイン
           </Button>
-          <Button>Sign Up</Button>
+          {/* <Button variant="contained" color="primary" className={classes.button}>
+            アカウント登録
+          </Button> */}
         </div>
       </div>
     </>
