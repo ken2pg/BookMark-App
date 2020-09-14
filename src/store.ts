@@ -9,7 +9,7 @@ import logger from 'redux-logger';
 import { sideBarSlice } from './slices/sideBarSlice';
 import { bookMarkSlice } from './slices/bookMarkSlice';
 import { signInSlice } from './slices/signInPageSlice';
-import testSlice from './async/test';
+import testSlice from './api/test';
 
 const rootReducer = combineReducers({
   sideBar: sideBarSlice.reducer,
@@ -28,13 +28,19 @@ const rootReducer = combineReducers({
 
 export type RootState = ReturnType<typeof rootReducer>;
 
-export const createStore = (): EnhancedStore => {
-  const middlewares = [...getDefaultMiddleware()];
-  //const middlewares = [...getDefaultMiddleware(), logger];
+const middlewares = [...getDefaultMiddleware()];
+// export const createStore = (): EnhancedStore => {
+//   const middlewares = [...getDefaultMiddleware()];
+//   //const middlewares = [...getDefaultMiddleware(), logger];
 
-  return configureStore({
-    reducer: rootReducer,
-    middleware: middlewares,
-    devTools: process.env.NODE_ENV !== 'production',
-  });
-};
+//   return configureStore({
+//     reducer: rootReducer,
+//     middleware: middlewares,
+//     devTools: process.env.NODE_ENV !== 'production',
+//   });
+// };
+export default configureStore({
+  reducer: rootReducer,
+  middleware: middlewares,
+  devTools: process.env.NODE_ENV !== 'production',
+});
