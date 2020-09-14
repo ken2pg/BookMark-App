@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { bookMark } from '#/types/bookMark';
-import BookMark from '#/components/bookMark';
+import BookMark from '#/components/bookMark/bookMark';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { firebaseStore } from '../../config/fbConfig';
 

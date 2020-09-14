@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store';
+import { RootState } from '../../store';
 
 import { Button, Typography, TextField, ButtonGroup } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -17,7 +17,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import NavigationBar from '../components/navigationBar';
+import NavigationBar from '../navigationBar/navigationBar';
 import { signInSlice, fetchSingIn } from '#/slices/signInPageSlice';
 import { NextPage } from 'next';
 import { withRouter } from 'next/router';

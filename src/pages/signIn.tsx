@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
-import NavigationBar from '../components/navigationBar';
-import SignInForm from '../components/signInForm';
+import NavigationBar from '../components/navigationBar/navigationBar';
+import SignInForm from '../components/signIn/signInForm';
 
 import { NextPage } from 'next';
 import { withRouter } from 'next/router';

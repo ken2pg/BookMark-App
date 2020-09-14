@@ -34,13 +34,13 @@ import {
   fetchInitialFolderState,
   fetchAddBookFolderMark,
   fetchEditBookMarkFolder,
-} from '../slices/sideBarSlice';
+} from '../../slices/sideBarSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store';
+import { RootState } from '../../store';
 import FolderItem from './folderItem';
-import testSlice from '../api/test';
-import { fetchTest } from '../api/test';
+import testSlice from '../../api/test';
+import { fetchTest } from '../../api/test';
 import FolderIcon from '@material-ui/icons/Folder';
 
 import { folder } from '#/types/folder';
