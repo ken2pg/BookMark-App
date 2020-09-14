@@ -13,6 +13,8 @@ export type signInPageState = {
   showPassword: boolean;
   isLogin: boolean;
   userEmail: string;
+  isFirstRenderSideBar: boolean;
+  isFirstRenderBookMark: boolean;
 };
 
 const initialState: signInPageState = {
@@ -21,6 +23,8 @@ const initialState: signInPageState = {
   showPassword: false,
   isLogin: false,
   userEmail: '',
+  isFirstRenderSideBar: true,
+  isFirstRenderBookMark: true,
 };
 export const fetchSingIn = createAsyncThunk(
   'signIn/fetchSingIn',
@@ -29,11 +33,11 @@ export const fetchSingIn = createAsyncThunk(
     await auth()
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then(() => {
-        const set = (key: string, value: string) => localStorage.setItem(key, value);
-        set('isSignIn', 'true');
+        // const set = (key: string, value: string) => sessionStorage.setItem(key, value);
+        // set('isSignIn', 'true');
         // set('Email', payload.email);
         data.sucess = 'success';
-        Router.push({ pathname: './application' });
+        // Router.push({ pathname: './application' });
       })
       .catch((err) => {
         alert(err);
@@ -55,14 +59,21 @@ export const signInSlice = createSlice({
     switchShowPassword: (state) => {
       state.showPassword = !state.showPassword;
     },
+    firstRenderSideBar: (state) => {
+      state.isFirstRenderSideBar = false;
+    },
+    firstRenderBookMark: (state) => {
+      state.isFirstRenderBookMark = false;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSingIn.pending, () => {});
     builder.addCase(fetchSingIn.fulfilled, (state, action) => {
-      // if (action.payload.sucess === 'success') {
-      //   state.userEmail = action.payload.email;
-      //   Router.push({ pathname: './application' });
-      // }
+      if (action.payload.sucess === 'success') {
+        state.isLogin = true;
+        state.userEmail = action.payload.email;
+        Router.push({ pathname: './application' });
+      }
     });
     builder.addCase(fetchSingIn.rejected, () => {});
   },
