@@ -39,11 +39,12 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import FolderItem from './folderItem';
-import testSlice from '../async/test';
-import { fetchTest } from '../async/test';
+import testSlice from '../api/test';
+import { fetchTest } from '../api/test';
 import FolderIcon from '@material-ui/icons/Folder';
 
 import { folder } from '#/types/folder';
+import { signInSlice } from '#/slices/signInPageSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -84,20 +85,21 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const SideBar = () => {
-  const [count, setCount] = React.useState(0);
-  useEffect(() => {
-    if (localStorage.getItem('isSignIn') === 'true') {
-      dispatch(fetchSerialFolderNumber());
-      dispatch(fetchInitialFolderState());
-    }
-  }, [count]);
-
   const classes = useStyles();
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state);
 
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
+  const [count, setCount] = React.useState(0);
+
+  useEffect(() => {
+    if (state.signIn.isLogin && state.signIn.isFirstRenderSideBar) {
+      dispatch(fetchSerialFolderNumber());
+      dispatch(fetchInitialFolderState());
+      dispatch(signInSlice.actions.firstRenderSideBar());
+    }
+  }, [count]);
 
   //編集開始・修了、フォルダーの追加処理
   const CreateNewFolder = () => {

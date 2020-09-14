@@ -33,6 +33,7 @@ import {
 } from '#/slices/bookMarkSlice';
 import { bookMark } from '#/types/bookMark';
 import { initialState } from '#/slices/sideBarSlice';
+import { signInSlice } from '#/slices/signInPageSlice';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -91,9 +92,10 @@ const BookMark = () => {
 
   const [count, setCount] = React.useState(0);
   useEffect(() => {
-    if (localStorage.getItem('isSignIn') === 'true') {
+    if (state.signIn.isLogin && state.signIn.isFirstRenderBookMark) {
       dispatch(fetchInitialState());
       dispatch(fetchSerialNumber());
+      dispatch(signInSlice.actions.firstRenderBookMark());
     }
     // setCount(1);
   }, [count]);
