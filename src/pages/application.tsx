@@ -4,6 +4,9 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Router from 'next/router';
 import NavigationBar from '../components/navigationBar';
 import BookMarkComponent from '../components/bookMarkComponent';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,11 +19,13 @@ const useStyle = makeStyles((theme: Theme) =>
 
 const Appliaction = () => {
   const classes = useStyle();
+  const state = useSelector((state: RootState) => state);
+
   const [count, setCount] = React.useState(0);
   let components: JSX.Element = <></>;
   // let isSignIn = false;
   useEffect(() => {
-    if (localStorage.getItem('isSignIn') !== 'true') {
+    if (!state.signIn.isLogin) {
       Router.push({ pathname: './signIn' });
     }
   }, [count]);
