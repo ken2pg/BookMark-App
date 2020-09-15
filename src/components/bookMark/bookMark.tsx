@@ -91,14 +91,14 @@ const BookMark = () => {
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
 
   const [count, setCount] = React.useState(0);
-  useEffect(() => {
-    if (state.signIn.isLogin && state.signIn.isFirstRenderBookMark) {
-      dispatch(fetchInitialState());
-      dispatch(fetchSerialNumber());
-      dispatch(signInSlice.actions.firstRenderBookMark());
-    }
-    // setCount(1);
-  }, [count]);
+  // useEffect(() => {
+  //   if (state.signIn.isLogin && state.signIn.isFirstRenderBookMark) {
+  //     dispatch(fetchInitialState());
+  //     dispatch(fetchSerialNumber());
+  //     dispatch(signInSlice.actions.firstRenderBookMark());
+  //   }
+  //   // setCount(1);
+  // }, [count]);
 
   const createNewBookMark = () => {
     dispatch(bookMarkSlice.actions.startCreateBookMark());

@@ -93,13 +93,13 @@ const SideBar = () => {
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
   const [count, setCount] = React.useState(0);
 
-  useEffect(() => {
-    if (state.signIn.isLogin && state.signIn.isFirstRenderSideBar) {
-      dispatch(fetchSerialFolderNumber());
-      dispatch(fetchInitialFolderState());
-      dispatch(signInSlice.actions.firstRenderSideBar());
-    }
-  }, [count]);
+  // useEffect(() => {
+  //   if (state.signIn.isLogin && state.signIn.isFirstRenderSideBar) {
+  //     dispatch(fetchSerialFolderNumber());
+  //     dispatch(fetchInitialFolderState());
+  //     dispatch(signInSlice.actions.firstRenderSideBar());
+  //   }
+  // }, [count]);
 
   //編集開始・修了、フォルダーの追加処理
   const CreateNewFolder = () => {
