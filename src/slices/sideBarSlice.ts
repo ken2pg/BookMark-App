@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { folder } from '#/types/folder';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { firebaseStore } from '../../config/fbConfig';
+import { bookMarkSlice } from './bookMarkSlice';
 
 export type sideBarState = {
   folder: folder;
@@ -15,7 +16,7 @@ export type sideBarState = {
 
 export const initialState: sideBarState = {
   folder: {
-    userId: 0,
+    userId: 1,
     folderId: 0,
     folderName: '',
     folderColor: 'Red',
@@ -44,6 +45,7 @@ export const fetchSerialFolderNumber = createAsyncThunk(
     let serialFolderNumber: number;
     await firebaseStore
       .collection('user')
+      .where('userId', '==', 1)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((i) => {
@@ -65,7 +67,7 @@ export const fetchEditSerialFolderNumber = createAsyncThunk(
   async (payload: number) => {
     await firebaseStore
       .collection('user')
-      .doc('LWMacJ1P7fRLW597ZGNb')
+      .doc('1')
       .update({ serialFolderNumber: payload })
       .catch((err) => {
         throw new Error(err.message);
@@ -76,11 +78,16 @@ export const fetchEditSerialFolderNumber = createAsyncThunk(
 //folderデータの取得
 export const fetchInitialFolderState = createAsyncThunk(
   'sideBar/fetchInitialFolderState',
-  async (thunkAPI) => {
+  async (payload: number) => {
+    // const userId = '1';
+    // console.log(payload);
     let bookMarkFolderList = new Array<folder>();
     await firebaseStore
+      .collection('user')
+      // .where('userId', '==', payload)
+      .doc('1')
+      // .doc('1')
       .collection('bookMarkFolder')
-      .where('userId', '==', 0)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((i) => {
@@ -107,6 +114,8 @@ export const fetchAddBookFolderMark = createAsyncThunk(
   async (payload: folder, thunkAPI) => {
     try {
       await firebaseStore
+        .collection('user')
+        .doc(payload.userId.toString())
         .collection('bookMarkFolder')
         .doc(payload.folderId.toString())
         .set({
@@ -131,6 +140,8 @@ export const fetchEditBookMarkFolder = createAsyncThunk(
   async (payload: folder, thunkAPI) => {
     try {
       await firebaseStore
+        .collection('user')
+        .doc(payload.userId.toString())
         .collection('bookMarkFolder')
         .doc(payload.folderId.toString())
         .update({
@@ -153,11 +164,13 @@ export const fetchEditBookMarkFolder = createAsyncThunk(
 //Delete機能
 export const fetchDeleteBookMarkFolder = createAsyncThunk(
   'sideBar/fetchDeleteBookMarkFolder',
-  async (payload: number, thunkAPI) => {
+  async (payload: folder) => {
     try {
       await firebaseStore
+        .collection('user')
+        .doc(payload.userId.toString())
         .collection('bookMarkFolder')
-        .doc(payload.toString())
+        .doc(payload.folderId.toString())
         .delete()
         .then(() => {
           console.log('Folder successfully deleted!');
@@ -177,14 +190,10 @@ export const sideBarSlice = createSlice({
   name: 'sidebar',
   initialState,
   reducers: {
-    newFolder(state) {
-      // state.folder=
-    },
     inputName(state, action: PayloadAction<string>) {
       state.folder.folderName = action.payload;
     },
     addFolder(state) {
-      // state.folder.folderId++;
       state.saveFolder = [state.folder, ...state.saveFolder];
     },
     startCreateFolder: (state) => {
@@ -253,8 +262,6 @@ export const sideBarSlice = createSlice({
           savefolder.isSelect = false;
         }
       });
-      // ? { ...savefolder, isSelect: true }
-      // : { ...savefolder, isSelect: false }
     },
   },
   extraReducers: (builder) => {
@@ -273,7 +280,10 @@ export const sideBarSlice = createSlice({
     //fetchInitialState
     builder.addCase(fetchInitialFolderState.pending, () => {});
     builder.addCase(fetchInitialFolderState.fulfilled, (state, action) => {
-      state.saveFolder = state.saveFolder.concat(action.payload);
+      // console.log(action.payload);
+      state.saveFolder = action.payload;
+      // state.saveFolder = initialState.saveFolder;
+      // state.saveFolder = state.saveFolder.concat(action.payload);
     });
     builder.addCase(fetchInitialFolderState.rejected, () => {});
 

@@ -23,6 +23,7 @@ import { NextPage } from 'next';
 import { withRouter } from 'next/router';
 import { WithRouterProps } from 'next/dist/client/with-router';
 import Router from 'next/router';
+import { fetchGetUserInfo } from '../../slices/userInfoSlice';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({

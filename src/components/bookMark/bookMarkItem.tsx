@@ -102,7 +102,7 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
           onClick={() => {
             dispatch(bookMarkSlice.actions.deleteBookMark(bookMarkContents.bookMarkId));
             dispatch(bookMarkSlice.actions.searchOutput());
-            dispatch(fetchDeleteBookMark(bookMarkContents.bookMarkId));
+            dispatch(fetchDeleteBookMark(bookMarkContents));
           }}
         >
           Delete

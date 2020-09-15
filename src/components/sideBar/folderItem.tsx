@@ -84,10 +84,7 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
   //   dispatch(sideBarSlice.actions.endEditFolder());
   // };
 
-  const handleDelete = (Id: number) => {
-    dispatch(sideBarSlice.actions.deleteFolder(Id));
-    dispatch(fetchDeleteBookMarkFolder(Id));
-  };
+  const handleDelete = (Id: number) => {};
 
   const startEdit = (folderID: number) => {
     dispatch(sideBarSlice.actions.startEditFolder(folderID));
@@ -147,7 +144,8 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
                   // startEdit();
                 } else if (option === 'Delete') {
                   handleClose();
-                  handleDelete(folder.folderId);
+                  dispatch(sideBarSlice.actions.deleteFolder(folder.folderId));
+                  dispatch(fetchDeleteBookMarkFolder(folder));
                 } else {
                   handleClose();
                 }
