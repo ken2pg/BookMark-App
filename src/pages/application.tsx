@@ -7,6 +7,10 @@ import BookMarkComponent from '../components/bookMark/bookMarkComponent';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
+import { fetchGetUserInfo } from '../slices/userInfoSlice';
+import { fetchInitialFolderState, fetchSerialFolderNumber } from '../slices/sideBarSlice';
+import { signInSlice } from '#/slices/signInPageSlice';
+import { fetchInitialState, fetchSerialNumber } from '../slices/bookMarkSlice';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,6 +24,7 @@ const useStyle = makeStyles((theme: Theme) =>
 const Appliaction = () => {
   const classes = useStyle();
   const state = useSelector((state: RootState) => state);
+  const dispatch = useDispatch();
 
   const [count, setCount] = React.useState(0);
   let components: JSX.Element = <></>;
@@ -27,6 +32,18 @@ const Appliaction = () => {
   useEffect(() => {
     if (!state.signIn.isLogin) {
       Router.push({ pathname: './signIn' });
+    } else {
+      dispatch(fetchGetUserInfo(state.signIn.userEmail));
+      if (state.signIn.isLogin) {
+        dispatch(fetchInitialFolderState(1));
+        dispatch(fetchSerialFolderNumber());
+        // dispatch(signInSlice.actions.firstRenderSideBar());
+      }
+      if (state.signIn.isLogin) {
+        dispatch(fetchInitialState());
+        dispatch(fetchSerialNumber());
+        // dispatch(signInSlice.actions.firstRenderBookMark());
+      }
     }
   }, [count]);
 
