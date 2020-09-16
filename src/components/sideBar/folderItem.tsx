@@ -89,7 +89,7 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
   const startEdit = (folderID: number) => {
     dispatch(sideBarSlice.actions.startEditFolder(folderID));
   };
-  const options = ['Edit', 'Delete', 'Cancel'];
+  const options = ['編集', '削除', 'キャンセル'];
 
   const selectFolderChangeNameColor = (
     <>
@@ -138,11 +138,11 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
               key={option}
               selected={option === 'Pyxis'}
               onClick={() => {
-                if (option === 'Edit') {
+                if (option === '編集') {
                   handleClose();
                   startEdit(folder.folderId);
                   // startEdit();
-                } else if (option === 'Delete') {
+                } else if (option === '削除') {
                   handleClose();
                   dispatch(sideBarSlice.actions.deleteFolder(folder.folderId));
                   dispatch(fetchDeleteBookMarkFolder(folder));
