@@ -71,6 +71,14 @@ export const signInSlice = createSlice({
     switchShowPassword: (state) => {
       state.showPassword = !state.showPassword;
     },
+    signOut: (state) => {
+      state.email = initialState.email;
+      state.isLogin = initialState.isLogin;
+      state.password = initialState.password;
+      state.showPassword = initialState.showPassword;
+      state.userEmail = initialState.userEmail;
+      state.userId = initialState.userId;
+    },
     // firstRenderSideBar: (state) => {
     //   state.isFirstRenderSideBar = false;
     // },
