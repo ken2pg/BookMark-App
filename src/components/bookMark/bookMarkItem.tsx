@@ -71,10 +71,10 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
         <CardContent className={classes.cardContent}>
           <Typography className={classes.name}>{bookMarkContents.siteName}</Typography>
           <Typography color="textSecondary" className={classes.text}>
-            URL {bookMarkContents.siteURL}
+            {bookMarkContents.siteURL}
           </Typography>
           <Typography color="textSecondary" className={classes.text}>
-            Date {bookMarkContents.date}
+            {bookMarkContents.date}
           </Typography>
         </CardContent>
         {/* </CardActionArea> */}
