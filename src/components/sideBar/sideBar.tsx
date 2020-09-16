@@ -39,8 +39,6 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import FolderItem from './folderItem';
-import testSlice from '../../api/test';
-import { fetchTest } from '../../api/test';
 import FolderIcon from '@material-ui/icons/Folder';
 
 import { folder } from '#/types/folder';
@@ -58,6 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
       // textAlign: 'center',
       margin: '15px 30px',
       fontSize: '20px',
+      fontWeight: theme.typography.fontWeightBold,
     },
     drawer: {},
 
@@ -66,14 +65,16 @@ const useStyles = makeStyles((theme: Theme) =>
       // zIndex: theme.zIndex.speedDial,
       zIndex: 1000,
     },
-    button: {},
+    button: {
+      fontWeight: theme.typography.fontWeightBold,
+    },
     textfield: {
       width: '92%',
       margin: '0 auto',
     },
     createButton: {
       margin: '0 auto',
-
+      fontWeight: theme.typography.fontWeightBold,
       // display: 'inline-block',
       // margin: '0 12%',
       marginTop: '18px',
@@ -145,15 +146,15 @@ const SideBar = () => {
         onClose={cancelNewCreate}
         aria-labelledby="max-width-dialog-title"
       >
-        <DialogTitle id="max-width-dialog-title"> Create New Folder</DialogTitle>
+        <DialogTitle id="max-width-dialog-title"> フォルダー新規作成</DialogTitle>
         <DialogContent>
-          <DialogContentText>Plese input new folder's name!</DialogContentText>
+          <DialogContentText>作成するフォルダーの名前を入れてください！</DialogContentText>
         </DialogContent>
         <TextField
           onChange={handleInputChange}
           className={classes.textfield}
           id="folderName"
-          label="Folder Name"
+          label="フォルダー名"
           // onKeyDown={(e) => {
           //   if (e.keyCode === 13) {
           //     e.target.addEventListener('blur', pause);
@@ -162,7 +163,7 @@ const SideBar = () => {
         />
         <DialogActions>
           <Button autoFocus onClick={cancelNewCreate} color="primary">
-            <Box className={classes.button}>Cancel</Box>
+            <Box className={classes.button}>取り消し</Box>
           </Button>
           <Button
             onClick={() => {
@@ -172,8 +173,9 @@ const SideBar = () => {
             }}
             disabled={isNameNull}
             color="primary"
+            className={classes.button}
           >
-            OK
+            決定
           </Button>
         </DialogActions>
       </Dialog>
@@ -191,15 +193,15 @@ const SideBar = () => {
         onClose={cancelEdit}
         aria-labelledby="max-width-dialog-title"
       >
-        <DialogTitle id="max-width-dialog-title"> Edit Folder</DialogTitle>
+        <DialogTitle id="max-width-dialog-title">フォルダー名の編集</DialogTitle>
         <DialogContent>
-          <DialogContentText>Plese input edit folder's name!</DialogContentText>
+          <DialogContentText>編集するフォルダーの名前を入れてください！</DialogContentText>
         </DialogContent>
         <TextField
           onChange={handleEditInputChange}
           className={classes.textfield}
           id="folderName"
-          label="Folder Name"
+          label="フォルダー名"
           value={state.sideBar.editFolder.folderName}
           // onKeyDown={(e) => {
           //   if (e.keyCode === 13) {
@@ -215,9 +217,10 @@ const SideBar = () => {
             }}
             color="primary"
           >
-            <Box className={classes.button}>Cancel</Box>
+            <Box className={classes.button}>取り消し</Box>
           </Button>
           <Button
+            className={classes.button}
             onClick={() => {
               dispatch(sideBarSlice.actions.changeFolderName(state.sideBar.editFolder.folderName));
               dispatch(sideBarSlice.actions.endEditFolder());
@@ -226,7 +229,7 @@ const SideBar = () => {
             disabled={isEditNameNull}
             color="primary"
           >
-            OK
+            決定
           </Button>
         </DialogActions>
       </Dialog>
@@ -244,7 +247,7 @@ const SideBar = () => {
       >
         <Toolbar />
         <Typography color={'textSecondary'} className={classes.title}>
-          Folder List
+          フォルダーリスト
         </Typography>
         <Divider />
         <Button
@@ -253,7 +256,8 @@ const SideBar = () => {
           color="primary"
           onClick={CreateNewFolder}
         >
-          <AddIcon></AddIcon>Create New Folder
+          <AddIcon></AddIcon>
+          <span style={{ fontWeight: 'bold' }}>フォルダー新規作成</span>
         </Button>
         <List>
           {state.sideBar.saveFolder.map((folder, _i) => {
