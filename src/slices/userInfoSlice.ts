@@ -58,7 +58,16 @@ export const fetchGetUserInfo = createAsyncThunk(
 export const userInfoSlice = createSlice({
   name: 'userInfo',
   initialState,
-  reducers: {},
+  reducers: {
+    setInitialState: (state) => {
+      state.Email = initialState.Email;
+      state.password = initialState.password;
+      state.serialFolderNumber = initialState.serialFolderNumber;
+      state.serialNumber = initialState.serialNumber;
+      state.userId = initialState.userId;
+      state.userName = initialState.userName;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchGetUserInfo.pending, () => {});
     builder.addCase(fetchGetUserInfo.fulfilled, (state, action) => {
