@@ -34,6 +34,7 @@ import {
 import { bookMark } from '#/types/bookMark';
 import { initialState } from '#/slices/sideBarSlice';
 import { signInSlice } from '#/slices/signInPageSlice';
+import { Typography } from '@material-ui/core';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -74,6 +75,10 @@ const useStyle = makeStyles((theme: Theme) =>
     input: {
       marginLeft: theme.spacing(1),
       flex: 1,
+    },
+    title: {
+      fontWeight: 'bold',
+      fontSize: '24px',
     },
     // divider: {
     //   height: 28,
@@ -299,7 +304,9 @@ const BookMark = () => {
     <div className={classes.root}>
       {/* header */}
       <div className={classes.header}>
-        <IconButton
+        <Button
+          disabled={!state.sideBar.selectId}
+          variant="outlined"
           color="primary"
           component="span"
           onClick={() => {
@@ -308,11 +315,14 @@ const BookMark = () => {
           }}
         >
           <AddIcon />
-        </IconButton>
+          <Typography style={{ fontSize: '18px', fontWeight: 'bold', lineHeight: '34px' }}>
+            新規作成
+          </Typography>
+        </Button>
         <Paper className={classes.headerSearch} elevation={0} variant="outlined">
           <InputBase
             className={classes.input}
-            placeholder="Search BookMark"
+            placeholder="検索"
             inputProps={{ 'aria-label': 'search book mark' }}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               dispatch(bookMarkSlice.actions.inputSearchText(e.target.value));
