@@ -10,7 +10,6 @@ import { sideBarSlice } from './slices/sideBarSlice';
 import { bookMarkSlice } from './slices/bookMarkSlice';
 import { signInSlice } from './slices/signInPageSlice';
 import { userInfoSlice } from './slices/userInfoSlice';
-import testSlice from './api/test';
 
 const rootReducer = combineReducers({
   sideBar: sideBarSlice.reducer,
