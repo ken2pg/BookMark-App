@@ -12,9 +12,14 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Dialog, { DialogProps } from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 import { bookMarkSlice } from '#/slices/bookMarkSlice';
 import { fetchDeleteBookMark } from '#/slices/bookMarkSlice';
-
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -33,7 +38,8 @@ const useStyle = makeStyles((theme: Theme) =>
     },
     cardContent: {},
     btn: {
-      marginLeft: '10px',
+      fontWeight: 'bold',
+      marginLeft: '25px',
       marginTop: '-10px',
       marginBottom: '5px',
     },
@@ -60,6 +66,50 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
   const startEditBookMark = () => {
     dispatch(bookMarkSlice.actions.startEditBookMark());
   };
+  const [fullWidth, setFullWidth] = React.useState(true);
+  const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
+
+  const [isOpenDialog, setIsOpenDialog] = React.useState(false);
+
+  const confirmDialog = (
+    <div>
+      <Dialog
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+        open={isOpenDialog}
+        onClose={() => setIsOpenDialog(false)}
+        aria-labelledby="max-width-dialog-title"
+      >
+        <DialogTitle id="max-width-dialog-title">確認</DialogTitle>
+        <DialogContent>
+          <DialogContentText>削除してもよろしいですか？</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            className={classes.btn}
+            onClick={() => {
+              setIsOpenDialog(false);
+            }}
+          >
+            取り消し
+          </Button>
+          <Button
+            color="primary"
+            className={classes.btn}
+            onClick={() => {
+              dispatch(bookMarkSlice.actions.deleteBookMark(bookMarkContents.bookMarkId));
+              dispatch(bookMarkSlice.actions.searchOutput());
+              dispatch(fetchDeleteBookMark(bookMarkContents));
+              setIsOpenDialog(false);
+            }}
+          >
+            削除
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
   //   const text: string = 'http://www.google.com/s2/favicons?domain=https://github.com';
   //   const text: string = 'http://www.yahoo.co.jp/aaa.jpg';
   return (
@@ -85,7 +135,7 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
             dispatch(bookMarkSlice.actions.openMemoDialog(bookMarkContents));
           }}
         >
-          Memo
+          メモ
         </Button>
         <Button
           color="primary"
@@ -94,20 +144,13 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
             dispatch(bookMarkSlice.actions.startEditBookMark(bookMarkContents.bookMarkId));
           }}
         >
-          Edit
+          編集
         </Button>
-        <Button
-          color="primary"
-          className={classes.btn}
-          onClick={() => {
-            dispatch(bookMarkSlice.actions.deleteBookMark(bookMarkContents.bookMarkId));
-            dispatch(bookMarkSlice.actions.searchOutput());
-            dispatch(fetchDeleteBookMark(bookMarkContents));
-          }}
-        >
-          Delete
+        <Button color="primary" className={classes.btn} onClick={() => setIsOpenDialog(true)}>
+          削除
         </Button>
       </Card>
+      {confirmDialog}
     </>
   );
 };
