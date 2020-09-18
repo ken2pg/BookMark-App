@@ -14,6 +14,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Fade from '@material-ui/core/Fade';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
+import Dialog, { DialogProps } from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
@@ -56,6 +61,9 @@ const useStyles = makeStyles((theme: Theme) =>
     button: {
       marginLeft: '20px',
     },
+    btn: {
+      fontWeight: 'bold',
+    },
   })
 );
 
@@ -66,11 +74,54 @@ const NavigationBar = () => {
 
   const [isOpenProfile, setIsOpenProfile] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
   const open = Boolean(anchorEl);
+  const [fullWidth, setFullWidth] = React.useState(true);
+  const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
+
+  const [isOpenDialog, setIsOpenDialog] = React.useState(false);
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const confirmDialog = (
+    <div>
+      <Dialog
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+        open={isOpenDialog}
+        onClose={() => setIsOpenDialog(false)}
+        aria-labelledby="max-width-dialog-title"
+      >
+        <DialogTitle id="max-width-dialog-title">確認</DialogTitle>
+        <DialogContent>
+          <DialogContentText>サインアウトしてもよろしいですか？</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            className={classes.btn}
+            onClick={() => {
+              setIsOpenDialog(false);
+            }}
+          >
+            取り消し
+          </Button>
+          <Button
+            color="primary"
+            className={classes.btn}
+            onClick={() => {
+              dispatch(signInSlice.actions.signOut());
+              dispatch(userInfoSlice.actions.setInitialState());
+              setIsOpenDialog(false);
+              Router.push({ pathname: './signIn' });
+            }}
+          >
+            サインアウト
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
   return (
     <div className={classes.root}>
       <AppBar position="fixed">
@@ -82,9 +133,7 @@ const NavigationBar = () => {
                 className={classes.button}
                 color="inherit"
                 onClick={() => {
-                  dispatch(signInSlice.actions.signOut());
-                  dispatch(userInfoSlice.actions.setInitialState());
-                  Router.push({ pathname: './signIn' });
+                  setIsOpenDialog(true);
                 }}
               >
                 サインアウト
@@ -142,9 +191,8 @@ const NavigationBar = () => {
               {state.signIn.isLogin && (
                 <MenuItem
                   onClick={() => {
-                    dispatch(signInSlice.actions.signOut());
-                    dispatch(userInfoSlice.actions.setInitialState());
-                    Router.push({ pathname: './signIn' });
+                    setIsOpenDialog(true);
+                    handleClose();
                   }}
                 >
                   <Box className={classes.menuButton}>サインアウト</Box>
@@ -163,6 +211,7 @@ const NavigationBar = () => {
           </div>
         </Toolbar>
       </AppBar>
+      {confirmDialog}
     </div>
   );
 };
