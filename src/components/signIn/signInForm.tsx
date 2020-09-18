@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -23,6 +23,8 @@ import { NextPage } from 'next';
 import { withRouter } from 'next/router';
 import { WithRouterProps } from 'next/dist/client/with-router';
 import Router from 'next/router';
+import { fetchGetUserInfo } from '../../slices/userInfoSlice';
+import { count } from 'console';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,7 +57,12 @@ const SignInForm = () => {
   const classes = useStyle();
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state);
-
+  const focusPassword = useRef(null);
+  const focusEmail = useRef(null);
+  const [count, setCount] = React.useState(0);
+  useEffect(() => {
+    focusEmail.current.focus();
+  }, [count]);
   return (
     <>
       <NavigationBar />
@@ -65,6 +72,12 @@ const SignInForm = () => {
           サインイン
         </Typography>
         <TextField
+          inputRef={focusEmail}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              focusPassword.current.focus();
+            }
+          }}
           className={classes.textfield}
           id="Email"
           label="Email"
@@ -78,6 +91,12 @@ const SignInForm = () => {
         <FormControl className={classes.textfield} variant="outlined">
           <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
           <OutlinedInput
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                dispatch(fetchSingIn(state.signIn));
+              }
+            }}
+            inputRef={focusPassword}
             id="outlined-adornment-password"
             type={state.signIn.showPassword ? 'text' : 'password'}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

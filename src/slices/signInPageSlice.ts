@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { useDispatch } from 'react-redux';
 // import { bookMark } from '#/types/bookMark';
 // import BookMark from '#/components/bookMark';
 import { createAsyncThunk } from '@reduxjs/toolkit';
@@ -6,6 +7,7 @@ import { firebaseStore } from '../../config/fbConfig';
 import { auth } from 'firebase';
 import Router from 'next/router';
 import build from 'next/dist/build';
+import { fetchGetUserInfo, userInfoSlice } from './userInfoSlice';
 
 export type signInPageState = {
   email: string;
@@ -13,8 +15,9 @@ export type signInPageState = {
   showPassword: boolean;
   isLogin: boolean;
   userEmail: string;
-  isFirstRenderSideBar: boolean;
-  isFirstRenderBookMark: boolean;
+  userId: number;
+  // isFirstRenderSideBar: boolean;
+  // isFirstRenderBookMark: boolean;
 };
 
 const initialState: signInPageState = {
@@ -23,31 +26,53 @@ const initialState: signInPageState = {
   showPassword: false,
   isLogin: false,
   userEmail: '',
-  isFirstRenderSideBar: true,
-  isFirstRenderBookMark: true,
+  userId: 0,
+  // isFirstRenderSideBar: true,
+  // isFirstRenderBookMark: true,
 };
 export const fetchSingIn = createAsyncThunk(
   'signIn/fetchSingIn',
   async (payload: signInPageState) => {
-    const data = { sucess: '', email: payload.email };
+    const data = { sucess: '', email: payload.email, userId: payload.userId };
     await auth()
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then(() => {
-        // const set = (key: string, value: string) => sessionStorage.setItem(key, value);
-        // set('isSignIn', 'true');
-        // set('Email', payload.email);
         data.sucess = 'success';
-        // Router.push({ pathname: './application' });
+        // firebaseStore
+        //   .collection('user')
+        //   .where('Email', '==', payload)
+        //   .get()
+        //   .then((querySnapshot) => {
+        //     querySnapshot.forEach((i) => {
+        //       data.sucess = 'success';
+        //       const category = i.data();
+        //       data.userId = category['userId'];
+        //     });
+        //   });
       })
       .catch((err) => {
-        alert(err);
+        // alert(err);
+        // console.log(err['code']);
+        if (err['code'] === 'auth/network-request-failed') {
+          alert('インターネットが繋がっていません');
+        } else {
+          alert('パスワードもしくはメールアドレスが間違っています！');
+        }
+        // } else if (err['code'] === 'auth/invalid-email') {
+        //   alert('メールアドレスが正しく入力されていません');
+        // } else if (err['code'] === 'auth/wrong-password') {
+        //   alert('パスワードが正しく入力されていません');
+        // } else if (err['code'] === 'auth/wrong-password') {
+        //   alert('パスワードもしくはメールアドレスが間違っています！');
+        // }
       });
-    return await data;
+
+    return data;
   }
 );
 
 export const signInSlice = createSlice({
-  name: 'signIN',
+  name: 'signIn',
   initialState,
   reducers: {
     inputEmail: (state, action: PayloadAction<string>) => {
@@ -59,18 +84,27 @@ export const signInSlice = createSlice({
     switchShowPassword: (state) => {
       state.showPassword = !state.showPassword;
     },
-    firstRenderSideBar: (state) => {
-      state.isFirstRenderSideBar = false;
+    signOut: (state) => {
+      state.email = initialState.email;
+      state.isLogin = initialState.isLogin;
+      state.password = initialState.password;
+      state.showPassword = initialState.showPassword;
+      state.userEmail = initialState.userEmail;
+      state.userId = initialState.userId;
     },
-    firstRenderBookMark: (state) => {
-      state.isFirstRenderBookMark = false;
-    },
+    // firstRenderSideBar: (state) => {
+    //   state.isFirstRenderSideBar = false;
+    // },
+    // firstRenderBookMark: (state) => {
+    //   state.isFirstRenderBookMark = false;
+    // },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSingIn.pending, () => {});
     builder.addCase(fetchSingIn.fulfilled, (state, action) => {
       if (action.payload.sucess === 'success') {
         state.isLogin = true;
+        state.userId = action.payload.userId;
         state.userEmail = action.payload.email;
         Router.push({ pathname: './application' });
       }

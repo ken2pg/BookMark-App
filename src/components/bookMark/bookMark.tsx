@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -34,6 +34,7 @@ import {
 import { bookMark } from '#/types/bookMark';
 import { initialState } from '#/slices/sideBarSlice';
 import { signInSlice } from '#/slices/signInPageSlice';
+import { Typography } from '@material-ui/core';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,13 +68,19 @@ const useStyle = makeStyles((theme: Theme) =>
       margin: '0 auto',
       marginBottom: '30px',
     },
-    button: {},
+    button: {
+      fontWeight: 'bold',
+    },
     iconButton: {
       padding: 10,
     },
     input: {
       marginLeft: theme.spacing(1),
       flex: 1,
+    },
+    title: {
+      fontWeight: 'bold',
+      fontSize: '24px',
     },
     // divider: {
     //   height: 28,
@@ -91,14 +98,14 @@ const BookMark = () => {
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
 
   const [count, setCount] = React.useState(0);
-  useEffect(() => {
-    if (state.signIn.isLogin && state.signIn.isFirstRenderBookMark) {
-      dispatch(fetchInitialState());
-      dispatch(fetchSerialNumber());
-      dispatch(signInSlice.actions.firstRenderBookMark());
-    }
-    // setCount(1);
-  }, [count]);
+  // useEffect(() => {
+  //   if (state.signIn.isLogin && state.signIn.isFirstRenderBookMark) {
+  //     dispatch(fetchInitialState());
+  //     dispatch(fetchSerialNumber());
+  //     dispatch(signInSlice.actions.firstRenderBookMark());
+  //   }
+  //   // setCount(1);
+  // }, [count]);
 
   const createNewBookMark = () => {
     dispatch(bookMarkSlice.actions.startCreateBookMark());
@@ -124,6 +131,12 @@ const BookMark = () => {
   const isNameNull = !state.bookMark.newBookMark.siteName;
   const isEditNameNull = !state.bookMark.editSaveFolder.siteName;
 
+  //focus
+  const focusURL = useRef(null);
+  const focusMemo = useRef(null);
+  const focusEditURL = useRef(null);
+  const focusEditMemo = useRef(null);
+
   //新規作成画面
   const CreateBookmarkDialog = (
     <div>
@@ -134,35 +147,61 @@ const BookMark = () => {
         onClose={cancelNewCreate}
         aria-labelledby="max-width-dialog-title"
       >
-        <DialogTitle id="max-width-dialog-title">Add Site Name, URL and Memo</DialogTitle>
+        <DialogTitle id="max-width-dialog-title">ブックマークの新規作成</DialogTitle>
         <DialogContent>
-          <DialogContentText>Plese input site name, url and memo!</DialogContentText>
+          <DialogContentText>
+            作成するブックマークのサイト名、URL、メモ内容を入力してください。
+          </DialogContentText>
         </DialogContent>
         <TextField
           onChange={handleInputChange}
           className={classes.textfield}
           id="Site Name"
-          label="Site Name"
+          label="サイト名"
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              focusURL.current.focus();
+            }
+          }}
         />
         <TextField
           onChange={handleInputURLChange}
           className={classes.textfield}
           id="Site URL"
-          label="Site URL"
+          label="サイトのURL"
+          inputRef={focusURL}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              focusMemo.current.focus();
+            }
+          }}
         />
         <TextField
+          multiline
+          rows={12}
+          variant="outlined"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             dispatch(bookMarkSlice.actions.inputMemo(e.target.value));
           }}
           className={classes.textfield}
           id="Site Memo"
-          label="Site Memo"
+          label="メモ"
+          inputRef={focusMemo}
+          // onKeyPress={(e) => {
+          //   if (e.key === 'Enter' && !isNameNull) {
+          //     addNewBookMark();
+          //     dispatch(bookMarkSlice.actions.searchOutput());
+          //     dispatch(fetchAddBookMark(state.bookMark.newBookMark));
+          //     dispatch(fetchEditSerialNumber(state.bookMark.serialNumbers));
+          //   }
+          // }}
         />
         <DialogActions>
-          <Button autoFocus onClick={cancelNewCreate} color="primary">
-            <Box className={classes.button}>Cancel</Box>
+          <Button autoFocus onClick={cancelNewCreate} color="primary" className={classes.button}>
+            <Box className={classes.button}>取り消し</Box>
           </Button>
           <Button
+            className={classes.button}
             onClick={() => {
               addNewBookMark();
               dispatch(bookMarkSlice.actions.searchOutput());
@@ -172,7 +211,7 @@ const BookMark = () => {
             disabled={isNameNull}
             color="primary"
           >
-            OK
+            決定
           </Button>
         </DialogActions>
       </Dialog>
@@ -191,9 +230,9 @@ const BookMark = () => {
         }}
         aria-labelledby="max-width-dialog-title"
       >
-        <DialogTitle id="max-width-dialog-title">Edit Site Name, URL and Memo</DialogTitle>
+        <DialogTitle id="max-width-dialog-title">ブックマークの編集</DialogTitle>
         <DialogContent>
-          <DialogContentText>Plese input site name, url, memo!</DialogContentText>
+          <DialogContentText>変更したい内容を入力してください</DialogContentText>
         </DialogContent>
         <TextField
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -201,8 +240,13 @@ const BookMark = () => {
           }}
           className={classes.textfield}
           id="Site Name"
-          label="Site Name"
+          label="サイト名"
           value={state.bookMark.editSaveFolder.siteName}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              focusEditURL.current.focus();
+            }
+          }}
         />
         <TextField
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -210,17 +254,27 @@ const BookMark = () => {
           }}
           className={classes.textfield}
           id="Site URL"
-          label="Site URL"
+          label="サイトのURL"
           value={state.bookMark.editSaveFolder.siteURL}
+          inputRef={focusEditURL}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              focusEditMemo.current.focus();
+            }
+          }}
         />
         <TextField
+          multiline
+          rows={12}
+          variant="outlined"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             dispatch(bookMarkSlice.actions.inputEditMemo(e.target.value));
           }}
           className={classes.textfield}
           id="Site Memo"
-          label="Site Memo"
+          label="メモ"
           value={state.bookMark.editSaveFolder.memo}
+          inputRef={focusEditMemo}
         />
         <DialogActions>
           <Button
@@ -230,7 +284,7 @@ const BookMark = () => {
             }}
             color="primary"
           >
-            <Box className={classes.button}>Cancel</Box>
+            <Box className={classes.button}>取り消し</Box>
           </Button>
           <Button
             onClick={() => {
@@ -242,8 +296,9 @@ const BookMark = () => {
             }}
             disabled={isEditNameNull}
             color="primary"
+            className={classes.button}
           >
-            OK
+            決定
           </Button>
         </DialogActions>
       </Dialog>
@@ -299,7 +354,9 @@ const BookMark = () => {
     <div className={classes.root}>
       {/* header */}
       <div className={classes.header}>
-        <IconButton
+        <Button
+          disabled={!state.sideBar.selectId}
+          variant="outlined"
           color="primary"
           component="span"
           onClick={() => {
@@ -308,11 +365,15 @@ const BookMark = () => {
           }}
         >
           <AddIcon />
-        </IconButton>
+          <Typography style={{ fontSize: '18px', fontWeight: 'bold', lineHeight: '34px' }}>
+            新規作成
+          </Typography>
+        </Button>
         <Paper className={classes.headerSearch} elevation={0} variant="outlined">
           <InputBase
+            value={state.bookMark.inputText}
             className={classes.input}
-            placeholder="Search BookMark"
+            placeholder="検索"
             inputProps={{ 'aria-label': 'search book mark' }}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               dispatch(bookMarkSlice.actions.inputSearchText(e.target.value));

@@ -11,13 +11,14 @@ export type bookMarkState = {
   searchBookMarks: bookMark[];
   isCreate: boolean;
   editSaveFolder: bookMark;
+  inputText: string;
   searchText: string;
   serialNumbers: number;
 };
 
 export const initialState: bookMarkState = {
   newBookMark: {
-    userId: 0,
+    userId: 1,
     folderId: 0,
     bookMarkId: 0,
     siteName: '',
@@ -39,17 +40,6 @@ export const initialState: bookMarkState = {
     memo: '',
   },
   bookMarks: new Array<bookMark>(),
-  // {
-  //   userId: 0,
-  //   folderId: 0,
-  //   bookMarkId: 0,
-  //   siteName: 'github',
-  //   siteURL: ' https://github.com',
-  //   date: '2020/08/31',
-  //   isEdit: false,
-  //   isMemoOpen: false,
-  //   memo: 'This is Github site!',
-  // }
   searchBookMarks: new Array<bookMark>(),
   isCreate: false,
   editSaveFolder: {
@@ -64,6 +54,7 @@ export const initialState: bookMarkState = {
     memo: '',
   },
   searchText: '',
+  inputText: '',
   serialNumbers: 0,
 };
 
@@ -74,6 +65,7 @@ export const fetchSerialNumber = createAsyncThunk('bookMark/fetchSerialNumber', 
   let serialNumber: number;
   await firebaseStore
     .collection('user')
+    .where('userId', '==', 1)
     .get()
     .then((querySnapshot) => {
       querySnapshot.forEach((i) => {
@@ -94,7 +86,7 @@ export const fetchEditSerialNumber = createAsyncThunk(
   async (payload: number) => {
     await firebaseStore
       .collection('user')
-      .doc('LWMacJ1P7fRLW597ZGNb')
+      .doc('1')
       .update({ serialNumber: payload })
       .catch((err) => {
         throw new Error(err.message);
@@ -107,15 +99,13 @@ export const fetchInitialState = createAsyncThunk(
   async (thunkAPI) => {
     let bookMarkList = new Array<bookMark>();
     await firebaseStore
+      .collection('user')
+      .doc('1')
       .collection('bookMark')
-      .where('userId', '==', 0)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((i) => {
-          // console.log(i.id, '=>', i.data());
-          //  console.log(i.data()['folderId']);
           const caregory = i.data();
-          // bookMarkSlice.actions.initialSetState(i.data());
           bookMarkList.push({
             userId: caregory['userId'],
             folderId: caregory['folderId'],
@@ -127,9 +117,6 @@ export const fetchInitialState = createAsyncThunk(
             isMemoOpen: false,
             memo: caregory['memo'],
           });
-          // console.log(bookMarkList);
-          // return bookMarkList;
-          // bookMarkSlice.actions.initialSetState(bookMarkList);
         });
       })
       .catch((err) => {
@@ -148,6 +135,8 @@ export const fetchAddBookMark = createAsyncThunk(
   async (payload: bookMark, thunkAPI) => {
     try {
       await firebaseStore
+        .collection('user')
+        .doc(payload.userId.toString())
         .collection('bookMark')
         .doc(payload.bookMarkId.toString())
         .set({
@@ -174,6 +163,8 @@ export const fetchEditBookMark = createAsyncThunk(
   async (payload: bookMark, thunkAPI) => {
     try {
       await firebaseStore
+        .collection('user')
+        .doc(payload.userId.toString())
         .collection('bookMark')
         .doc(payload.bookMarkId.toString())
         .update({
@@ -198,11 +189,13 @@ export const fetchEditBookMark = createAsyncThunk(
 //Delete機能
 export const fetchDeleteBookMark = createAsyncThunk(
   'bookMark/fetchDeleteBookMark',
-  async (payload: number, thunkAPI) => {
+  async (payload: bookMark, thunkAPI) => {
     try {
       await firebaseStore
+        .collection('user')
+        .doc(payload.userId.toString())
         .collection('bookMark')
-        .doc(payload.toString())
+        .doc(payload.bookMarkId.toString())
         .delete()
         .then(() => {
           console.log('BookMark successfully deleted!');
@@ -232,14 +225,9 @@ export const bookMarkSlice = createSlice({
       state.newBookMark.memo = action.payload;
     },
     addBookMark(state) {
-      // state.newBookMark.bookMarkId++;
-      // console.log(state.newBookMark.bookMarkId);
       state.bookMarks = [state.newBookMark, ...state.bookMarks];
     },
     startCreateBookMark(state) {
-      // if (state.bookMarks.length) {
-      //   state.newBookMark['bookMarkId'] = state.bookMarks[0].bookMarkId;
-      // }
       state.serialNumbers = state.serialNumbers + 1;
       state.newBookMark['bookMarkId'] = state.serialNumbers;
       state.newBookMark['siteName'] = initialState.newBookMark.siteName;
@@ -337,21 +325,19 @@ export const bookMarkSlice = createSlice({
       state.memoDialog.isMemoOpen = false;
     },
     inputSearchText: (state, action: PayloadAction<string>) => {
-      state.searchText = action.payload;
+      state.inputText = action.payload;
+      // state.searchText = action.payload;
     },
-    // searchOutput: (state) => {
-    //   state.searchBookMarks = state.bookMarks.filter(
-    //     (bookMark) => bookMark.siteName === state.searchText
-    //   );
-    // },
     searchOutput: (state) => {
       //空白を削除
+      state.searchText = state.inputText;
       state.searchText = state.searchText.replace(/[ ,　]/g, '');
       state.searchBookMarks = state.bookMarks.filter(
         (bookMark) => bookMark.siteName.indexOf(state.searchText) !== -1
       );
     },
     allSearchTextDelete: (state) => {
+      state.inputText = '';
       state.searchText = '';
     },
 
@@ -379,6 +365,7 @@ export const bookMarkSlice = createSlice({
     builder.addCase(fetchInitialState.pending, () => {});
     builder.addCase(fetchInitialState.fulfilled, (state, action) => {
       // console.log(action.payload);
+      state.bookMarks = initialState.bookMarks;
       state.bookMarks = state.bookMarks.concat(action.payload);
     });
     builder.addCase(fetchInitialState.rejected, () => {});
