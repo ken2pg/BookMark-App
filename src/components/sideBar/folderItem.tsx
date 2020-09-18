@@ -9,6 +9,12 @@ import FolderIcon from '@material-ui/icons/Folder';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import { Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
+import Dialog, { DialogProps } from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
 
 import { sideBarSlice, fetchDeleteBookMarkFolder } from '../../slices/sideBarSlice';
 import { useDispatch } from 'react-redux';
@@ -30,6 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: '40px',
     },
     btn: {
+      fontWeight: 'bold',
       //  zIndex: 3000,
       //  backgroundColor: 'white'
     },
@@ -64,6 +71,11 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
 
   const open = Boolean(anchorEl);
   const ITEM_HEIGHT = 48;
+
+  const [fullWidth, setFullWidth] = React.useState(true);
+  const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
+
+  const [isOpenDialog, setIsOpenDialog] = React.useState(false);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -112,6 +124,44 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
     </>
   );
 
+  const confirmDialog = (
+    <div>
+      <Dialog
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+        open={isOpenDialog}
+        onClose={() => setIsOpenDialog(false)}
+        aria-labelledby="max-width-dialog-title"
+      >
+        <DialogTitle id="max-width-dialog-title">確認</DialogTitle>
+        <DialogContent>
+          <DialogContentText>削除してもよろしいですか？</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            className={classes.btn}
+            onClick={() => {
+              setIsOpenDialog(false);
+            }}
+          >
+            取り消し
+          </Button>
+          <Button
+            color="primary"
+            className={classes.btn}
+            onClick={() => {
+              dispatch(sideBarSlice.actions.deleteFolder(folder.folderId));
+              dispatch(fetchDeleteBookMarkFolder(folder));
+              setIsOpenDialog(false);
+            }}
+          >
+            削除
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
   return (
     <>
       {folder.isSelect && selectFolderChangeNameColor}
@@ -144,8 +194,7 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
                   // startEdit();
                 } else if (option === '削除') {
                   handleClose();
-                  dispatch(sideBarSlice.actions.deleteFolder(folder.folderId));
-                  dispatch(fetchDeleteBookMarkFolder(folder));
+                  setIsOpenDialog(true);
                 } else {
                   handleClose();
                 }
@@ -156,6 +205,7 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
           ))}
         </Menu>
       </Typography>
+      {confirmDialog}
     </>
   );
 };
