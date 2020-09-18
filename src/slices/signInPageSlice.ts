@@ -51,7 +51,20 @@ export const fetchSingIn = createAsyncThunk(
         //   });
       })
       .catch((err) => {
-        alert(err);
+        // alert(err);
+        // console.log(err['code']);
+        if (err['code'] === 'auth/network-request-failed') {
+          alert('インターネットが繋がっていません');
+        } else {
+          alert('パスワードもしくはメールアドレスが間違っています！');
+        }
+        // } else if (err['code'] === 'auth/invalid-email') {
+        //   alert('メールアドレスが正しく入力されていません');
+        // } else if (err['code'] === 'auth/wrong-password') {
+        //   alert('パスワードが正しく入力されていません');
+        // } else if (err['code'] === 'auth/wrong-password') {
+        //   alert('パスワードもしくはメールアドレスが間違っています！');
+        // }
       });
 
     return data;
