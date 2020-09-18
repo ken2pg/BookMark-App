@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Component, useEffect, useRef } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
@@ -89,18 +89,10 @@ const SideBar = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state);
+  // const focusCreateNewFolderName = useRef(null);
 
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
-  const [count, setCount] = React.useState(0);
-
-  // useEffect(() => {
-  //   if (state.signIn.isLogin && state.signIn.isFirstRenderSideBar) {
-  //     dispatch(fetchSerialFolderNumber());
-  //     dispatch(fetchInitialFolderState());
-  //     dispatch(signInSlice.actions.firstRenderSideBar());
-  //   }
-  // }, [count]);
 
   //編集開始・修了、フォルダーの追加処理
   const CreateNewFolder = () => {
@@ -131,6 +123,10 @@ const SideBar = () => {
   const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(sideBarSlice.actions.inputEditName(e.target.value));
   };
+
+  // const focusNewFolderName = () => {
+  //   focusCreateNewFolderName.current.focus();
+  // };
   //Validation
   const isNameNull = !state.sideBar.folder.folderName;
 
@@ -155,6 +151,14 @@ const SideBar = () => {
           className={classes.textfield}
           id="folderName"
           label="フォルダー名"
+          // inputRef={focusCreateNewFolderName}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter' && !isNameNull) {
+              addFolder();
+              dispatch(fetchAddBookFolderMark(state.sideBar.folder));
+              dispatch(fetchEditSerialFolderNumber(state.sideBar.sirialFolderNumber));
+            }
+          }}
           // onKeyDown={(e) => {
           //   if (e.keyCode === 13) {
           //     e.target.addEventListener('blur', pause);
@@ -203,11 +207,13 @@ const SideBar = () => {
           id="folderName"
           label="フォルダー名"
           value={state.sideBar.editFolder.folderName}
-          // onKeyDown={(e) => {
-          //   if (e.keyCode === 13) {
-          //     e.target.addEventListener('blur', pause);
-          //   }
-          // }}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter' && !isEditNameNull) {
+              dispatch(sideBarSlice.actions.changeFolderName(state.sideBar.editFolder.folderName));
+              dispatch(sideBarSlice.actions.endEditFolder());
+              dispatch(fetchEditBookMarkFolder(state.sideBar.editFolder));
+            }
+          }}
         />
         <DialogActions>
           <Button
@@ -254,7 +260,9 @@ const SideBar = () => {
           className={classes.createButton}
           variant="outlined"
           color="primary"
-          onClick={CreateNewFolder}
+          onClick={() => {
+            CreateNewFolder();
+          }}
         >
           <AddIcon></AddIcon>
           <span style={{ fontWeight: 'bold' }}>フォルダー新規作成</span>
