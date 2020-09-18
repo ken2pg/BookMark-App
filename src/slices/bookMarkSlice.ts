@@ -11,6 +11,7 @@ export type bookMarkState = {
   searchBookMarks: bookMark[];
   isCreate: boolean;
   editSaveFolder: bookMark;
+  inputText: string;
   searchText: string;
   serialNumbers: number;
 };
@@ -39,17 +40,6 @@ export const initialState: bookMarkState = {
     memo: '',
   },
   bookMarks: new Array<bookMark>(),
-  // {
-  //   userId: 0,
-  //   folderId: 0,
-  //   bookMarkId: 0,
-  //   siteName: 'github',
-  //   siteURL: ' https://github.com',
-  //   date: '2020/08/31',
-  //   isEdit: false,
-  //   isMemoOpen: false,
-  //   memo: 'This is Github site!',
-  // }
   searchBookMarks: new Array<bookMark>(),
   isCreate: false,
   editSaveFolder: {
@@ -64,6 +54,7 @@ export const initialState: bookMarkState = {
     memo: '',
   },
   searchText: '',
+  inputText: '',
   serialNumbers: 0,
 };
 
@@ -334,16 +325,19 @@ export const bookMarkSlice = createSlice({
       state.memoDialog.isMemoOpen = false;
     },
     inputSearchText: (state, action: PayloadAction<string>) => {
-      state.searchText = action.payload;
+      state.inputText = action.payload;
+      // state.searchText = action.payload;
     },
     searchOutput: (state) => {
       //空白を削除
+      state.searchText = state.inputText;
       state.searchText = state.searchText.replace(/[ ,　]/g, '');
       state.searchBookMarks = state.bookMarks.filter(
         (bookMark) => bookMark.siteName.indexOf(state.searchText) !== -1
       );
     },
     allSearchTextDelete: (state) => {
+      state.inputText = '';
       state.searchText = '';
     },
 
