@@ -15,6 +15,11 @@ const useStyle = makeStyles((theme: Theme) =>
       width: '45%',
       margin: '180px 8%',
       textAlign: 'left',
+      ['@media(max-width:1024px)']: {
+        width: '95%',
+        margin: '180px auto',
+        textAlign: 'left',
+      },
     },
     title: {
       // margin: '200px,auto',

@@ -39,11 +39,12 @@ import { Typography } from '@material-ui/core';
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '80.5%',
+      // width: '80.5%',
+      width: `calc(100% - 302px)`,
       //   margin: '0 auto',
       marginTop: '74px',
       marginLeft: '290px',
-      //   border: '1px solid red',
+      // border: '1px solid red',
     },
     headerSearch: {
       marginLeft: '10px',
@@ -81,6 +82,20 @@ const useStyle = makeStyles((theme: Theme) =>
     title: {
       fontWeight: 'bold',
       fontSize: '24px',
+    },
+    CreatNewFolderButton: {
+      ['@media(max-width:1024px)']: {
+        // width: '10px',
+        height: '45px',
+      },
+    },
+    buttonName: {
+      fontSize: '18px',
+      fontWeight: 'bold',
+      lineHeight: '34px',
+      ['@media(max-width:1024px)']: {
+        display: 'none',
+      },
     },
     // divider: {
     //   height: 28,
@@ -317,7 +332,7 @@ const BookMark = () => {
         }}
         aria-labelledby="max-width-dialog-title"
       >
-        <DialogTitle id="max-width-dialog-title">Memo</DialogTitle>
+        <DialogTitle id="max-width-dialog-title">メモ</DialogTitle>
         <DialogContent>
           {/* <DialogContentText>{bookMarkItem.siteName}</DialogContentText>
           <DialogContentText>{bookMarkItem.memo}</DialogContentText> */}
@@ -355,6 +370,7 @@ const BookMark = () => {
       {/* header */}
       <div className={classes.header}>
         <Button
+          className={classes.CreatNewFolderButton}
           disabled={!state.sideBar.selectId}
           variant="outlined"
           color="primary"
@@ -365,9 +381,7 @@ const BookMark = () => {
           }}
         >
           <AddIcon />
-          <Typography style={{ fontSize: '18px', fontWeight: 'bold', lineHeight: '34px' }}>
-            新規作成
-          </Typography>
+          <Typography className={classes.buttonName}>新規作成</Typography>
         </Button>
         <Paper className={classes.headerSearch} elevation={0} variant="outlined">
           <InputBase

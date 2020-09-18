@@ -17,6 +17,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import IconButton from '@material-ui/core/IconButton';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import { bookMarkSlice } from '#/slices/bookMarkSlice';
 import { fetchDeleteBookMark } from '#/slices/bookMarkSlice';
@@ -29,6 +33,8 @@ const useStyle = makeStyles((theme: Theme) =>
     },
     image: {},
     name: {
+      display: 'flex',
+      justifyContent: 'space-between',
       fontSize: '24px',
       marginBottom: '10px',
     },
@@ -43,6 +49,7 @@ const useStyle = makeStyles((theme: Theme) =>
       marginTop: '-10px',
       marginBottom: '5px',
     },
+    iconButton: { marginTop: '-8px' },
   })
 );
 interface Props {
@@ -62,6 +69,18 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
   const classes = useStyle();
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state);
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const options = ['メモ', '編集', '削除', 'キャンセル'];
+  const open = Boolean(anchorEl);
+  const ITEM_HEIGHT = 48;
 
   const startEditBookMark = () => {
     dispatch(bookMarkSlice.actions.startEditBookMark());
@@ -119,16 +138,67 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
         <CardMedia />
 
         <CardContent className={classes.cardContent}>
-          <Typography className={classes.name}>{bookMarkContents.siteName}</Typography>
-          <Typography color="textSecondary" className={classes.text}>
-            {bookMarkContents.siteURL}
+          <Typography className={classes.name}>
+            {bookMarkContents.siteName}
+            {/* <IconButton className={classes.iconButton} onClick={handleClick}> */}
+            <IconButton className={classes.iconButton} onClick={handleClick}>
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              id="long-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={open}
+              onClose={handleClose}
+              PaperProps={{
+                style: {
+                  maxHeight: ITEM_HEIGHT * 4.5,
+                  width: '20ch',
+                },
+              }}
+            >
+              {options.map((option) => (
+                <MenuItem
+                  key={option}
+                  selected={option === 'Pyxis'}
+                  onClick={() => {
+                    if (option === 'メモ') {
+                      handleClose();
+                      dispatch(bookMarkSlice.actions.openMemoDialog(bookMarkContents));
+                    } else if (option === '編集') {
+                      handleClose();
+                      dispatch(
+                        bookMarkSlice.actions.startEditBookMark(bookMarkContents.bookMarkId)
+                      );
+                    } else if (option === '削除') {
+                      handleClose();
+                      setIsOpenDialog(true);
+                    } else {
+                      handleClose();
+                    }
+                  }}
+                >
+                  {option}
+                </MenuItem>
+              ))}
+            </Menu>
           </Typography>
-          <Typography color="textSecondary" className={classes.text}>
+          {bookMarkContents.siteURL && (
+            <Typography color="textSecondary" className={classes.text}>
+              {bookMarkContents.siteURL}
+            </Typography>
+          )}
+          {!bookMarkContents.siteURL && (
+            <Typography color="textSecondary" className={classes.text}>
+              None URL
+            </Typography>
+          )}
+          {/* <Typography color="textSecondary" className={classes.text}>
             {bookMarkContents.date}
-          </Typography>
+          </Typography> */}
         </CardContent>
         {/* </CardActionArea> */}
-        <Button
+        {/* <Button
           color="primary"
           className={classes.btn}
           onClick={() => {
@@ -148,7 +218,7 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
         </Button>
         <Button color="primary" className={classes.btn} onClick={() => setIsOpenDialog(true)}>
           削除
-        </Button>
+        </Button> */}
       </Card>
       {confirmDialog}
     </>
