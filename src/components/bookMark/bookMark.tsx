@@ -40,11 +40,16 @@ const useStyle = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       // width: '80.5%',
-      width: `calc(100% - 302px)`,
+      width: `calc(100% - 298px)`,
       //   margin: '0 auto',
       marginTop: '74px',
       marginLeft: '290px',
       // border: '1px solid red',
+      ['@media(max-width:767px)']: {
+        width: `100%`,
+        margin: '58px auto',
+        padding: '10px',
+      },
     },
     headerSearch: {
       marginLeft: '10px',
@@ -68,6 +73,9 @@ const useStyle = makeStyles((theme: Theme) =>
       width: '92%',
       margin: '0 auto',
       marginBottom: '30px',
+      ['@media(max-width:767px)']: {
+        marginBottom: '15px',
+      },
     },
     button: {
       fontWeight: 'bold',
@@ -191,26 +199,35 @@ const BookMark = () => {
             }
           }}
         />
-        <TextField
-          multiline
-          rows={12}
-          variant="outlined"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            dispatch(bookMarkSlice.actions.inputMemo(e.target.value));
-          }}
-          className={classes.textfield}
-          id="Site Memo"
-          label="メモ"
-          inputRef={focusMemo}
-          // onKeyPress={(e) => {
-          //   if (e.key === 'Enter' && !isNameNull) {
-          //     addNewBookMark();
-          //     dispatch(bookMarkSlice.actions.searchOutput());
-          //     dispatch(fetchAddBookMark(state.bookMark.newBookMark));
-          //     dispatch(fetchEditSerialNumber(state.bookMark.serialNumbers));
-          //   }
-          // }}
-        />
+        <MediaQuery query="(max-width: 767px)">
+          <TextField
+            multiline
+            rows={8}
+            variant="outlined"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              dispatch(bookMarkSlice.actions.inputMemo(e.target.value));
+            }}
+            className={classes.textfield}
+            id="Site Memo"
+            label="メモ"
+            inputRef={focusMemo}
+          />
+        </MediaQuery>
+        <MediaQuery query="(min-width: 767px)">
+          <TextField
+            multiline
+            rows={12}
+            variant="outlined"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              dispatch(bookMarkSlice.actions.inputMemo(e.target.value));
+            }}
+            className={classes.textfield}
+            id="Site Memo"
+            label="メモ"
+            inputRef={focusMemo}
+          />
+        </MediaQuery>
+
         <DialogActions>
           <Button autoFocus onClick={cancelNewCreate} color="primary" className={classes.button}>
             <Box className={classes.button}>取り消し</Box>
@@ -278,19 +295,38 @@ const BookMark = () => {
             }
           }}
         />
-        <TextField
-          multiline
-          rows={12}
-          variant="outlined"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            dispatch(bookMarkSlice.actions.inputEditMemo(e.target.value));
-          }}
-          className={classes.textfield}
-          id="Site Memo"
-          label="メモ"
-          value={state.bookMark.editSaveFolder.memo}
-          inputRef={focusEditMemo}
-        />
+        <MediaQuery query="(min-width: 767px)">
+          <TextField
+            multiline
+            rows={12}
+            variant="outlined"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              dispatch(bookMarkSlice.actions.inputEditMemo(e.target.value));
+            }}
+            className={classes.textfield}
+            id="Site Memo"
+            label="メモ"
+            value={state.bookMark.editSaveFolder.memo}
+            inputRef={focusEditMemo}
+          />
+        </MediaQuery>
+
+        <MediaQuery query="(max-width: 767px)">
+          <TextField
+            multiline
+            rows={8}
+            variant="outlined"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              dispatch(bookMarkSlice.actions.inputEditMemo(e.target.value));
+            }}
+            className={classes.textfield}
+            id="Site Memo"
+            label="メモ"
+            value={state.bookMark.editSaveFolder.memo}
+            inputRef={focusEditMemo}
+          />
+        </MediaQuery>
+
         <DialogActions>
           <Button
             autoFocus
@@ -408,7 +444,7 @@ const BookMark = () => {
         </Paper>
       </div>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={1}>
         <MediaQuery query="(min-width: 1024px)">
           {/* {(!state.bookMark.searchText || state.bookMark.searchText === ' ') && */}
           {!state.bookMark.searchText &&
