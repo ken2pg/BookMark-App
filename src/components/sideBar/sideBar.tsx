@@ -26,6 +26,12 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
+import clsx from 'clsx';
+import Grid from '@material-ui/core/Grid';
+import MediaQuery from 'react-responsive';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 
 import {
   sideBarSlice,
@@ -43,6 +49,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 
 import { folder } from '#/types/folder';
 import { signInSlice } from '#/slices/signInPageSlice';
+import { navigationBarSlice } from '#/slices/navigationBarSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,17 +59,28 @@ const useStyles = makeStyles((theme: Theme) =>
       // display: 'flex',
       zIndex: 100,
     },
+
+    menuButton: {
+      marginRight: 36,
+      marginLeft: '100px 500px',
+    },
+    hide: {
+      display: 'none',
+    },
     title: {
-      // textAlign: 'center',
       margin: '15px 30px',
       fontSize: '20px',
       fontWeight: theme.typography.fontWeightBold,
     },
-    drawer: {},
+    drawer: {
+      ['@media(max-width:767px)']: {
+        display: 'none',
+      },
+    },
 
     drawerPaper: {
       width: 280,
-      // zIndex: theme.zIndex.speedDial,
+
       zIndex: 1000,
     },
     button: {
@@ -71,16 +89,42 @@ const useStyles = makeStyles((theme: Theme) =>
     textfield: {
       width: '92%',
       margin: '0 auto',
+      ['@media(max-width:767px)']: {
+        width: 'none',
+      },
     },
     createButton: {
       margin: '0 auto',
       fontWeight: theme.typography.fontWeightBold,
-      // display: 'inline-block',
-      // margin: '0 12%',
       marginTop: '18px',
       marginBottom: '10px',
       width: '80%',
-      // padding: '-20%',
+
+      ['@media(max-width:767px)']: {
+        margin: '18px auto',
+        display: 'flex',
+      },
+    },
+    folderSelect: {
+      display: 'none',
+      ['@media(max-width:767px)']: {
+        width: '100%',
+        display: 'inline-block',
+        marginTop: '58px',
+
+        marginRight: '10px',
+        marginBottom: '55px',
+      },
+    },
+    drawerSmartPhone: {
+      display: 'none',
+      ['@media(max-width:767px)']: {
+        display: 'inline-block',
+      },
+    },
+    closeButton: {
+      display: 'flex',
+      margin: '10px auto',
     },
   })
 );
@@ -89,7 +133,6 @@ const SideBar = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state);
-  // const focusCreateNewFolderName = useRef(null);
 
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
@@ -110,24 +153,14 @@ const SideBar = () => {
     dispatch(sideBarSlice.actions.endCreateFolder());
   };
 
-  const EnterKeyPress = () => {
-    dispatch(sideBarSlice.actions.addFolder());
-    dispatch(sideBarSlice.actions.endCreateFolder());
-  };
-
   const cancelEdit = () => {
     dispatch(sideBarSlice.actions.endEditFolder());
-    // dispatch(sideBarSlice.actions.endEditFolder());
   };
 
   const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(sideBarSlice.actions.inputEditName(e.target.value));
   };
 
-  // const focusNewFolderName = () => {
-  //   focusCreateNewFolderName.current.focus();
-  // };
-  //Validation
   const isNameNull = !state.sideBar.folder.folderName;
 
   const isEditNameNull = !state.sideBar.editFolder.folderName;
@@ -151,7 +184,6 @@ const SideBar = () => {
           className={classes.textfield}
           id="folderName"
           label="フォルダー名"
-          // inputRef={focusCreateNewFolderName}
           onKeyPress={(e) => {
             if (e.key === 'Enter' && !isNameNull) {
               addFolder();
@@ -159,11 +191,6 @@ const SideBar = () => {
               dispatch(fetchEditSerialFolderNumber(state.sideBar.sirialFolderNumber));
             }
           }}
-          // onKeyDown={(e) => {
-          //   if (e.keyCode === 13) {
-          //     e.target.addEventListener('blur', pause);
-          //   }
-          // }}
         />
         <DialogActions>
           <Button autoFocus onClick={cancelNewCreate} color="primary">
@@ -243,59 +270,78 @@ const SideBar = () => {
   );
 
   return (
-    <div className={classes.root}>
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <Toolbar />
-        <Typography color={'textSecondary'} className={classes.title}>
-          フォルダーリスト
-        </Typography>
-        <Divider />
-        <Button
-          className={classes.createButton}
-          variant="outlined"
-          color="primary"
-          onClick={() => {
-            CreateNewFolder();
+    <>
+      <div className={classes.root}>
+        <Drawer
+          className={classes.drawer}
+          variant="permanent"
+          classes={{
+            paper: classes.drawerPaper,
           }}
         >
-          <AddIcon></AddIcon>
-          <span style={{ fontWeight: 'bold' }}>フォルダー新規作成</span>
-        </Button>
-        <List>
-          {state.sideBar.saveFolder.map((folder, _i) => {
-            return (
-              <ListItem
-                button
-                key={_i}
-                onClick={() => {
-                  dispatch(sideBarSlice.actions.selectFolder(folder.folderId));
-                }}
-              >
-                <FolderItem key={_i} folder={folder} />
-              </ListItem>
-            );
-          })}
-        </List>
-        {/* asynctest */}
-        {/* <Button
-          onClick={async () => {
-            const result = await dispatch(fetchTest());
-            console.log(result);
-          }}
-        >
-          test
-        </Button> */}
-      </Drawer>
-      {/*新規フォルダー作成画面*/}
-      {CreateFolderDialog}
-      {EditFolderDialog}
-    </div>
+          <Toolbar />
+          <Typography color={'textSecondary'} className={classes.title}>
+            フォルダーリスト
+          </Typography>
+          <Divider />
+          <Button
+            className={classes.createButton}
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              CreateNewFolder();
+            }}
+          >
+            <AddIcon></AddIcon>
+            <span style={{ fontWeight: 'bold' }}>フォルダー新規作成</span>
+          </Button>
+          <List>
+            {state.sideBar.saveFolder.map((folder, _i) => {
+              return (
+                <ListItem
+                  button
+                  key={_i}
+                  onClick={() => {
+                    dispatch(sideBarSlice.actions.selectFolder(folder.folderId));
+                  }}
+                >
+                  <FolderItem key={_i} folder={folder} />
+                </ListItem>
+              );
+            })}
+          </List>
+        </Drawer>
+        {/*新規フォルダー作成画面*/}
+        {CreateFolderDialog}
+        {EditFolderDialog}
+
+        {/* mobile */}
+        {state.navigationBar.isOpenMenuDialog && (
+          <div className={classes.folderSelect}>
+            <Button
+              className={classes.createButton}
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                CreateNewFolder();
+              }}
+            >
+              <AddIcon></AddIcon>
+              <span style={{ fontWeight: 'bold' }}>フォルダー新規作成</span>
+            </Button>
+            <Grid container spacing={0}>
+              {state.sideBar.saveFolder.map((folder, _i) => {
+                return (
+                  <Grid item xs={12} key={folder.folderId}>
+                    <FolderItem key={folder.folderId} folder={folder} />
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 export default SideBar;

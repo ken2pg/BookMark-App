@@ -20,21 +20,39 @@ const useStyle = makeStyles((theme: Theme) =>
         margin: '180px auto',
         textAlign: 'left',
       },
+      ['@media(max-width:767px)']: {
+        width: '95%',
+        margin: '75px auto 50px auto',
+        textAlign: 'left',
+        // marginBottom: '-25px',
+      },
     },
     title: {
       // margin: '200px,auto',
       fontSize: '44px',
       fontWeight: theme.typography.fontWeightBold,
       marginBottom: '50px',
+      ['@media(max-width:767px)']: {
+        fontSize: '36px',
+      },
     },
     description: {
       fontSize: '20px',
       marginBottom: '40px',
       fontWeight: theme.typography.fontWeightMedium,
+      ['@media(max-width:767px)']: {
+        fontSize: '18px',
+        marginBottom: '30px',
+      },
     },
     button: {
       marginRight: '40px',
       fontWeight: theme.typography.fontWeightBold,
+      ['@media(max-width:767px)']: {
+        // marginRight: 'none',
+        display: 'flex',
+        margin: '0 auto',
+      },
     },
   })
 );

@@ -35,20 +35,34 @@ const useStyle = makeStyles((theme: Theme) =>
       textAlign: 'center',
       display: 'flex',
       flexDirection: 'column',
+      ['@media(max-width:767px)']: {
+        width: '100%',
+        margin: '120px auto',
+      },
     },
     title: {
       fontSize: '44px',
       fontWeight: 'bold',
       marginBottom: '30px',
+      ['@media(max-width:767px)']: {
+        fontSize: '36px',
+      },
     },
     textfield: {
       width: '350px',
       margin: '0 auto',
       marginBottom: '50px',
+      ['@media(max-width:767px)']: {
+        width: '90%',
+        marginBottom: '20px',
+      },
     },
     button: {
       margin: '0 20px',
       fontWeight: theme.typography.fontWeightBold,
+      ['@media(max-width:767px)']: {
+        margin: '0 10px',
+      },
     },
   })
 );

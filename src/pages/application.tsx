@@ -11,6 +11,7 @@ import { fetchGetUserInfo } from '../slices/userInfoSlice';
 import { fetchInitialFolderState, fetchSerialFolderNumber } from '../slices/sideBarSlice';
 import { signInSlice } from '#/slices/signInPageSlice';
 import { fetchInitialState, fetchSerialNumber } from '../slices/bookMarkSlice';
+import FooterNavigation from '#/components/navigationBar/footerNavigation';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,6 +55,7 @@ const Appliaction = () => {
     <>
       <NavigationBar />
       <BookMarkComponent />
+      <FooterNavigation />
     </>
   );
 };

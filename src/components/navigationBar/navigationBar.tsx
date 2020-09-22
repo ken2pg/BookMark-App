@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -19,12 +19,16 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import clsx from 'clsx';
+import MenuIcon from '@material-ui/icons/Menu';
+import Drawer from '@material-ui/core/Drawer';
 
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { signInSlice } from '#/slices/signInPageSlice';
 import { userInfoSlice } from '#/slices/userInfoSlice';
+import { navigationBarSlice } from '#/slices/navigationBarSlice';
 import Router from 'next/router';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,11 +40,19 @@ const useStyles = makeStyles((theme: Theme) =>
     toolBar: {
       display: 'flex',
       justifyContent: 'space-between',
+      ['@media(max-width:767px)']: {
+        justifyContent: 'center',
+      },
     },
     title: {
       marginLeft: '9px',
       fontSize: '20px',
       fontWeight: theme.typography.fontWeightMedium,
+      ['@media(max-width:767px)']: {
+        // justifyContent: 'center',
+        marginLeft: '-10%',
+        margin: '0 auto',
+      },
     },
     icons: {
       display: 'inline-block',
@@ -60,9 +72,28 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     button: {
       marginLeft: '20px',
+      ['@media(max-width:767px)']: {
+        display: 'none',
+      },
     },
     btn: {
       fontWeight: 'bold',
+    },
+    hide: {
+      display: 'none',
+    },
+    menuIcon: {
+      display: 'none',
+      ['@media(max-width:767px)']: {
+        display: 'inline-block',
+        marginRight: 'auto',
+      },
+    },
+    drawer: {},
+    drawerPaper: {
+      width: '50%',
+      // zIndex: theme.zIndex.speedDial,
+      zIndex: 1000,
     },
   })
 );
@@ -83,6 +114,8 @@ const NavigationBar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const [isOpenSideBar, setIsMenuSideBar] = useState(false);
+
   const confirmDialog = (
     <div>
       <Dialog
@@ -122,10 +155,94 @@ const NavigationBar = () => {
       </Dialog>
     </div>
   );
+
+  const smartphoneDrawer = (
+    <>
+      {/* <Drawer
+        className={classes.drawer}
+        variant="temporary"
+        anchor="left"
+        open={isOpenSideBar}
+        onClose={() => {
+          setIsMenuSideBar(false);
+        }}
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+        ModalProps={{
+          keepMounted: true,
+        }}
+      >
+        <Avatar>
+          <PersonIcon />
+        </Avatar>
+        {state.signIn.isLogin && (
+          <span style={{ marginRight: '10px' }}>{state.userInfo.userName}</span>
+        )}
+        {!state.signIn.isLogin && (
+          <>
+            <Divider />
+            <span style={{ marginRight: '10px' }}>サインインをする</span>
+          </>
+        )}
+      </Drawer> */}
+      <Menu
+        id="fade-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Fade}
+        className={classes.menu}
+      >
+        <div className={classes.profile}>
+          <div className={classes.icons}>
+            <Avatar style={{ width: '70px', height: '70px' }}>
+              <PersonIcon style={{ width: '60px', height: '60px' }} />
+            </Avatar>
+          </div>
+          <Typography>{state.userInfo.userName}</Typography>
+          <Typography color="textSecondary">{state.userInfo.Email}</Typography>
+        </div>
+        <Divider />
+        {state.signIn.isLogin && (
+          <MenuItem
+            onClick={() => {
+              setIsOpenDialog(true);
+              handleClose();
+            }}
+          >
+            <Box className={classes.menuButton}>サインアウト</Box>
+          </MenuItem>
+        )}
+      </Menu>
+    </>
+  );
   return (
     <div className={classes.root}>
       <AppBar position="fixed">
         <Toolbar className={classes.toolBar}>
+          {
+            <IconButton
+              className={classes.menuIcon}
+              color="inherit"
+              aria-label="Menu"
+              onClick={(event: React.MouseEvent<HTMLElement>) => {
+                if (state.signIn.isLogin) {
+                  setAnchorEl(event.currentTarget);
+                } else {
+                  dispatch(signInSlice.actions.signOut());
+                  dispatch(userInfoSlice.actions.setInitialState());
+                  Router.push({ pathname: './signIn' });
+                }
+              }}
+            >
+              <Avatar style={{ width: '30px', height: '30px' }}>
+                <PersonIcon />
+              </Avatar>
+            </IconButton>
+          }
+          {smartphoneDrawer}
           <Typography className={classes.title}>BookMark-App</Typography>
           <div>
             {state.signIn.isLogin && (
@@ -139,7 +256,24 @@ const NavigationBar = () => {
                 サインアウト
               </Button>
             )}
-
+            {/* <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              // onClick={handleDrawerOpen}
+              edge="end"
+              // className={clsx(classes.menuButton, {
+              //   [classes.hide]: open,
+              // })}
+              onClick={() => {
+                if (state.navigationBar.isOpenMenuDialog) {
+                  dispatch(navigationBarSlice.actions.CloseMenuDrower());
+                } else {
+                  dispatch(navigationBarSlice.actions.OpenMenuDrower());
+                }
+              }}
+            >
+              <MenuIcon />
+            </IconButton> */}
             <Button
               className={classes.button}
               // edge="end"
