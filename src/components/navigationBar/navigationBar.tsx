@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-between',
       ['@media(max-width:767px)']: {
-        justifyContent: 'center',
+        // justifyContent: 'center',
       },
     },
     title: {
@@ -49,8 +49,9 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '20px',
       fontWeight: theme.typography.fontWeightMedium,
       ['@media(max-width:767px)']: {
-        // justifyContent: 'center',
-        marginLeft: '-10%',
+        // alignItems: 'center',
+        // marginLeft: 'none',
+        marginRight: '-10%',
         margin: '0 auto',
       },
     },
@@ -86,7 +87,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'none',
       ['@media(max-width:767px)']: {
         display: 'inline-block',
-        marginRight: 'auto',
+        marginLeft: 'auto',
       },
     },
     drawer: {},
@@ -158,34 +159,6 @@ const NavigationBar = () => {
 
   const smartphoneDrawer = (
     <>
-      {/* <Drawer
-        className={classes.drawer}
-        variant="temporary"
-        anchor="left"
-        open={isOpenSideBar}
-        onClose={() => {
-          setIsMenuSideBar(false);
-        }}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-        ModalProps={{
-          keepMounted: true,
-        }}
-      >
-        <Avatar>
-          <PersonIcon />
-        </Avatar>
-        {state.signIn.isLogin && (
-          <span style={{ marginRight: '10px' }}>{state.userInfo.userName}</span>
-        )}
-        {!state.signIn.isLogin && (
-          <>
-            <Divider />
-            <span style={{ marginRight: '10px' }}>サインインをする</span>
-          </>
-        )}
-      </Drawer> */}
       <Menu
         id="fade-menu"
         anchorEl={anchorEl}
@@ -222,28 +195,29 @@ const NavigationBar = () => {
     <div className={classes.root}>
       <AppBar position="fixed">
         <Toolbar className={classes.toolBar}>
-          {
-            <IconButton
-              className={classes.menuIcon}
-              color="inherit"
-              aria-label="Menu"
-              onClick={(event: React.MouseEvent<HTMLElement>) => {
-                if (state.signIn.isLogin) {
-                  setAnchorEl(event.currentTarget);
-                } else {
-                  dispatch(signInSlice.actions.signOut());
-                  dispatch(userInfoSlice.actions.setInitialState());
-                  Router.push({ pathname: './signIn' });
-                }
-              }}
-            >
-              <Avatar style={{ width: '30px', height: '30px' }}>
-                <PersonIcon />
-              </Avatar>
-            </IconButton>
-          }
-          {smartphoneDrawer}
+          {/* <IconButton color="inherit" style={{}}>
+            <MenuIcon />
+          </IconButton> */}
           <Typography className={classes.title}>BookMark-App</Typography>
+          <IconButton
+            className={classes.menuIcon}
+            color="inherit"
+            aria-label="Menu"
+            onClick={(event: React.MouseEvent<HTMLElement>) => {
+              if (state.signIn.isLogin) {
+                setAnchorEl(event.currentTarget);
+              } else {
+                dispatch(signInSlice.actions.signOut());
+                dispatch(userInfoSlice.actions.setInitialState());
+                Router.push({ pathname: './signIn' });
+              }
+            }}
+          >
+            <Avatar style={{ width: '30px', height: '30px' }}>
+              <PersonIcon />
+            </Avatar>
+          </IconButton>
+          {smartphoneDrawer}
           <div>
             {state.signIn.isLogin && (
               <Button
