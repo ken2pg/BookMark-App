@@ -156,8 +156,14 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
                   fontSize: '16px',
                 }}
               >
-                {folder.folderName.length > 10 && <>{folder.folderName.slice(0, 10) + '...'}</>}
-                {!(folder.folderName.length > 10) && <>{folder.folderName}</>}
+                <MediaQuery query="(min-width: 359px)">
+                  {folder.folderName.length > 10 && <>{folder.folderName.slice(0, 10) + '...'}</>}
+                  {!(folder.folderName.length > 10) && <>{folder.folderName}</>}
+                </MediaQuery>
+                <MediaQuery query="(max-width: 359px)">
+                  {folder.folderName.length > 8 && <>{folder.folderName.slice(0, 8) + '...'}</>}
+                  {!(folder.folderName.length > 8) && <>{folder.folderName}</>}
+                </MediaQuery>
               </span>
             </Grid>
             <Grid item>
@@ -253,8 +259,14 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
                   // left: '10px',
                 }}
               >
-                {folder.folderName.length > 10 && <>{folder.folderName.slice(0, 10) + '...'}</>}
-                {!(folder.folderName.length > 10) && <>{folder.folderName}</>}
+                <MediaQuery query="(min-width: 359px)">
+                  {folder.folderName.length > 10 && <>{folder.folderName.slice(0, 10) + '...'}</>}
+                  {!(folder.folderName.length > 10) && <>{folder.folderName}</>}
+                </MediaQuery>
+                <MediaQuery query="(max-width: 359px)">
+                  {folder.folderName.length > 8 && <>{folder.folderName.slice(0, 8) + '...'}</>}
+                  {!(folder.folderName.length > 8) && <>{folder.folderName}</>}
+                </MediaQuery>
               </span>
             </Grid>
             <Grid item>
@@ -346,44 +358,88 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
   const sideBarItem = (
     <>
       <Grid container>
-        <Grid item xs={2}>
-          {folder.isSelect && (
-            <ListItemIcon className={classes.selectFolder}>
-              <FolderIcon></FolderIcon>
-            </ListItemIcon>
-          )}
-          {!folder.isSelect && (
-            <ListItemIcon className={classes.folder}>
-              <FolderIcon></FolderIcon>
-            </ListItemIcon>
-          )}
-        </Grid>
-        <Grid item>
-          {folder.isSelect && (
-            <Typography className={classes.selectItem}>
-              <Box>
-                {() => {
-                  if (folder.folderName.length > 10) {
-                    return folder.folderName.slice(0, 10) + '...';
-                  }
-                  return folder.folderName;
-                }}
-              </Box>
-            </Typography>
-          )}
-          {!folder.isSelect && (
-            <Typography className={classes.item}>
-              <Box>
-                {() => {
-                  if (folder.folderName.length > 10) {
-                    return folder.folderName.slice(0, 10) + '...';
-                  }
-                  return folder.folderName;
-                }}
-              </Box>
-            </Typography>
-          )}
-        </Grid>
+        {/* 1023px以上ならフォルダー名を10文字まで表示 */}
+        <MediaQuery query="(min-width: 1023px)">
+          <Grid item xs={2}>
+            {folder.isSelect && (
+              <ListItemIcon className={classes.selectFolder}>
+                <FolderIcon></FolderIcon>
+              </ListItemIcon>
+            )}
+            {!folder.isSelect && (
+              <ListItemIcon className={classes.folder}>
+                <FolderIcon></FolderIcon>
+              </ListItemIcon>
+            )}
+          </Grid>
+          <Grid item>
+            {folder.isSelect && (
+              <Typography className={classes.selectItem}>
+                <Box>
+                  {() => {
+                    if (folder.folderName.length > 8) {
+                      return folder.folderName.slice(0, 8) + '...';
+                    }
+                    return folder.folderName;
+                  }}
+                </Box>
+              </Typography>
+            )}
+            {!folder.isSelect && (
+              <Typography className={classes.item}>
+                <Box>
+                  {() => {
+                    if (folder.folderName.length > 10) {
+                      return folder.folderName.slice(0, 8) + '...';
+                    }
+                    return folder.folderName;
+                  }}
+                </Box>
+              </Typography>
+            )}
+          </Grid>
+        </MediaQuery>
+        {/* 1023px未満なら8文字まで表示 */}
+        <MediaQuery query="(max-width: 1023px)">
+          <Grid item xs={2}>
+            {folder.isSelect && (
+              <ListItemIcon className={classes.selectFolder}>
+                <FolderIcon></FolderIcon>
+              </ListItemIcon>
+            )}
+            {!folder.isSelect && (
+              <ListItemIcon className={classes.folder}>
+                <FolderIcon></FolderIcon>
+              </ListItemIcon>
+            )}
+          </Grid>
+          <Grid item>
+            {folder.isSelect && (
+              <Typography className={classes.selectItem}>
+                <Box>
+                  {() => {
+                    if (folder.folderName.length > 8) {
+                      return folder.folderName.slice(0, 8) + '...';
+                    }
+                    return folder.folderName;
+                  }}
+                </Box>
+              </Typography>
+            )}
+            {!folder.isSelect && (
+              <Typography className={classes.item}>
+                <Box>
+                  {() => {
+                    if (folder.folderName.length > 8) {
+                      return folder.folderName.slice(0, 8) + '...';
+                    }
+                    return folder.folderName;
+                  }}
+                </Box>
+              </Typography>
+            )}
+          </Grid>
+        </MediaQuery>
       </Grid>
       <Typography className={classes.btn}>
         <IconButton className={classes.iconButton} onClick={handleClick}>

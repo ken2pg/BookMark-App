@@ -22,35 +22,46 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MediaQuery from 'react-responsive';
+import Grid from '@material-ui/core/Grid';
 
 import { bookMarkSlice } from '#/slices/bookMarkSlice';
 import { fetchDeleteBookMark } from '#/slices/bookMarkSlice';
+import { Box } from '@material-ui/core';
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      height: '120px',
+      height: '70px',
+      // ['@media(max-width:767px)']: {
+      //   height: '150px',
+      // },
     },
     image: {},
     name: {
+      // border: '1px solid red',
       wordWrap: 'break-word',
-      display: 'flex',
-      justifyContent: 'space-between',
-      fontSize: '18px',
-      padding: '10px 5px',
-      height: '50%',
-      // marginBottom: '10px',
+      height: '70px',
+      fontSize: '20px',
+      // padding: '10px 7px',
+      // width: `calc(100% - 60px)`,
+      width: '100%',
+      paddingTop: '10px',
+      paddingLeft: '10px',
       ['@media(max-width:767px)']: {
-        fontSize: '16px',
+        fontSize: '18px',
       },
     },
     text: {
       wordWrap: 'break-word',
-      padding: '10px 5px',
-      fontSize: '18px',
-      marginBottom: '5px',
+      fontSize: '14px',
+      // marginBottom: '5px',
       ['@media(max-width:767px)']: {
-        fontSize: '16px',
+        fontSize: '14px',
       },
+    },
+    container: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      // border: '1px solid red'
     },
     btn: {
       fontWeight: 'bold',
@@ -59,10 +70,36 @@ const useStyle = makeStyles((theme: Theme) =>
       marginBottom: '5px',
     },
     iconButton: {
-      marginTop: '-8px',
+      // width: '54px',
+      // display: 'flex',
+      // justifyContent: 'space-between',
       ['@media(max-width:767px)']: {
         // width: '40px',
         // height: '40px',
+      },
+    },
+    bookMarkName0: {
+      display: 'none',
+      ['@media(min-width:1030px)']: {
+        display: 'inline-block',
+      },
+    },
+    bookMarkName1: {
+      display: 'none',
+      ['@media(min-width:766px) and (max-width:1030px)']: {
+        display: 'inline-block',
+      },
+    },
+    bookMarkName2: {
+      display: 'none',
+      ['@media(min-width:361px) and (max-width:766px)']: {
+        display: 'inline-block',
+      },
+    },
+    bookMarkName3: {
+      display: 'none',
+      ['@media(max-width:360px)']: {
+        display: 'inline-block',
       },
     },
   })
@@ -146,84 +183,120 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
   );
   //   const text: string = 'http://www.google.com/s2/favicons?domain=https://github.com';
   //   const text: string = 'http://www.yahoo.co.jp/aaa.jpg';
+
+  // oonClick={() => {
+  //   window.open(bookMarkContents.siteURL);
+  // }}
   return (
     <>
-      <Paper elevation={1} className={classes.root}>
-        <Typography className={classes.name}>
-          <MediaQuery query="(min-width: 767px)">
-            {bookMarkContents.siteName.length > 15 &&
-              bookMarkContents.siteName.slice(0, 15) + '...'}
-            {!(bookMarkContents.siteName.length > 15) && bookMarkContents.siteName}
-          </MediaQuery>
-          <MediaQuery query="(max-width: 767px)">
-            {bookMarkContents.siteName.length > 10 &&
-              bookMarkContents.siteName.slice(0, 10) + '...'}
-            {!(bookMarkContents.siteName.length > 10) && bookMarkContents.siteName}
-          </MediaQuery>
+      {/* <CardActionArea
+      // onClick={() => {
+      //   if (anchorEl === null) {
+      //     window.open(bookMarkContents.siteURL);
+      //   }
+      // }}
+      > */}
+      <CardActionArea>
+        <Paper elevation={1} className={classes.root}>
+          <Box className={classes.container}>
+            <Box
+              className={classes.name}
+              onClick={() => {
+                if (anchorEl === null) {
+                  window.open(bookMarkContents.siteURL);
+                }
+              }}
+            >
+              <div className={classes.bookMarkName0}>
+                {bookMarkContents.siteName.length > 10 &&
+                  bookMarkContents.siteName.slice(0, 10) + '...'}
+                {!(bookMarkContents.siteName.length > 10) && bookMarkContents.siteName}
+              </div>
+              <div className={classes.bookMarkName1}>
+                {bookMarkContents.siteName.length > 9 &&
+                  bookMarkContents.siteName.slice(0, 9) + '...'}
+                {!(bookMarkContents.siteName.length > 9) && bookMarkContents.siteName}
+              </div>
+              <div className={classes.bookMarkName2}>
+                {bookMarkContents.siteName.length > 10 &&
+                  bookMarkContents.siteName.slice(0, 10) + '...'}
+                {!(bookMarkContents.siteName.length > 10) && bookMarkContents.siteName}
+              </div>
+              <div className={classes.bookMarkName3}>
+                {bookMarkContents.siteName.length > 8 &&
+                  bookMarkContents.siteName.slice(0, 8) + '...'}
+                {!(bookMarkContents.siteName.length > 8) && bookMarkContents.siteName}
+              </div>
 
-          <MediaQuery query="(min-width: 767px)">
-            <IconButton className={classes.iconButton} onClick={handleClick}>
-              <MoreVertIcon />
-            </IconButton>
-          </MediaQuery>
+              {/* {bookMarkContents.siteURL && (
+              <Typography color="textSecondary" className={classes.text}>
+                {bookMarkContents.siteURL.length > 30 &&
+                  bookMarkContents.siteURL.slice(0, 30) + '...'}
+                {!(bookMarkContents.siteURL.length > 30) && bookMarkContents.siteURL}
+              </Typography>
+            )}
+            {!bookMarkContents.siteURL && (
+              <Typography color="textSecondary" className={classes.text}>
+                None URL
+              </Typography>
+            )}
+            </Box> */}
+            </Box>
 
-          <MediaQuery query="(max-width: 767px)">
-            <IconButton className={classes.iconButton} onClick={handleClick}>
-              <MoreVertIcon />
-            </IconButton>
-          </MediaQuery>
-
-          <Menu
-            id="long-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={open}
-            onClose={handleClose}
-            PaperProps={{
-              style: {
-                maxHeight: ITEM_HEIGHT * 4.5,
-                width: '20ch',
-              },
-            }}
-          >
-            {options.map((option) => (
-              <MenuItem
-                key={option}
-                selected={option === 'Pyxis'}
-                onClick={() => {
-                  if (option === 'メモ') {
-                    handleClose();
-                    dispatch(bookMarkSlice.actions.openMemoDialog(bookMarkContents));
-                  } else if (option === '編集') {
-                    handleClose();
-                    dispatch(bookMarkSlice.actions.startEditBookMark(bookMarkContents.bookMarkId));
-                  } else if (option === '削除') {
-                    handleClose();
-                    setIsOpenDialog(true);
-                  } else {
-                    handleClose();
-                  }
+            <Box className={classes.iconButton}>
+              <IconButton onClick={handleClick}>
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                id="long-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={open}
+                onClose={handleClose}
+                PaperProps={{
+                  style: {
+                    maxHeight: ITEM_HEIGHT * 4.5,
+                    width: '20ch',
+                  },
                 }}
               >
-                {option}
-              </MenuItem>
-            ))}
-          </Menu>
-        </Typography>
-        {bookMarkContents.siteURL && (
-          <Typography color="textSecondary" className={classes.text}>
-            {bookMarkContents.siteURL.length > 30 && bookMarkContents.siteURL.slice(0, 30) + '...'}
-            {!(bookMarkContents.siteURL.length > 30) && bookMarkContents.siteURL}
-          </Typography>
-        )}
-        {!bookMarkContents.siteURL && (
-          <Typography color="textSecondary" className={classes.text}>
-            None URL
-          </Typography>
-        )}
-
-        {confirmDialog}
-      </Paper>
+                {options.map((option) => (
+                  <MenuItem
+                    key={option}
+                    selected={option === 'Pyxis'}
+                    onClick={() => {
+                      if (option === 'メモ') {
+                        handleClose();
+                        dispatch(bookMarkSlice.actions.openMemoDialog(bookMarkContents));
+                      } else if (option === '編集') {
+                        handleClose();
+                        dispatch(
+                          bookMarkSlice.actions.startEditBookMark(bookMarkContents.bookMarkId)
+                        );
+                      } else if (option === '削除') {
+                        handleClose();
+                        setIsOpenDialog(true);
+                      } else {
+                        handleClose();
+                      }
+                    }}
+                  >
+                    {option}
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </Box>
+          {confirmDialog}
+          {/* <Box
+          style={{ border: '1px solid red' }}
+          onClick={() => {
+            window.open(bookMarkContents.siteURL);
+          }}
+        > */}
+          {/* <Grid container style={{ border: '1px solid red' }}></Grid> */}
+        </Paper>
+      </CardActionArea>
     </>
   );
 };
