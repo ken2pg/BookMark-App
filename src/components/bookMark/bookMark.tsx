@@ -105,10 +105,13 @@ const useStyle = makeStyles((theme: Theme) =>
         display: 'none',
       },
     },
-    // divider: {
-    //   height: 28,
-    //   margin: 4,
-    // },
+    selectFolderName: {
+      fontSize: '24px',
+      marginBottom: '15px',
+      ['@media(max-width:767px)']: {
+        fontSize: '18px',
+      },
+    },
   })
 );
 
@@ -119,16 +122,6 @@ const BookMark = () => {
 
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
-
-  const [count, setCount] = React.useState(0);
-  // useEffect(() => {
-  //   if (state.signIn.isLogin && state.signIn.isFirstRenderBookMark) {
-  //     dispatch(fetchInitialState());
-  //     dispatch(fetchSerialNumber());
-  //     dispatch(signInSlice.actions.firstRenderBookMark());
-  //   }
-  //   // setCount(1);
-  // }, [count]);
 
   const createNewBookMark = () => {
     dispatch(bookMarkSlice.actions.startCreateBookMark());
@@ -401,6 +394,12 @@ const BookMark = () => {
     </div>
   );
 
+  const selectFolder = state.sideBar.saveFolder
+    .filter((list) => {
+      return list.folderId === state.sideBar.selectId;
+    })
+    .shift();
+
   return (
     <div className={classes.root}>
       {/* header */}
@@ -443,9 +442,15 @@ const BookMark = () => {
           </IconButton>
         </Paper>
       </div>
-
+      <div>
+        {state.sideBar.selectId !== 0 && (
+          <Typography className={classes.selectFolderName}>
+            FolderName：{selectFolder.folderName}
+          </Typography>
+        )}
+      </div>
       <Grid container spacing={1}>
-        <MediaQuery query="(min-width: 1024px)">
+        <MediaQuery query="(min-width: 1023px)">
           {/* {(!state.bookMark.searchText || state.bookMark.searchText === ' ') && */}
           {!state.bookMark.searchText &&
             state.bookMark.bookMarks.map((bookMark) => {
