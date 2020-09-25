@@ -197,7 +197,7 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
       // }}
       > */}
       <CardActionArea>
-        <Paper elevation={1} className={classes.root}>
+        <Paper elevation={2} className={classes.root}>
           <Box className={classes.container}>
             <Box
               className={classes.name}
