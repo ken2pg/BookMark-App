@@ -116,7 +116,7 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
         }}
       >
         <CardActionArea style={{ height: '50px' }}>
-          <Grid container spacing={2}>
+          <Grid container>
             <Grid
               item
               xs={3}
@@ -219,7 +219,7 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
         }}
       >
         <CardActionArea style={{ height: '50px' }}>
-          <Grid container spacing={2}>
+          <Grid container>
             <Grid
               item
               xs={3}
