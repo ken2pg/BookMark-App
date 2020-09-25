@@ -34,6 +34,9 @@ const useStyle = makeStyles((theme: Theme) =>
       // ['@media(max-width:767px)']: {
       //   height: '150px',
       // },
+      // border: '1px solid #000000',
+      // borderRadius: '3px',
+      // color: '',
     },
     image: {},
     name: {
@@ -196,8 +199,9 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
       //   }
       // }}
       > */}
-      <CardActionArea>
-        <Paper elevation={2} className={classes.root}>
+
+      <Card className={classes.root}>
+        <CardActionArea>
           <Box className={classes.container}>
             <Box
               className={classes.name}
@@ -295,8 +299,8 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
           }}
         > */}
           {/* <Grid container style={{ border: '1px solid red' }}></Grid> */}
-        </Paper>
-      </CardActionArea>
+        </CardActionArea>
+      </Card>
     </>
   );
 };
