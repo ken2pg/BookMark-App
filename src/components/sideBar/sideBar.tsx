@@ -108,11 +108,11 @@ const useStyles = makeStyles((theme: Theme) =>
     folderSelect: {
       display: 'none',
       ['@media(max-width:767px)']: {
-        width: '100%',
+        // width: '100%',
         display: 'inline-block',
         marginTop: '58px',
 
-        marginRight: '10px',
+        // marginRight: '10px',
         marginBottom: '55px',
       },
     },
@@ -329,7 +329,7 @@ const SideBar = () => {
               <AddIcon></AddIcon>
               <span style={{ fontWeight: 'bold' }}>フォルダー新規作成</span>
             </Button>
-            <Grid container spacing={0}>
+            <Grid container>
               {state.sideBar.saveFolder.map((folder, _i) => {
                 return (
                   <Grid item xs={12} key={folder.folderId}>
