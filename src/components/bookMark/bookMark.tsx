@@ -73,6 +73,7 @@ const useStyle = makeStyles((theme: Theme) =>
       // width: 400,
     },
     textfield: {
+      display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       width: '92%',
       margin: '0 auto',
       marginBottom: '30px',
@@ -88,7 +89,7 @@ const useStyle = makeStyles((theme: Theme) =>
     },
     input: {
       marginLeft: theme.spacing(1),
-      // flex: 1,
+      flex: 1,
     },
     title: {
       fontWeight: 'bold',
@@ -165,10 +166,13 @@ const BookMark = () => {
   const focusEditURL = useRef(null);
   const focusEditMemo = useRef(null);
 
+  const [scroll, setScroll] = React.useState<DialogProps['scroll']>('body');
+
   //新規作成画面
   const CreateBookmarkDialog = (
     <div>
       <Dialog
+        scroll={scroll}
         fullWidth={fullWidth}
         maxWidth={maxWidth}
         open={state.bookMark.isCreate}
@@ -259,6 +263,7 @@ const BookMark = () => {
   const EditBookmarkDialog = (
     <div>
       <Dialog
+        scroll={scroll}
         fullWidth={fullWidth}
         maxWidth={maxWidth}
         open={state.bookMark.bookMarks.some((t) => t.isEdit === true)}
