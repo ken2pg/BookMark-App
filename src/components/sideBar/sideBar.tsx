@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       // width: '30%',
       // margin: '25px 0',
-      // display: 'flex',
+      // display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       zIndex: 100,
     },
 
@@ -102,7 +102,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
       ['@media(max-width:767px)']: {
         margin: '18px auto',
-        display: 'flex',
+        display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       },
     },
     folderSelect: {
@@ -123,7 +123,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     closeButton: {
-      display: 'flex',
+      display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       margin: '10px auto',
     },
   })

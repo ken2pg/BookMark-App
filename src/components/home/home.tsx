@@ -50,7 +50,7 @@ const useStyle = makeStyles((theme: Theme) =>
       fontWeight: theme.typography.fontWeightBold,
       ['@media(max-width:767px)']: {
         // marginRight: 'none',
-        display: 'flex',
+        display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
         margin: '0 auto',
       },
     },

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -21,6 +21,7 @@ import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import EditIcon from '@material-ui/icons/Edit';
 
 import BookmarkItem from './bookMarkItem';
 import {
@@ -35,6 +36,8 @@ import { bookMark } from '#/types/bookMark';
 import { initialState } from '#/slices/sideBarSlice';
 import { signInSlice } from '#/slices/signInPageSlice';
 import { Typography } from '@material-ui/core';
+
+import SimpleMDE from 'react-simplemde-editor';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,7 +57,7 @@ const useStyle = makeStyles((theme: Theme) =>
     headerSearch: {
       marginLeft: '10px',
       width: '500px',
-      display: 'flex',
+      display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       alignItems: 'center',
     },
     paper: {
@@ -65,7 +68,7 @@ const useStyle = makeStyles((theme: Theme) =>
     header: {
       marginBottom: '10px',
       padding: '2px 4px',
-      display: 'flex',
+      display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       alignItems: 'center',
       // width: 400,
     },
@@ -85,7 +88,7 @@ const useStyle = makeStyles((theme: Theme) =>
     },
     input: {
       marginLeft: theme.spacing(1),
-      flex: 1,
+      // flex: 1,
     },
     title: {
       fontWeight: 'bold',
@@ -111,6 +114,15 @@ const useStyle = makeStyles((theme: Theme) =>
       ['@media(max-width:767px)']: {
         fontSize: '18px',
       },
+    },
+    dialogText: {
+      fontSize: '18px',
+      color: 'black',
+      marginBottom: '30px',
+      whiteSpace: 'pre-line',
+    },
+    memoTitle: {
+      color: '#556cd6',
     },
   })
 );
@@ -242,7 +254,7 @@ const BookMark = () => {
       </Dialog>
     </div>
   );
-
+  const [value, setValue] = useState('');
   //編集画面
   const EditBookmarkDialog = (
     <div>
@@ -319,7 +331,6 @@ const BookMark = () => {
             inputRef={focusEditMemo}
           />
         </MediaQuery>
-
         <DialogActions>
           <Button
             autoFocus
@@ -336,13 +347,28 @@ const BookMark = () => {
               dispatch(bookMarkSlice.actions.endEditBookMark());
               dispatch(bookMarkSlice.actions.searchOutput());
               dispatch(fetchEditBookMark(state.bookMark.editSaveFolder));
+              dispatch(bookMarkSlice.actions.openMemoDialog(state.bookMark.editSaveFolder));
               // console.log(state.bookMark.editSaveFolder);
             }}
             disabled={isEditNameNull}
             color="primary"
             className={classes.button}
           >
-            決定
+            決定(Memoへ)
+          </Button>
+          <Button
+            onClick={() => {
+              dispatch(bookMarkSlice.actions.changeBookMark());
+              dispatch(bookMarkSlice.actions.endEditBookMark());
+              dispatch(bookMarkSlice.actions.searchOutput());
+              dispatch(fetchEditBookMark(state.bookMark.editSaveFolder));
+              // console.log(state.bookMark.editSaveFolder);
+            }}
+            disabled={isEditNameNull}
+            color="primary"
+            className={classes.button}
+          >
+            決定(閉じる)
           </Button>
         </DialogActions>
       </Dialog>
@@ -361,15 +387,59 @@ const BookMark = () => {
         }}
         aria-labelledby="max-width-dialog-title"
       >
-        <DialogTitle id="max-width-dialog-title">メモ</DialogTitle>
+        <DialogTitle id="max-width-dialog-title" className={classes.memoTitle}>
+          <Box
+            style={{
+              display:
+                '-webkit-box' &&
+                '-moz-box' &&
+                '-ms-flexbox' &&
+                '-webkit-flex' &&
+                '-webkit-box' &&
+                '-moz-box' &&
+                '-ms-flexbox' &&
+                '-webkit-flex' &&
+                'flex',
+              lineHeight: '28px',
+            }}
+          >
+            <EditIcon color="primary" />
+            メモ
+          </Box>
+        </DialogTitle>
         <DialogContent>
           {/* <DialogContentText>{bookMarkItem.siteName}</DialogContentText>
           <DialogContentText>{bookMarkItem.memo}</DialogContentText> */}
           {/* <DialogContentText>{state.bookMark.memoDialog.siteName}</DialogContentText> */}
-          <DialogContentText>{state.bookMark.memoDialog.memo}</DialogContentText>
-        </DialogContent>
+          <DialogContentText className={classes.dialogText}>サイト名：</DialogContentText>
+          <DialogContentText className={classes.dialogText}>
+            {state.bookMark.memoDialog.siteName}
+          </DialogContentText>
 
+          <DialogContentText className={classes.dialogText}>URL：</DialogContentText>
+          <DialogContentText className={classes.dialogText}>
+            {state.bookMark.memoDialog.siteURL}
+          </DialogContentText>
+
+          <DialogContentText className={classes.dialogText}>メモ内容：</DialogContentText>
+          <DialogContentText className={classes.dialogText}>
+            {state.bookMark.memoDialog.memo}
+          </DialogContentText>
+        </DialogContent>
         <DialogActions>
+          <Button
+            autoFocus
+            onClick={() => {
+              dispatch(bookMarkSlice.actions.closeMemoDialog());
+
+              dispatch(
+                bookMarkSlice.actions.startEditBookMark(state.bookMark.memoDialog.bookMarkId)
+              );
+            }}
+            color="primary"
+          >
+            <Box className={classes.button}>編集</Box>
+          </Button>
           <Button
             autoFocus
             onClick={() => {
@@ -377,7 +447,7 @@ const BookMark = () => {
             }}
             color="primary"
           >
-            <Box className={classes.button}>Close</Box>
+            <Box className={classes.button}>閉じる</Box>
           </Button>
           {/* <Button
             // onClick={() => {

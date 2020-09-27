@@ -62,7 +62,7 @@ const useStyle = makeStyles((theme: Theme) =>
       },
     },
     container: {
-      display: 'flex',
+      display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       justifyContent: 'space-between',
       // border: '1px solid red'
     },
@@ -74,7 +74,7 @@ const useStyle = makeStyles((theme: Theme) =>
     },
     iconButton: {
       // width: '54px',
-      // display: 'flex',
+      // display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       // justifyContent: 'space-between',
       ['@media(max-width:767px)']: {
         // width: '40px',

@@ -33,7 +33,7 @@ const useStyle = makeStyles((theme: Theme) =>
       margin: '150px auto',
       // border: '1px solid red',
       textAlign: 'center',
-      display: 'flex',
+      display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       flexDirection: 'column',
       ['@media(max-width:767px)']: {
         width: '100%',

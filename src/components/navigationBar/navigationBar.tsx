@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
       // zIndex: theme.zIndex.drawer,
     },
     toolBar: {
-      display: 'flex',
+      display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       justifyContent: 'space-between',
       ['@media(max-width:767px)']: {
         // justifyContent: 'center',

@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'none',
       // zIndex: theme.zIndex.drawer,
       ['@media(max-width:767px)']: {
-        display: 'flex',
+        display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
         position: 'fixed' /*←絶対位置*/,
         bottom: '0',
         borderTop: '1px solid',
