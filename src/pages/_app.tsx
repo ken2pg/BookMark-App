@@ -8,6 +8,7 @@ import theme from '../theme';
 import { Provider } from 'react-redux';
 // import { createStore } from '../store';
 import store from '../store';
+import 'highlight.js/styles/github.css';
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
