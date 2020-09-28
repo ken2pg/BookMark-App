@@ -39,6 +39,20 @@ import { Typography } from '@material-ui/core';
 
 import SimpleMDE from 'react-simplemde-editor';
 
+import marked from 'marked';
+import highlightjs from 'highlight.js';
+
+marked.setOptions({
+  highlight: function (code, lang) {
+    return highlightjs.highlightAuto(code, [lang]).value;
+  }, // シンタックスハイライトに使用する関数の設定
+  pedantic: false, // trueの場合はmarkdown.plに準拠する gfmを使用する場合はfalseで大丈夫
+  gfm: true, // GitHub Flavored Markdownを使用
+  breaks: true, // falseにすると改行入力は末尾の半角スペース2つになる
+  sanitize: true, // trueにすると特殊文字をエスケープする
+  silent: false, // trueにするとパースに失敗してもExceptionを投げなくなる
+});
+
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -258,7 +272,7 @@ const BookMark = () => {
       </Dialog>
     </div>
   );
-  const [value, setValue] = useState('');
+
   //編集画面
   const EditBookmarkDialog = (
     <div>
@@ -336,6 +350,17 @@ const BookMark = () => {
             inputRef={focusEditMemo}
           />
         </MediaQuery>
+        {/* <DialogContentText>
+          <Box style={{ width: '92%', margin: '0 auto' }}>
+            <SimpleMDE
+              value={state.bookMark.editSaveFolder.memo}
+              onChange={(e) => {
+                dispatch(bookMarkSlice.actions.inputEditMemo(e));
+              }}
+            />
+          </Box>
+        </DialogContentText> */}
+
         <DialogActions>
           <Button
             autoFocus
@@ -359,7 +384,7 @@ const BookMark = () => {
             color="primary"
             className={classes.button}
           >
-            決定(Memoへ)
+            決定(メモ画面へ)
           </Button>
           <Button
             onClick={() => {
@@ -428,7 +453,9 @@ const BookMark = () => {
 
           <DialogContentText className={classes.dialogText}>メモ内容：</DialogContentText>
           <DialogContentText className={classes.dialogText}>
-            {state.bookMark.memoDialog.memo}
+            {/* {marked(state.bookMark.memoDialog.memo)} */}
+            {/* {marked(state.bookMark.memoDialog.memo)} */}
+            <div dangerouslySetInnerHTML={{ __html: marked(state.bookMark.memoDialog.memo) }}></div>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
