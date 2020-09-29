@@ -197,7 +197,7 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
   // oonClick={() => {
   //   window.open(bookMarkContents.siteURL);
   // }}
-  const imgUrl = 'http://www.google.com/s2/favicons?domain=' + bookMarkContents.siteURL;
+  const imgUrl = 'https://www.google.com/s2/favicons?domain=' + bookMarkContents.siteURL;
   return (
     <>
       <Card className={classes.root}>
