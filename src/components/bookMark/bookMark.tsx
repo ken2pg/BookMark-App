@@ -22,8 +22,12 @@ import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import EditIcon from '@material-ui/icons/Edit';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import Tooltip, { TooltipProps } from '@material-ui/core/Tooltip';
 
 import BookmarkItem from './bookMarkItem';
+import CopyToClipBoard from 'react-copy-to-clipboard';
+
 import {
   bookMarkSlice,
   fetchInitialState,
@@ -134,7 +138,7 @@ const useStyle = makeStyles((theme: Theme) =>
       fontSize: '18px',
       color: 'black',
       marginBottom: '30px',
-      whiteSpace: 'pre-line',
+      // whiteSpace: 'pre-line',
     },
     memoTitle: {
       color: '#556cd6',
@@ -181,6 +185,26 @@ const BookMark = () => {
   const focusEditMemo = useRef(null);
 
   const [scroll, setScroll] = React.useState<DialogProps['scroll']>('body');
+
+  const [openTip, setOpenTip] = useState<boolean>(false);
+  const handleCloseTip = (): void => {
+    setOpenTip(false);
+  };
+
+  const useStylesBootstrap = makeStyles((theme: Theme) => ({
+    arrow: {
+      color: theme.palette.common.black,
+    },
+    tooltip: {
+      backgroundColor: theme.palette.common.black,
+    },
+  }));
+
+  const BootstrapTooltip = (props: TooltipProps) => {
+    const classes = useStylesBootstrap();
+
+    return <Tooltip arrow classes={classes} {...props} />;
+  };
 
   //新規作成画面
   const CreateBookmarkDialog = (
@@ -405,6 +429,7 @@ const BookMark = () => {
     </div>
   );
 
+  const imgUrl = 'http://www.google.com/s2/favicons?domain=' + state.bookMark.memoDialog.siteURL;
   //memo画面
   const memoDialog = (
     <div>
@@ -443,12 +468,35 @@ const BookMark = () => {
           {/* <DialogContentText>{state.bookMark.memoDialog.siteName}</DialogContentText> */}
           <DialogContentText className={classes.dialogText}>サイト名：</DialogContentText>
           <DialogContentText className={classes.dialogText}>
+            <img src={imgUrl} />
             {state.bookMark.memoDialog.siteName}
           </DialogContentText>
 
           <DialogContentText className={classes.dialogText}>URL：</DialogContentText>
           <DialogContentText className={classes.dialogText}>
             {state.bookMark.memoDialog.siteURL}
+            {/* <BootstrapTooltip
+              open={openTip}
+              onClose={() => {
+                handleCloseTip();
+              }}
+              disableHoverListener
+              placement="bottom"
+              title="Copied!"
+            > */}
+            <CopyToClipBoard text={state.bookMark.memoDialog.siteURL}>
+              <Button
+                variant="outlined"
+                style={{ marginLeft: '10px' }}
+                onClick={() => {
+                  setOpenTip(true);
+                }}
+              >
+                コピー
+                <AssignmentIcon />
+              </Button>
+            </CopyToClipBoard>
+            {/* </BootstrapTooltip> */}
           </DialogContentText>
 
           <DialogContentText className={classes.dialogText}>メモ内容：</DialogContentText>

@@ -49,6 +49,7 @@ const useStyle = makeStyles((theme: Theme) =>
       width: '100%',
       paddingTop: '10px',
       paddingLeft: '10px',
+
       ['@media(max-width:767px)']: {
         fontSize: '18px',
       },
@@ -81,9 +82,15 @@ const useStyle = makeStyles((theme: Theme) =>
         // height: '40px',
       },
     },
+    bookMarkName: {
+      display: 'none',
+      ['@media(min-width:1200px)']: {
+        display: 'inline-block',
+      },
+    },
     bookMarkName0: {
       display: 'none',
-      ['@media(min-width:1030px)']: {
+      ['@media(min-width:1030px)and (max-width:1199px)']: {
         display: 'inline-block',
       },
     },
@@ -190,16 +197,9 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
   // oonClick={() => {
   //   window.open(bookMarkContents.siteURL);
   // }}
+  const imgUrl = 'http://www.google.com/s2/favicons?domain=' + bookMarkContents.siteURL;
   return (
     <>
-      {/* <CardActionArea
-      // onClick={() => {
-      //   if (anchorEl === null) {
-      //     window.open(bookMarkContents.siteURL);
-      //   }
-      // }}
-      > */}
-
       <Card className={classes.root}>
         <CardActionArea>
           <Box className={classes.container}>
@@ -211,22 +211,32 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
                 }
               }}
             >
+              <div className={classes.bookMarkName}>
+                <img src={imgUrl} />
+                {bookMarkContents.siteName.length > 20 &&
+                  bookMarkContents.siteName.slice(0, 20) + '...'}
+                {!(bookMarkContents.siteName.length > 20) && bookMarkContents.siteName}
+              </div>
               <div className={classes.bookMarkName0}>
+                <img src={imgUrl} />
                 {bookMarkContents.siteName.length > 10 &&
                   bookMarkContents.siteName.slice(0, 10) + '...'}
                 {!(bookMarkContents.siteName.length > 10) && bookMarkContents.siteName}
               </div>
               <div className={classes.bookMarkName1}>
+                <img src={imgUrl} />
                 {bookMarkContents.siteName.length > 9 &&
                   bookMarkContents.siteName.slice(0, 9) + '...'}
                 {!(bookMarkContents.siteName.length > 9) && bookMarkContents.siteName}
               </div>
               <div className={classes.bookMarkName2}>
+                <img src={imgUrl} />
                 {bookMarkContents.siteName.length > 10 &&
                   bookMarkContents.siteName.slice(0, 10) + '...'}
                 {!(bookMarkContents.siteName.length > 10) && bookMarkContents.siteName}
               </div>
               <div className={classes.bookMarkName3}>
+                <img src={imgUrl} />
                 {bookMarkContents.siteName.length > 8 &&
                   bookMarkContents.siteName.slice(0, 8) + '...'}
                 {!(bookMarkContents.siteName.length > 8) && bookMarkContents.siteName}
