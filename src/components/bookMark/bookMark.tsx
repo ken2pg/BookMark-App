@@ -429,7 +429,7 @@ const BookMark = () => {
     </div>
   );
 
-  const imgUrl = 'http://www.google.com/s2/favicons?domain=' + state.bookMark.memoDialog.siteURL;
+  const imgUrl = 'https://www.google.com/s2/favicons?domain=' + state.bookMark.memoDialog.siteURL;
   //memo画面
   const memoDialog = (
     <div>
