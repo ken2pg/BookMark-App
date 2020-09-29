@@ -332,9 +332,14 @@ export const bookMarkSlice = createSlice({
       //空白を削除
       state.searchText = state.inputText;
       state.searchText = state.searchText.replace(/[ ,　]/g, '');
-      state.searchBookMarks = state.bookMarks.filter(
-        (bookMark) => bookMark.siteName.indexOf(state.searchText) !== -1
-      );
+      state.searchBookMarks = state.bookMarks.filter((bookMark) => {
+        const siteName = bookMark.siteName.replace(/[ ,　]/g, '');
+        if (siteName.indexOf(state.searchText) !== -1) {
+          return true;
+        } else {
+          return false;
+        }
+      });
     },
     allSearchTextDelete: (state) => {
       state.inputText = '';
