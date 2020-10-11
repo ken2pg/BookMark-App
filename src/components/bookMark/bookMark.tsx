@@ -24,6 +24,9 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import EditIcon from '@material-ui/icons/Edit';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import Tooltip, { TooltipProps } from '@material-ui/core/Tooltip';
+// import DOMPurify from 'dompurify';
+import DOMPurify from "isomorphic-dompurify";
+import sanitizeHtml from 'sanitize-html';
 
 import BookmarkItem from './bookMarkItem';
 import CopyToClipBoard from 'react-copy-to-clipboard';
@@ -53,7 +56,7 @@ marked.setOptions({
   pedantic: false, // trueの場合はmarkdown.plに準拠する gfmを使用する場合はfalseで大丈夫
   gfm: true, // GitHub Flavored Markdownを使用
   breaks: true, // falseにすると改行入力は末尾の半角スペース2つになる
-  sanitize: true, // trueにすると特殊文字をエスケープする
+  sanitize: false, // trueにすると特殊文字をエスケープする
   silent: false, // trueにするとパースに失敗してもExceptionを投げなくなる
 });
 
@@ -428,7 +431,7 @@ const BookMark = () => {
       </Dialog>
     </div>
   );
-
+  const sanitizer=DOMPurify.sanitize;
   const imgUrl = 'https://www.google.com/s2/favicons?domain=' + state.bookMark.memoDialog.siteURL;
   //memo画面
   const memoDialog = (
@@ -503,7 +506,8 @@ const BookMark = () => {
           <DialogContentText className={classes.dialogText}>
             {/* {marked(state.bookMark.memoDialog.memo)} */}
             {/* {marked(state.bookMark.memoDialog.memo)} */}
-            <div dangerouslySetInnerHTML={{ __html: marked(state.bookMark.memoDialog.memo) }}></div>
+            
+            <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(marked(state.bookMark.memoDialog.memo))}}></div>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
