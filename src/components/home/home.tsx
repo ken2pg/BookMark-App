@@ -70,10 +70,10 @@ const Home = () => {
         <Typography color={'primary'} className={classes.description}>
           {/* You can save your favorite site's URL and it can be shared and used by your PC, tablet and
           mobile */}
-          ・お気に入りのサイトURLを保存することができ、いつでもすぐにブックマークアプリからアクセスすることができます。
+          ・お気に入りのサイトのURLを保存することができ、いつでもブックマークアプリからアクセスすることができます。
         </Typography>
         <Typography color={'primary'} className={classes.description}>
-          ・またPC, モバイル、タブレット間でブックマークを共有することができます。
+          ・PC, モバイル、タブレット間でブックマークを共有することができます。
         </Typography>
         <Typography color={'primary'} className={classes.description}>
           ・メモ機能がついており、大事な部分をメモできます
