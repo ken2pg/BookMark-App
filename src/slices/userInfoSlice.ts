@@ -76,7 +76,7 @@ export const userInfoSlice = createSlice({
       state.serialNumber = action.payload[0].serialNumber;
       state.userId = action.payload[0].userId;
       state.userName = action.payload[0].userName;
-      console.log(action.payload[0]);
+      // console.log(action.payload[0]);
     });
     builder.addCase(fetchGetUserInfo.rejected, () => {});
   },

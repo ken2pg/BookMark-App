@@ -71,7 +71,7 @@ export const fetchSerialNumber = createAsyncThunk('bookMark/fetchSerialNumber', 
       querySnapshot.forEach((i) => {
         //i自体は1つしか取らない
         serialNumber = i.data()['serialNumber'];
-        console.log(serialNumber);
+        // console.log(serialNumber);
       });
     })
     .catch((err) => {
@@ -347,7 +347,7 @@ export const bookMarkSlice = createSlice({
     },
 
     initialSetState: (state, action: PayloadAction<bookMark[]>) => {
-      console.log(action.payload);
+      // console.log(action.payload);
     },
   },
   //非同期処理
@@ -357,7 +357,7 @@ export const bookMarkSlice = createSlice({
     builder.addCase(fetchSerialNumber.fulfilled, (state, action) => {
       // state.newBookMark.bookMarkId = action.payload;
       state.serialNumbers = action.payload;
-      console.log(action.payload);
+      // console.log(action.payload);
     });
     builder.addCase(fetchSerialNumber.rejected, () => {});
 
