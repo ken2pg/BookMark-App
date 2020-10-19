@@ -77,7 +77,3 @@
   - **`/theme.ts`**<br/>
 
   material ui のテーマ（色）設定が含まれる
-
-## デモサイト
-
-https://book-mark-app.vercel.app/
