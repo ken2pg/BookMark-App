@@ -7,7 +7,6 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import MediaQuery from 'react-responsive';
-import Card from '@material-ui/core/Card';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
@@ -18,33 +17,22 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
-import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import EditIcon from '@material-ui/icons/Edit';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-import Tooltip, { TooltipProps } from '@material-ui/core/Tooltip';
-// import DOMPurify from 'dompurify';
-import DOMPurify from "isomorphic-dompurify";
-import sanitizeHtml from 'sanitize-html';
 
+import sanitizeHtml from 'sanitize-html';
 import BookmarkItem from './bookMarkItem';
 import CopyToClipBoard from 'react-copy-to-clipboard';
 
 import {
   bookMarkSlice,
-  fetchInitialState,
   fetchAddBookMark,
-  fetchSerialNumber,
   fetchEditSerialNumber,
   fetchEditBookMark,
 } from '#/slices/bookMarkSlice';
-import { bookMark } from '#/types/bookMark';
-import { initialState } from '#/slices/sideBarSlice';
-import { signInSlice } from '#/slices/signInPageSlice';
 import { Typography } from '@material-ui/core';
-
-import SimpleMDE from 'react-simplemde-editor';
 
 import marked from 'marked';
 import highlightjs from 'highlight.js';
@@ -63,12 +51,9 @@ marked.setOptions({
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      // width: '80.5%',
       width: `calc(100% - 298px)`,
-      //   margin: '0 auto',
       marginTop: '74px',
       marginLeft: '290px',
-      // border: '1px solid red',
       ['@media(max-width:767px)']: {
         width: `100%`,
         margin: '58px auto',
@@ -91,7 +76,6 @@ const useStyle = makeStyles((theme: Theme) =>
       padding: '2px 4px',
       display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       alignItems: 'center',
-      // width: 400,
     },
     textfield: {
       display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
@@ -118,7 +102,6 @@ const useStyle = makeStyles((theme: Theme) =>
     },
     CreatNewFolderButton: {
       ['@media(max-width:1024px)']: {
-        // width: '10px',
         height: '45px',
       },
     },
@@ -141,7 +124,6 @@ const useStyle = makeStyles((theme: Theme) =>
       fontSize: '18px',
       color: 'black',
       marginBottom: '30px',
-      // whiteSpace: 'pre-line',
     },
     memoTitle: {
       color: '#556cd6',
@@ -154,8 +136,24 @@ const BookMark = () => {
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state);
 
+  const [scroll, setScroll] = React.useState<DialogProps['scroll']>('body');
+  const [openTip, setOpenTip] = useState<boolean>(false);
+
+  //Validation
+  const isNameNull = !state.bookMark.newBookMark.siteName;
+  const isEditNameNull = !state.bookMark.editSaveFolder.siteName;
+
+  //focus
+  const focusURL = useRef(null);
+  const focusMemo = useRef(null);
+  const focusEditURL = useRef(null);
+  const focusEditMemo = useRef(null);
+
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
+
+  //favicon URL
+  const imgUrl = 'https://www.google.com/s2/favicons?domain=' + state.bookMark.memoDialog.siteURL;
 
   const createNewBookMark = () => {
     dispatch(bookMarkSlice.actions.startCreateBookMark());
@@ -176,37 +174,6 @@ const BookMark = () => {
 
   const handleInputURLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(bookMarkSlice.actions.inputURL(e.target.value));
-  };
-  //Validation
-  const isNameNull = !state.bookMark.newBookMark.siteName;
-  const isEditNameNull = !state.bookMark.editSaveFolder.siteName;
-
-  //focus
-  const focusURL = useRef(null);
-  const focusMemo = useRef(null);
-  const focusEditURL = useRef(null);
-  const focusEditMemo = useRef(null);
-
-  const [scroll, setScroll] = React.useState<DialogProps['scroll']>('body');
-
-  const [openTip, setOpenTip] = useState<boolean>(false);
-  const handleCloseTip = (): void => {
-    setOpenTip(false);
-  };
-
-  const useStylesBootstrap = makeStyles((theme: Theme) => ({
-    arrow: {
-      color: theme.palette.common.black,
-    },
-    tooltip: {
-      backgroundColor: theme.palette.common.black,
-    },
-  }));
-
-  const BootstrapTooltip = (props: TooltipProps) => {
-    const classes = useStylesBootstrap();
-
-    return <Tooltip arrow classes={classes} {...props} />;
   };
 
   //新規作成画面
@@ -377,17 +344,6 @@ const BookMark = () => {
             inputRef={focusEditMemo}
           />
         </MediaQuery>
-        {/* <DialogContentText>
-          <Box style={{ width: '92%', margin: '0 auto' }}>
-            <SimpleMDE
-              value={state.bookMark.editSaveFolder.memo}
-              onChange={(e) => {
-                dispatch(bookMarkSlice.actions.inputEditMemo(e));
-              }}
-            />
-          </Box>
-        </DialogContentText> */}
-
         <DialogActions>
           <Button
             autoFocus
@@ -405,7 +361,6 @@ const BookMark = () => {
               dispatch(bookMarkSlice.actions.searchOutput());
               dispatch(fetchEditBookMark(state.bookMark.editSaveFolder));
               dispatch(bookMarkSlice.actions.openMemoDialog(state.bookMark.editSaveFolder));
-              // console.log(state.bookMark.editSaveFolder);
             }}
             disabled={isEditNameNull}
             color="primary"
@@ -419,7 +374,6 @@ const BookMark = () => {
               dispatch(bookMarkSlice.actions.endEditBookMark());
               dispatch(bookMarkSlice.actions.searchOutput());
               dispatch(fetchEditBookMark(state.bookMark.editSaveFolder));
-              // console.log(state.bookMark.editSaveFolder);
             }}
             disabled={isEditNameNull}
             color="primary"
@@ -431,8 +385,7 @@ const BookMark = () => {
       </Dialog>
     </div>
   );
-  const sanitizer=DOMPurify.sanitize;
-  const imgUrl = 'https://www.google.com/s2/favicons?domain=' + state.bookMark.memoDialog.siteURL;
+
   //memo画面
   const memoDialog = (
     <div>
@@ -466,9 +419,6 @@ const BookMark = () => {
           </Box>
         </DialogTitle>
         <DialogContent>
-          {/* <DialogContentText>{bookMarkItem.siteName}</DialogContentText>
-          <DialogContentText>{bookMarkItem.memo}</DialogContentText> */}
-          {/* <DialogContentText>{state.bookMark.memoDialog.siteName}</DialogContentText> */}
           <DialogContentText className={classes.dialogText}>サイト名：</DialogContentText>
           <DialogContentText className={classes.dialogText}>
             <img src={imgUrl} />
@@ -478,15 +428,6 @@ const BookMark = () => {
           <DialogContentText className={classes.dialogText}>URL：</DialogContentText>
           <DialogContentText className={classes.dialogText}>
             {state.bookMark.memoDialog.siteURL}
-            {/* <BootstrapTooltip
-              open={openTip}
-              onClose={() => {
-                handleCloseTip();
-              }}
-              disableHoverListener
-              placement="bottom"
-              title="Copied!"
-            > */}
             <CopyToClipBoard text={state.bookMark.memoDialog.siteURL}>
               <Button
                 variant="outlined"
@@ -499,15 +440,15 @@ const BookMark = () => {
                 <AssignmentIcon />
               </Button>
             </CopyToClipBoard>
-            {/* </BootstrapTooltip> */}
           </DialogContentText>
 
           <DialogContentText className={classes.dialogText}>メモ内容：</DialogContentText>
           <DialogContentText className={classes.dialogText}>
-            {/* {marked(state.bookMark.memoDialog.memo)} */}
-            {/* {marked(state.bookMark.memoDialog.memo)} */}
-            
-            <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(marked(state.bookMark.memoDialog.memo))}}></div>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: sanitizeHtml(marked(state.bookMark.memoDialog.memo)),
+              }}
+            ></div>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -533,26 +474,10 @@ const BookMark = () => {
           >
             <Box className={classes.button}>閉じる</Box>
           </Button>
-          {/* <Button
-            // onClick={() => {
-            //   dispatch(bookMarkSlice.actions.changeBookMark());
-            //   dispatch(bookMarkSlice.actions.endEditBookMark());
-            // }}
-            disabled={isEditNameNull}
-            color="primary"
-          >
-            OK
-          </Button> */}
         </DialogActions>
       </Dialog>
     </div>
   );
-
-  const selectFolder = state.sideBar.saveFolder
-    .filter((list) => {
-      return list.folderId === state.sideBar.selectId;
-    })
-    .shift();
 
   return (
     <div className={classes.root}>
@@ -582,7 +507,6 @@ const BookMark = () => {
               dispatch(bookMarkSlice.actions.inputSearchText(e.target.value));
               dispatch(bookMarkSlice.actions.searchOutput());
             }}
-            // value={state.bookMark.searchText}
           />
           <IconButton
             className={classes.iconButton}
@@ -591,21 +515,19 @@ const BookMark = () => {
               dispatch(bookMarkSlice.actions.allSearchTextDelete());
             }}
           >
-            {/* type="submit"  */}
             <HighlightOffIcon />
           </IconButton>
         </Paper>
       </div>
       <div>
-        {state.sideBar.selectId !== 0 && (
+        {/* {state.sideBar.selectId !== 0 && (
           <Typography className={classes.selectFolderName}>
-            FolderName：{selectFolder.folderName}
+            FolderName：{state.sideBar.selectId}
           </Typography>
-        )}
+        )} */}
       </div>
       <Grid container spacing={1}>
         <MediaQuery query="(min-width: 1023px)">
-          {/* {(!state.bookMark.searchText || state.bookMark.searchText === ' ') && */}
           {!state.bookMark.searchText &&
             state.bookMark.bookMarks.map((bookMark) => {
               //isSelectがtrueのfolder内容のみ表示

@@ -2,11 +2,9 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { folder } from '#/types/folder';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { firebaseStore } from '../../config/fbConfig';
-import { bookMarkSlice } from './bookMarkSlice';
 
 export type sideBarState = {
   folder: folder;
-  // editFolderName: string;
   editFolder: folder;
   saveFolder: folder[];
   isCreate: boolean;
@@ -23,7 +21,6 @@ export const initialState: sideBarState = {
     isEdit: false,
     isSelect: false,
   },
-  // editFolderName: '',
   editFolder: {
     userId: 0,
     folderId: 0,
@@ -51,7 +48,6 @@ export const fetchSerialFolderNumber = createAsyncThunk(
         querySnapshot.forEach((i) => {
           //i自体は1つしか取らない
           serialFolderNumber = i.data()['serialFolderNumber'];
-          // console.log(serialFolderNumber);
         });
       })
       .catch((err) => {
@@ -79,14 +75,11 @@ export const fetchEditSerialFolderNumber = createAsyncThunk(
 export const fetchInitialFolderState = createAsyncThunk(
   'sideBar/fetchInitialFolderState',
   async (payload: number) => {
-    // const userId = '1';
-    // console.log(payload);
     let bookMarkFolderList = new Array<folder>();
     await firebaseStore
       .collection('user')
       // .where('userId', '==', payload)
       .doc('1')
-      // .doc('1')
       .collection('bookMarkFolder')
       .get()
       .then((querySnapshot) => {
@@ -190,37 +183,31 @@ export const sideBarSlice = createSlice({
   name: 'sidebar',
   initialState,
   reducers: {
+    //文字入力
     inputName(state, action: PayloadAction<string>) {
       state.folder.folderName = action.payload;
     },
+    //新規作成
     addFolder(state) {
-      state.saveFolder = [state.folder, ...state.saveFolder];
+      state.saveFolder = [...state.saveFolder, state.folder];
     },
     startCreateFolder: (state) => {
+      state.isCreate = true;
       state.sirialFolderNumber = state.sirialFolderNumber + 1;
       state.folder['folderId'] = state.sirialFolderNumber;
       state.folder['folderName'] = initialState.folder.folderName;
-      state.isCreate = true;
     },
     cancelCreateFolder: (state) => {
       state.isCreate = false;
       state.sirialFolderNumber = state.sirialFolderNumber - 1;
       state.folder['folderId'] = state.sirialFolderNumber;
     },
-    endCreateFolder: (state) => ({
-      ...state,
-      isCreate: false,
-    }),
-    editFolder: (state, action: PayloadAction<string>) => ({
-      ...state,
-      folder: { ...state.folder, folderName: action.payload },
-    }),
-    deleteFolder: (state, action: PayloadAction<number>) => {
-      state.saveFolder = [
-        ...state.saveFolder.filter((folder) => folder.folderId !== action.payload),
-      ];
+    endCreateFolder: (state) => {
+      state.isCreate = false;
     },
+    //編集
     startEditFolder: (state, action: PayloadAction<number>) => {
+      //編集するフォルダーのisEditをtrue
       state.saveFolder = [
         ...state.saveFolder.map((savefolder) =>
           savefolder.folderId === action.payload
@@ -228,8 +215,8 @@ export const sideBarSlice = createSlice({
             : { ...savefolder, isEdit: false }
         ),
       ];
-      const editSaveFolder = state.saveFolder.find((folder) => folder.folderId === action.payload);
-      state.editFolder = editSaveFolder;
+      //編集するフォルダーを取得
+      state.editFolder = state.saveFolder.find((folder) => folder.folderId === action.payload);
     },
     endEditFolder: (state) => {
       state.saveFolder = [
@@ -253,6 +240,8 @@ export const sideBarSlice = createSlice({
     inputEditName: (state, action: PayloadAction<string>) => {
       state.editFolder.folderName = action.payload;
     },
+
+    //そのフォルダーを選択しているかのstate情報を更新する
     selectFolder: (state, action: PayloadAction<number>) => {
       state.saveFolder.map((savefolder) => {
         if (savefolder.folderId === action.payload) {
@@ -263,7 +252,15 @@ export const sideBarSlice = createSlice({
         }
       });
     },
+
+    //削除
+    deleteFolder: (state, action: PayloadAction<number>) => {
+      state.saveFolder = [
+        ...state.saveFolder.filter((folder) => folder.folderId !== action.payload),
+      ];
+    },
   },
+  //API用のReducer
   extraReducers: (builder) => {
     //fetchSerialFolderNumber
     builder.addCase(fetchSerialFolderNumber.pending, () => {});
@@ -280,10 +277,7 @@ export const sideBarSlice = createSlice({
     //fetchInitialState
     builder.addCase(fetchInitialFolderState.pending, () => {});
     builder.addCase(fetchInitialFolderState.fulfilled, (state, action) => {
-      // console.log(action.payload);
       state.saveFolder = action.payload;
-      // state.saveFolder = initialState.saveFolder;
-      // state.saveFolder = state.saveFolder.concat(action.payload);
     });
     builder.addCase(fetchInitialFolderState.rejected, () => {});
 

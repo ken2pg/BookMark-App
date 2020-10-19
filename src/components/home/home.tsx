@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Button } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Router from 'next/router';
 import NavigationBar from '../navigationBar/navigationBar';
-import BookMarkComponent from '../bookMark/bookMarkComponent';
-import { NextPage } from 'next';
-import { withRouter } from 'next/router';
-import { WithRouterProps } from 'next/dist/client/with-router';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,11 +20,9 @@ const useStyle = makeStyles((theme: Theme) =>
         width: '95%',
         margin: '75px auto 50px auto',
         textAlign: 'left',
-        // marginBottom: '-25px',
       },
     },
     title: {
-      // margin: '200px,auto',
       fontSize: '44px',
       fontWeight: theme.typography.fontWeightBold,
       marginBottom: '50px',
@@ -49,7 +43,6 @@ const useStyle = makeStyles((theme: Theme) =>
       marginRight: '40px',
       fontWeight: theme.typography.fontWeightBold,
       ['@media(max-width:767px)']: {
-        // marginRight: 'none',
         display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
         margin: '0 auto',
       },
@@ -70,13 +63,13 @@ const Home = () => {
         <Typography color={'primary'} className={classes.description}>
           {/* You can save your favorite site's URL and it can be shared and used by your PC, tablet and
           mobile */}
-          ・お気に入りのサイトのURLを保存することができ、いつでもブックマークアプリからアクセスすることができます。
+          ・お気に入りサイトのURLを保存することができ、ブックマークアプリからアクセスすることができます。
         </Typography>
         <Typography color={'primary'} className={classes.description}>
           ・PC, モバイル、タブレット間でブックマークを共有することができます。
         </Typography>
         <Typography color={'primary'} className={classes.description}>
-          ・メモ機能がついており、大事な部分をメモできます
+          ・メモ機能がついており、大事な部分をメモできます(マークダウン対応)
         </Typography>
         <div>
           <Button

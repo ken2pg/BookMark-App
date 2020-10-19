@@ -1,19 +1,11 @@
-import React, { useState } from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import React from 'react';
 import SideBar from '../sideBar/sideBar';
 import BookMark from './bookMark';
 import { useSelector } from 'react-redux';
 import { RootState } from '#/store';
 import MediaQuery from 'react-responsive';
 
-const useStyle = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {},
-  })
-);
-
 const BookMarkComponent = () => {
-  // const classes = useStyle();
   const state = useSelector((state: RootState) => state);
   return (
     <>

@@ -7,7 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import FolderIcon from '@material-ui/icons/Folder';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import { Divider, Drawer, Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -17,17 +17,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import MediaQuery from 'react-responsive';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import Paper from '@material-ui/core/Paper';
 
 import { sideBarSlice, fetchDeleteBookMarkFolder } from '../../slices/sideBarSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { blue } from '@material-ui/core/colors';
 import { navigationBarSlice } from '#/slices/navigationBarSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,17 +30,14 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       textAlign: 'center',
       fontSize: '24px',
+      width: '100%',
     },
-
     btn: {
       fontWeight: 'bold',
     },
     item: {
       lineHeight: '33px',
       wordWrap: 'break-word',
-    },
-    iconButton: {
-      ['@media(max-width:767px)']: {},
     },
     folder: {
       position: 'relative',
@@ -82,16 +73,15 @@ interface Props {
 
 const FolderItem: React.FC<Props> = ({ folder }) => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state);
 
-  const open = Boolean(anchorEl);
   const ITEM_HEIGHT = 48;
-
+  const options = ['編集', '削除', 'キャンセル'];
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
-
   const [isOpenDialog, setIsOpenDialog] = React.useState(false);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -105,14 +95,12 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
   const startEdit = (folderID: number) => {
     dispatch(sideBarSlice.actions.startEditFolder(folderID));
   };
-  const options = ['編集', '削除', 'キャンセル'];
 
   const selectFolderChangeNameColorSmartPhone = (
     <>
       <Box
         style={{
           height: '50px',
-          // borderBottom: '1px solid gray',
         }}
       >
         <CardActionArea style={{ height: '50px' }}>
@@ -131,7 +119,6 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
                 style={{
                   color: '#556cd6',
                   position: 'relative',
-
                   left: '5px',
                   lineHeight: '67px',
                 }}
@@ -167,7 +154,7 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
               </span>
             </Grid>
             <Grid item>
-              <IconButton className={classes.iconButton} onClick={handleClick}>
+              <IconButton onClick={handleClick}>
                 <MoreVertIcon />
               </IconButton>
             </Grid>
@@ -270,7 +257,7 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
               </span>
             </Grid>
             <Grid item>
-              <IconButton className={classes.iconButton} onClick={handleClick}>
+              <IconButton onClick={handleClick}>
                 <MoreVertIcon />
               </IconButton>
             </Grid>
@@ -355,7 +342,7 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
   );
 
   //PC版sideBarフォルダー
-  const sideBarItem = (
+  const sideBarPC = (
     <>
       <Grid container>
         {/* 1023px以上ならフォルダー名を10文字まで表示 */}
@@ -442,7 +429,7 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
         </MediaQuery>
       </Grid>
       <Typography className={classes.btn}>
-        <IconButton className={classes.iconButton} onClick={handleClick}>
+        <IconButton onClick={handleClick}>
           <MoreVertIcon />
         </IconButton>
         <Menu
@@ -491,9 +478,10 @@ const FolderItem: React.FC<Props> = ({ folder }) => {
       {confirmDialog}
     </>
   );
+
   return (
     <>
-      {<MediaQuery query="(min-width: 767px)">{sideBarItem}</MediaQuery>}
+      {<MediaQuery query="(min-width: 767px)">{sideBarPC}</MediaQuery>}
       {<MediaQuery query="(max-width: 767px)">{sideBarMobile}</MediaQuery>}
     </>
   );

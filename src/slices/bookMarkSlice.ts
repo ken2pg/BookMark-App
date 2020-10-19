@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { bookMark } from '#/types/bookMark';
-import BookMark from '#/components/bookMark/bookMark';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { firebaseStore } from '../../config/fbConfig';
 
@@ -123,10 +122,6 @@ export const fetchInitialState = createAsyncThunk(
         throw new Error(err.message);
       });
     return await bookMarkList;
-    // const success = { sucess: 'success' };
-    // return {
-    //   success,
-    // };
   }
 );
 
@@ -215,6 +210,7 @@ export const bookMarkSlice = createSlice({
   name: 'bookMark',
   initialState,
   reducers: {
+    //入力関連
     inputName(state, action: PayloadAction<string>) {
       state.newBookMark.siteName = action.payload;
     },
@@ -224,8 +220,10 @@ export const bookMarkSlice = createSlice({
     inputMemo(state, action: PayloadAction<string>) {
       state.newBookMark.memo = action.payload;
     },
+
+    //ブックマークの作成
     addBookMark(state) {
-      state.bookMarks = [state.newBookMark, ...state.bookMarks];
+      state.bookMarks = [...state.bookMarks, state.newBookMark];
     },
     startCreateBookMark(state) {
       state.serialNumbers = state.serialNumbers + 1;
@@ -244,9 +242,13 @@ export const bookMarkSlice = createSlice({
       state.serialNumbers = state.serialNumbers - 1;
       state.newBookMark['bookMarkId'] = state.serialNumbers;
     },
+
+    //新規作成時にブックマークIDを指定
     selectId(state, action: PayloadAction<number>) {
       state.newBookMark['folderId'] = action.payload;
     },
+
+    //編集
     startEditBookMark(state, action: PayloadAction<number>) {
       state.bookMarks = [
         ...state.bookMarks.map((bookMark) =>
@@ -295,11 +297,15 @@ export const bookMarkSlice = createSlice({
     inputEditMemo: (state, action: PayloadAction<string>) => {
       state.editSaveFolder.memo = action.payload;
     },
+
+    //削除
     deleteBookMark: (state, action: PayloadAction<number>) => {
       state.bookMarks = [
         ...state.bookMarks.filter((bookMark) => bookMark.bookMarkId !== action.payload),
       ];
     },
+
+    //メモを開く
     openMemoDialog: (state, action: PayloadAction<bookMark>) => {
       state.bookMarks = [
         ...state.bookMarks.map((bookMark) =>
@@ -324,9 +330,10 @@ export const bookMarkSlice = createSlice({
       ];
       state.memoDialog.isMemoOpen = false;
     },
+
+    //検索
     inputSearchText: (state, action: PayloadAction<string>) => {
       state.inputText = action.payload;
-      // state.searchText = action.payload;
     },
     searchOutput: (state) => {
       //空白を削除
@@ -345,19 +352,14 @@ export const bookMarkSlice = createSlice({
       state.inputText = '';
       state.searchText = '';
     },
-
-    initialSetState: (state, action: PayloadAction<bookMark[]>) => {
-      // console.log(action.payload);
-    },
   },
+
   //非同期処理
   extraReducers: (builder) => {
     //fetchSerialNumber
     builder.addCase(fetchSerialNumber.pending, () => {});
     builder.addCase(fetchSerialNumber.fulfilled, (state, action) => {
-      // state.newBookMark.bookMarkId = action.payload;
       state.serialNumbers = action.payload;
-      // console.log(action.payload);
     });
     builder.addCase(fetchSerialNumber.rejected, () => {});
 
@@ -369,7 +371,6 @@ export const bookMarkSlice = createSlice({
     //fetchInitialState
     builder.addCase(fetchInitialState.pending, () => {});
     builder.addCase(fetchInitialState.fulfilled, (state, action) => {
-      // console.log(action.payload);
       state.bookMarks = initialState.bookMarks;
       state.bookMarks = state.bookMarks.concat(action.payload);
     });

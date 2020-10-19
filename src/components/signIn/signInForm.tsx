@@ -5,33 +5,23 @@ import { RootState } from '../../store';
 
 import { Button, Typography, TextField, ButtonGroup } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
-import Input from '@material-ui/core/Input';
-import FilledInput from '@material-ui/core/FilledInput';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import NavigationBar from '../navigationBar/navigationBar';
 import { signInSlice, fetchSingIn } from '#/slices/signInPageSlice';
-import { NextPage } from 'next';
-import { withRouter } from 'next/router';
-import { WithRouterProps } from 'next/dist/client/with-router';
 import Router from 'next/router';
-import { fetchGetUserInfo } from '../../slices/userInfoSlice';
-import { count } from 'console';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '50%',
       margin: '150px auto',
-      // border: '1px solid red',
       textAlign: 'center',
       display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       flexDirection: 'column',

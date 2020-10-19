@@ -4,14 +4,10 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
+import { Box } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -21,31 +17,20 @@ import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import MediaQuery from 'react-responsive';
-import Grid from '@material-ui/core/Grid';
 
 import { bookMarkSlice } from '#/slices/bookMarkSlice';
 import { fetchDeleteBookMark } from '#/slices/bookMarkSlice';
-import { Box } from '@material-ui/core';
+
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       height: '70px',
-      // ['@media(max-width:767px)']: {
-      //   height: '150px',
-      // },
-      // border: '1px solid #000000',
-      // borderRadius: '3px',
-      // color: '',
     },
     image: {},
     name: {
-      // border: '1px solid red',
       wordWrap: 'break-word',
       height: '70px',
       fontSize: '20px',
-      // padding: '10px 7px',
-      // width: `calc(100% - 60px)`,
       width: '100%',
       paddingTop: '10px',
       paddingLeft: '10px',
@@ -57,7 +42,6 @@ const useStyle = makeStyles((theme: Theme) =>
     text: {
       wordWrap: 'break-word',
       fontSize: '14px',
-      // marginBottom: '5px',
       ['@media(max-width:767px)']: {
         fontSize: '14px',
       },
@@ -65,7 +49,6 @@ const useStyle = makeStyles((theme: Theme) =>
     container: {
       display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       justifyContent: 'space-between',
-      // border: '1px solid red'
     },
     btn: {
       fontWeight: 'bold',
@@ -74,13 +57,7 @@ const useStyle = makeStyles((theme: Theme) =>
       marginBottom: '5px',
     },
     iconButton: {
-      // width: '54px',
-      // display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
-      // justifyContent: 'space-between',
-      ['@media(max-width:767px)']: {
-        // width: '40px',
-        // height: '40px',
-      },
+      ['@media(max-width:767px)']: {},
     },
     bookMarkName: {
       display: 'none',
@@ -133,6 +110,17 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
   const state = useSelector((state: RootState) => state);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [fullWidth, setFullWidth] = React.useState(true);
+  const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
+  const [isOpenDialog, setIsOpenDialog] = React.useState(false);
+
+  const options = ['メモ', '編集', '削除', 'キャンセル'];
+  const open = Boolean(anchorEl);
+  const ITEM_HEIGHT = 48;
+
+  //favicon用URL
+  const imgUrl = 'https://www.google.com/s2/favicons?domain=' + bookMarkContents.siteURL;
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -140,17 +128,6 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const options = ['メモ', '編集', '削除', 'キャンセル'];
-  const open = Boolean(anchorEl);
-  const ITEM_HEIGHT = 48;
-
-  const startEditBookMark = () => {
-    dispatch(bookMarkSlice.actions.startEditBookMark());
-  };
-  const [fullWidth, setFullWidth] = React.useState(true);
-  const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
-
-  const [isOpenDialog, setIsOpenDialog] = React.useState(false);
 
   const confirmDialog = (
     <div>
@@ -191,13 +168,7 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
       </Dialog>
     </div>
   );
-  //   const text: string = 'http://www.google.com/s2/favicons?domain=https://github.com';
-  //   const text: string = 'http://www.yahoo.co.jp/aaa.jpg';
 
-  // oonClick={() => {
-  //   window.open(bookMarkContents.siteURL);
-  // }}
-  const imgUrl = 'https://www.google.com/s2/favicons?domain=' + bookMarkContents.siteURL;
   return (
     <>
       <Card className={classes.root}>
@@ -241,20 +212,6 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
                   bookMarkContents.siteName.slice(0, 8) + '...'}
                 {!(bookMarkContents.siteName.length > 8) && bookMarkContents.siteName}
               </div>
-
-              {/* {bookMarkContents.siteURL && (
-              <Typography color="textSecondary" className={classes.text}>
-                {bookMarkContents.siteURL.length > 30 &&
-                  bookMarkContents.siteURL.slice(0, 30) + '...'}
-                {!(bookMarkContents.siteURL.length > 30) && bookMarkContents.siteURL}
-              </Typography>
-            )}
-            {!bookMarkContents.siteURL && (
-              <Typography color="textSecondary" className={classes.text}>
-                None URL
-              </Typography>
-            )}
-            </Box> */}
             </Box>
 
             <Box className={classes.iconButton}>
@@ -302,13 +259,6 @@ const BookMarkItem: React.FC<Props> = ({ bookMarkContents }) => {
             </Box>
           </Box>
           {confirmDialog}
-          {/* <Box
-          style={{ border: '1px solid red' }}
-          onClick={() => {
-            window.open(bookMarkContents.siteURL);
-          }}
-        > */}
-          {/* <Grid container style={{ border: '1px solid red' }}></Grid> */}
         </CardActionArea>
       </Card>
     </>

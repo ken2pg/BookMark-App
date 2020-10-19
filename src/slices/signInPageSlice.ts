@@ -1,13 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { useDispatch } from 'react-redux';
-// import { bookMark } from '#/types/bookMark';
-// import BookMark from '#/components/bookMark';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { firebaseStore } from '../../config/fbConfig';
 import { auth } from 'firebase';
 import Router from 'next/router';
-import build from 'next/dist/build';
-import { fetchGetUserInfo, userInfoSlice } from './userInfoSlice';
 
 export type signInPageState = {
   email: string;
@@ -16,8 +10,6 @@ export type signInPageState = {
   isLogin: boolean;
   userEmail: string;
   userId: number;
-  // isFirstRenderSideBar: boolean;
-  // isFirstRenderBookMark: boolean;
 };
 
 const initialState: signInPageState = {
@@ -27,8 +19,6 @@ const initialState: signInPageState = {
   isLogin: false,
   userEmail: '',
   userId: 0,
-  // isFirstRenderSideBar: true,
-  // isFirstRenderBookMark: true,
 };
 export const fetchSingIn = createAsyncThunk(
   'signIn/fetchSingIn',
@@ -38,33 +28,13 @@ export const fetchSingIn = createAsyncThunk(
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then(() => {
         data.sucess = 'success';
-        // firebaseStore
-        //   .collection('user')
-        //   .where('Email', '==', payload)
-        //   .get()
-        //   .then((querySnapshot) => {
-        //     querySnapshot.forEach((i) => {
-        //       data.sucess = 'success';
-        //       const category = i.data();
-        //       data.userId = category['userId'];
-        //     });
-        //   });
       })
       .catch((err) => {
-        // alert(err);
-        // console.log(err['code']);
         if (err['code'] === 'auth/network-request-failed') {
           alert('インターネットが繋がっていません');
         } else {
           alert('パスワードもしくはメールアドレスが間違っています！');
         }
-        // } else if (err['code'] === 'auth/invalid-email') {
-        //   alert('メールアドレスが正しく入力されていません');
-        // } else if (err['code'] === 'auth/wrong-password') {
-        //   alert('パスワードが正しく入力されていません');
-        // } else if (err['code'] === 'auth/wrong-password') {
-        //   alert('パスワードもしくはメールアドレスが間違っています！');
-        // }
       });
 
     return data;
@@ -92,12 +62,6 @@ export const signInSlice = createSlice({
       state.userEmail = initialState.userEmail;
       state.userId = initialState.userId;
     },
-    // firstRenderSideBar: (state) => {
-    //   state.isFirstRenderSideBar = false;
-    // },
-    // firstRenderBookMark: (state) => {
-    //   state.isFirstRenderBookMark = false;
-    // },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSingIn.pending, () => {});

@@ -2,10 +2,8 @@ import React, { Component, useEffect, useRef } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
@@ -13,31 +11,17 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Hidden from '@material-ui/core/Hidden';
-import IconButton from '@material-ui/core/IconButton';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import MailIcon from '@material-ui/icons/Mail';
-import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
-import clsx from 'clsx';
 import Grid from '@material-ui/core/Grid';
-import MediaQuery from 'react-responsive';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 
 import {
   sideBarSlice,
   fetchEditSerialFolderNumber,
-  fetchSerialFolderNumber,
-  fetchInitialFolderState,
   fetchAddBookFolderMark,
   fetchEditBookMarkFolder,
 } from '../../slices/sideBarSlice';
@@ -45,18 +29,10 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import FolderItem from './folderItem';
-import FolderIcon from '@material-ui/icons/Folder';
-
-import { folder } from '#/types/folder';
-import { signInSlice } from '#/slices/signInPageSlice';
-import { navigationBarSlice } from '#/slices/navigationBarSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      // width: '30%',
-      // margin: '25px 0',
-      // display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       zIndex: 100,
     },
 
@@ -80,7 +56,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
     drawerPaper: {
       width: 280,
-
       zIndex: 1000,
     },
     button: {
@@ -108,12 +83,10 @@ const useStyles = makeStyles((theme: Theme) =>
     folderSelect: {
       display: 'none',
       ['@media(max-width:767px)']: {
-        // width: '100%',
         display: 'inline-block',
         marginTop: '58px',
-
-        // marginRight: '10px',
         marginBottom: '55px',
+        width: '100%',
       },
     },
     drawerSmartPhone: {
@@ -136,6 +109,10 @@ const SideBar = () => {
 
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
+
+  //新規作成・編集時名前が空かどうかの判定
+  const isNameNull = !state.sideBar.folder.folderName;
+  const isEditNameNull = !state.sideBar.editFolder.folderName;
 
   //編集開始・修了、フォルダーの追加処理
   const CreateNewFolder = () => {
@@ -160,10 +137,6 @@ const SideBar = () => {
   const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(sideBarSlice.actions.inputEditName(e.target.value));
   };
-
-  const isNameNull = !state.sideBar.folder.folderName;
-
-  const isEditNameNull = !state.sideBar.editFolder.folderName;
 
   // 新規作成画面
   const CreateFolderDialog = (
@@ -269,21 +242,52 @@ const SideBar = () => {
     </div>
   );
 
-  return (
+  const sideBarPC = (
+    <Drawer
+      className={classes.drawer}
+      variant="permanent"
+      classes={{
+        paper: classes.drawerPaper,
+      }}
+    >
+      <Toolbar />
+      <Typography color={'textSecondary'} className={classes.title}>
+        フォルダーリスト
+      </Typography>
+      <Divider />
+      <Button
+        className={classes.createButton}
+        variant="outlined"
+        color="primary"
+        onClick={() => {
+          CreateNewFolder();
+        }}
+      >
+        <AddIcon></AddIcon>
+        <span style={{ fontWeight: 'bold' }}>フォルダー新規作成</span>
+      </Button>
+      <List>
+        {state.sideBar.saveFolder.map((folder, _i) => {
+          return (
+            <ListItem
+              button
+              key={_i}
+              onClick={() => {
+                dispatch(sideBarSlice.actions.selectFolder(folder.folderId));
+              }}
+            >
+              <FolderItem key={_i} folder={folder} />
+            </ListItem>
+          );
+        })}
+      </List>
+    </Drawer>
+  );
+
+  const sideBarMobile = (
     <>
-      <div className={classes.root}>
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <Toolbar />
-          <Typography color={'textSecondary'} className={classes.title}>
-            フォルダーリスト
-          </Typography>
-          <Divider />
+      {state.navigationBar.isOpenMenuDialog && (
+        <div className={classes.folderSelect}>
           <Button
             className={classes.createButton}
             variant="outlined"
@@ -295,51 +299,30 @@ const SideBar = () => {
             <AddIcon></AddIcon>
             <span style={{ fontWeight: 'bold' }}>フォルダー新規作成</span>
           </Button>
-          <List>
+          <Grid container>
             {state.sideBar.saveFolder.map((folder, _i) => {
               return (
-                <ListItem
-                  button
-                  key={_i}
-                  onClick={() => {
-                    dispatch(sideBarSlice.actions.selectFolder(folder.folderId));
-                  }}
-                >
-                  <FolderItem key={_i} folder={folder} />
-                </ListItem>
+                <Grid item xs={12} key={folder.folderId}>
+                  <FolderItem key={folder.folderId} folder={folder} />
+                </Grid>
               );
             })}
-          </List>
-        </Drawer>
+          </Grid>
+        </div>
+      )}
+    </>
+  );
+
+  return (
+    <>
+      <div className={classes.root}>
         {/*新規フォルダー作成画面*/}
         {CreateFolderDialog}
         {EditFolderDialog}
 
-        {/* mobile */}
-        {state.navigationBar.isOpenMenuDialog && (
-          <div className={classes.folderSelect}>
-            <Button
-              className={classes.createButton}
-              variant="outlined"
-              color="primary"
-              onClick={() => {
-                CreateNewFolder();
-              }}
-            >
-              <AddIcon></AddIcon>
-              <span style={{ fontWeight: 'bold' }}>フォルダー新規作成</span>
-            </Button>
-            <Grid container>
-              {state.sideBar.saveFolder.map((folder, _i) => {
-                return (
-                  <Grid item xs={12} key={folder.folderId}>
-                    <FolderItem key={folder.folderId} folder={folder} />
-                  </Grid>
-                );
-              })}
-            </Grid>
-          </div>
-        )}
+        {/*sidebar画面*/}
+        {sideBarPC}
+        {sideBarMobile}
       </div>
     </>
   );

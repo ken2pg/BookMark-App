@@ -4,7 +4,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 import PersonIcon from '@material-ui/icons/Person';
@@ -19,38 +18,30 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import clsx from 'clsx';
-import MenuIcon from '@material-ui/icons/Menu';
-import Drawer from '@material-ui/core/Drawer';
 
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { signInSlice } from '#/slices/signInPageSlice';
 import { userInfoSlice } from '#/slices/userInfoSlice';
-import { navigationBarSlice } from '#/slices/navigationBarSlice';
+
 import Router from 'next/router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
-      // zIndex: theme.zIndex.drawer,
     },
     toolBar: {
       display: '-webkit-box' && '-moz-box' && '-ms-flexbox' && '-webkit-flex' && 'flex',
       justifyContent: 'space-between',
-      ['@media(max-width:767px)']: {
-        // justifyContent: 'center',
-      },
+      ['@media(max-width:767px)']: {},
     },
     title: {
       marginLeft: '9px',
       fontSize: '20px',
       fontWeight: theme.typography.fontWeightMedium,
       ['@media(max-width:767px)']: {
-        // alignItems: 'center',
-        // marginLeft: 'none',
         marginRight: '-10%',
         margin: '0 auto',
       },
@@ -68,7 +59,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: '10px',
     },
     menuButton: {
-      // textAlign: 'center',
       margin: '0px auto',
     },
     button: {
@@ -93,7 +83,6 @@ const useStyles = makeStyles((theme: Theme) =>
     drawer: {},
     drawerPaper: {
       width: '50%',
-      // zIndex: theme.zIndex.speedDial,
       zIndex: 1000,
     },
   })
@@ -195,9 +184,6 @@ const NavigationBar = () => {
     <div className={classes.root}>
       <AppBar position="fixed">
         <Toolbar className={classes.toolBar}>
-          {/* <IconButton color="inherit" style={{}}>
-            <MenuIcon />
-          </IconButton> */}
           <Typography className={classes.title}>BookMark-App</Typography>
           <IconButton
             className={classes.menuIcon}
@@ -230,31 +216,8 @@ const NavigationBar = () => {
                 サインアウト
               </Button>
             )}
-            {/* <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              // onClick={handleDrawerOpen}
-              edge="end"
-              // className={clsx(classes.menuButton, {
-              //   [classes.hide]: open,
-              // })}
-              onClick={() => {
-                if (state.navigationBar.isOpenMenuDialog) {
-                  dispatch(navigationBarSlice.actions.CloseMenuDrower());
-                } else {
-                  dispatch(navigationBarSlice.actions.OpenMenuDrower());
-                }
-              }}
-            >
-              <MenuIcon />
-            </IconButton> */}
             <Button
               className={classes.button}
-              // edge="end"
-              // aria-label="account of current user"
-              // aria-controls="menu-appbar"
-              // aria-haspopup="true"
-              // onClick={handleMenu}
               color="inherit"
               variant="outlined"
               onClick={(event: React.MouseEvent<HTMLElement>) => {
@@ -306,15 +269,6 @@ const NavigationBar = () => {
                   <Box className={classes.menuButton}>サインアウト</Box>
                 </MenuItem>
               )}
-              {/* {!state.signIn.isLogin && (
-                <MenuItem
-                  onClick={() => {
-                    Router.push({ pathname: './signIn' });
-                  }}
-                >
-                  <Box className={classes.menuButton}>サインイン</Box>
-                </MenuItem>
-              )} */}
             </Menu>
           </div>
         </Toolbar>

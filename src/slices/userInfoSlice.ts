@@ -1,9 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { firebaseStore } from '../../config/fbConfig';
-import { auth, firestore } from 'firebase';
-import Router from 'next/router';
-import build from 'next/dist/build';
 
 export type userInfoState = {
   Email: string;
@@ -76,7 +73,6 @@ export const userInfoSlice = createSlice({
       state.serialNumber = action.payload[0].serialNumber;
       state.userId = action.payload[0].userId;
       state.userName = action.payload[0].userName;
-      // console.log(action.payload[0]);
     });
     builder.addCase(fetchGetUserInfo.rejected, () => {});
   },

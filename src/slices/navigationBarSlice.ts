@@ -1,9 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { firebaseStore } from '../../config/fbConfig';
-import { auth, firestore } from 'firebase';
-import Router from 'next/router';
-import build from 'next/dist/build';
 
 export type navigationBarState = {
   isOpenMenuDialog: boolean;
