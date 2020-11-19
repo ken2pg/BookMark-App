@@ -340,8 +340,8 @@ export const bookMarkSlice = createSlice({
       state.searchText = state.inputText;
       state.searchText = state.searchText.replace(/[ ,　]/g, '');
       state.searchBookMarks = state.bookMarks.filter((bookMark) => {
-        const siteName = bookMark.siteName.replace(/[ ,　]/g, '');
-        if (siteName.indexOf(state.searchText) !== -1) {
+        const siteName = bookMark.siteName.replace(/[ ,　]/g, '').toLowerCase();
+        if (siteName.indexOf(state.searchText.toLowerCase()) !== -1) {
           return true;
         } else {
           return false;
